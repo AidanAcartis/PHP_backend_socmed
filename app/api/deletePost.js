@@ -1,26 +1,25 @@
-export default async function handler(req, res) {
-    if (req.method === 'DELETE') {
-      const { id } = req.query;
-  
+// deletePost.js
+
+export const handleDeletePost = async (post) => {
+  if (confirm("Voulez-vous vraiment supprimer ce post ?")) {
       try {
-        // Appel du script PHP pour supprimer le post
-        const response = await fetch(`http://your-server-domain/delete_post.php?id=${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          res.status(200).json(data); // Retourne la réponse du PHP
-        } else {
-          res.status(500).json({ message: 'Erreur lors de la suppression du post' });
-        }
+          const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/controllers/posts/deletePost/deletePost.php?id=${post.id}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+          });
+
+          if (response.ok) {
+              alert('Post supprimé avec succès');
+              // Mettez à jour l'interface utilisateur pour supprimer le post visuellement
+          } else {
+              alert('Erreur lors de la suppression du post');
+          }
       } catch (error) {
-        res.status(500).json({ message: 'Erreur lors de l\'appel du backend PHP' });
+          alert('Une erreur est survenue');
       }
-    } else {
-      res.status(405).json({ message: 'Méthode non autorisée' });
-    }
+      window.location.reload();
   }
+};
