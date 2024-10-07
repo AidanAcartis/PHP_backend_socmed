@@ -1,0 +1,44 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Obtenir le chemin du fichier actuel
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+
+// Activer CORS pour toutes les origines
+app.use(cors());
+
+// Définir la route pour accéder à fichier.txt
+app.get('/Devoi_socila_media/src/backend/controllers/users/fichier.txt', (req, res) => {
+    const filePath = path.join(__dirname, 'controllers/users/fichier.txt');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erreur lors de l\'envoi du fichier:', err);
+            res.status(err.status).end();
+        } else {
+            console.log('Fichier envoyé:', filePath);
+        }
+    });
+});
+
+// Définir la route pour accéder à post.json
+app.get('/Devoi_socila_media/src/backend/controllers/posts/posts.json', (req, res) => {
+    const filePath = path.join(__dirname, 'controllers/posts/posts.json');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erreur lors de l\'envoi du fichier:', err);
+            res.status(err.status || 500).end();
+        } else {
+            console.log('Fichier envoyé:', filePath);
+        }
+    });
+});
+
+// Écoute sur le port 3002
+app.listen(3002, () => {
+    console.log('Server running on port 3002');
+});
