@@ -18,7 +18,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Inclusion du fichier de configuration pour la connexion à la base de données
-include_once '../../config/config.php'; // Assurez-vous que le chemin est correct
+include_once '../../../config/config.php'; // Assurez-vous que le chemin est correct
 
 // Vérification de la connexion à la base de données
 if ($conn->connect_error) {

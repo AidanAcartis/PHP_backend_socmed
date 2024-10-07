@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Inclusion du fichier de configuration pour la connexion à la base de données
-include_once '../../config/config.php';
+include_once '../../../config/config.php';
 
 // Vérification de la connexion à la base de données
 if ($conn->connect_error) {

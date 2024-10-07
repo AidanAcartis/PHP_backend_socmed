@@ -16,7 +16,7 @@ export const usePhotoActions = () => {
         setLoading(true);
         try {
             // Soumettre la photo pour créer un nouveau post
-            const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/posts/get_photo.php', {
+            const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/posts/createPost/get_photo.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

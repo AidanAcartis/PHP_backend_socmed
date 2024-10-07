@@ -26,8 +26,8 @@ app.get('/Devoi_socila_media/src/backend/controllers/users/fichier.txt', (req, r
 });
 
 // Définir la route pour accéder à post.json
-app.get('/Devoi_socila_media/src/backend/controllers/posts/posts.json', (req, res) => {
-    const filePath = path.join(__dirname, 'controllers/posts/posts.json');
+app.get('/Devoi_socila_media/src/backend/controllers/posts/createPost/posts.json', (req, res) => {
+    const filePath = path.join(__dirname, 'controllers/posts/createPost/posts.json');
     res.sendFile(filePath, (err) => {
         if (err) {
             console.error('Erreur lors de l\'envoi du fichier:', err);
@@ -38,7 +38,7 @@ app.get('/Devoi_socila_media/src/backend/controllers/posts/posts.json', (req, re
     });
 });
 
-// Écoute sur le port 3002
-app.listen(3002, () => {
-    console.log('Server running on port 3002');
+// Écoute sur le port 3003
+app.listen(3003, () => {
+    console.log('Server running on port 3003');
 });

@@ -13,7 +13,7 @@ export const usePostActions = () => {
 
     const handleShare = async () => {
         try {
-            const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/posts/create_post.php', {
+            const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/posts/createPost/create_post.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

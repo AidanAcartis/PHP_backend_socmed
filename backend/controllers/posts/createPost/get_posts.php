@@ -7,7 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json'); // Définit le type de contenu à JSON
 
 // Inclusion du fichier de configuration pour la connexion à la base de données
-include_once '../../config/config.php';
+include_once '../../../config/config.php';
 
 // Vérification de la connexion à la base de données
 if ($conn->connect_error) {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Exécuter la requête SQL pour récupérer tous les posts
-$sql = "SELECT id, content, user_id, created_at, photo FROM posts";
+$sql = "SELECT id, content, user_id, created_at FROM posts";
 $result = $conn->query($sql);
 
 // Vérifier si des posts ont été trouvés
@@ -37,8 +37,7 @@ if ($result->num_rows > 0) {
             'id' => $row['id'],
             'content' => $row['content'],
             'user_id' => $row['user_id'],
-            'created_at' => $row['created_at'],
-            'photo' => $row['photo']
+            'created_at' => $row['created_at']
         ];
     }
 

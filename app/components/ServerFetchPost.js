@@ -1,7 +1,7 @@
 // Function to fetch post data from a JSON file
 export async function ServerFetchPost() {
     try {
-        const response = await fetch('http://localhost:3002/Devoi_socila_media/src/backend/controllers/posts/posts.json');
+        const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/posts/createPost/posts.json');
         if (!response.ok) {
             console.error('Error fetching post data:', response.statusText);
             return null;
