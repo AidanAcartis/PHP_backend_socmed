@@ -15,6 +15,10 @@ const PostCard = ({ post }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [username, setUsername] = useState(null);
     const { commText, setCommText, handleShare, loading } = useCommentActions(); // Récupération des actions et des états
+    const [selectedReaction, setSelectedReaction] = useState(<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+    </svg>); // Réaction par défaut
+    const [showEmojis, setShowEmojis] = useState(false); // État pour afficher les emojis
     const postId = post.id; // Assurez-vous que 'post' a une propriété 'id'
     const userId = post.userId; // Assurez-vous que 'post' a une propriété 'userId'
 
@@ -37,6 +41,20 @@ const PostCard = ({ post }) => {
 
     const handleClickOutsideMenu = () => {
         setMenuOpen(false);
+    };
+
+    // Fonction pour mettre à jour la réaction
+    const handleReactionClick = (reaction) => {
+        // Définir l'icône de réaction en fonction du choix de l'utilisateur
+        const reactionIcons = {
+            like: '👍',
+            love: '❤️',
+            haha: '😂',
+            sad: '😢',
+            angry: '😡'
+        };
+        setSelectedReaction(reactionIcons[reaction]);
+        setShowEmojis(false); // Cacher les emojis après sélection
     };
 
     return (
@@ -115,12 +133,34 @@ const PostCard = ({ post }) => {
             </div>
 
             <div className="mt-5 flex gap-8">
-                <button className="flex gap-2 items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                    {post.likes}
-                </button>
+                {/*Boutton des reactions*/}
+                <div className="relative">
+            <button
+                onMouseEnter={() => setShowEmojis(true)}
+                //onMouseLeave={() => setShowEmojis(false)}
+                className="flex gap-2 items-center"
+            >
+                {/* Icône de réaction */}
+                <span className="size-6">{selectedReaction}</span>
+                {post.likes}
+            </button>
+
+            {showEmojis && (
+                <div className="absolute bottom-full mb-1 flex gap-2 bg-white rounded-md shadow-lg p-2">
+                    {['like', 'love', 'haha', 'sad', 'angry'].map((reaction) => (
+                        <button
+                            key={reaction}
+                            onClick={() => handleReactionClick(reaction)}
+                            className={`p-2 rounded-full ${selectedReaction === reaction ? 'bg-gray-200' : ''}`}
+                        >
+                            <span role="img" aria-label={reaction}>
+                                {reaction === 'like' ? '👍' : reaction === 'love' ? '❤️' : reaction === 'haha' ? '😂' : reaction === 'sad' ? '😢' : '😡'}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
                 {/*Boutton des commentaires*/}
                 <Link href={`/home/comments?postId=${post.id}`} passHref>
                     <button className="flex gap-2 items-center">
