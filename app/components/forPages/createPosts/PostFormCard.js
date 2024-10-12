@@ -21,7 +21,7 @@ export default function PostFormCard({ userId }) {
     const handleSubmitClick = async () => {
         // Appelle handlePhotoSubmit directement au lieu de handleShare
         await handlePhotoSubmit();
-        //window.location.reload(); // Recharger la page après le partage
+        window.location.reload(); // Recharger la page après le partage
     };
 
     const handlePhotoButtonClick = () => {

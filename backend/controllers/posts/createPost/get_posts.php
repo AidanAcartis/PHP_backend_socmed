@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Exécuter la requête SQL pour récupérer tous les posts
-$sql = "SELECT id, content, user_id, created_at FROM posts";
+// Exécuter la requête SQL pour récupérer tous les posts, y compris les colonnes comment_count et photos
+$sql = "SELECT id, content, user_id, created_at, photos, comment_count FROM posts";
 $result = $conn->query($sql);
 
 // Vérifier si des posts ont été trouvés
@@ -37,12 +37,19 @@ if ($result->num_rows > 0) {
             'id' => $row['id'],
             'content' => $row['content'],
             'user_id' => $row['user_id'],
-            'created_at' => $row['created_at']
+            'created_at' => $row['created_at'],
+            'photos' => $row['photos'], // Champ photos
+            'comment_count' => $row['comment_count'] // Champ comment_count
         ];
     }
 
     // Sauvegarder tous les posts dans un fichier JSON
-    file_put_contents('./posts.json', json_encode($postsArray));
+    if (file_put_contents('./posts.json', json_encode($postsArray, JSON_PRETTY_PRINT)) === false) {
+        // En cas d'échec de l'écriture dans le fichier JSON
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la sauvegarde des posts dans le fichier JSON']);
+        exit();
+    }
 
     // Répondre avec tous les posts
     http_response_code(200); // OK
@@ -54,5 +61,6 @@ if ($result->num_rows > 0) {
 }
 
 // Fermer la connexion à la base de données
+$conn->close();
 
 ?>

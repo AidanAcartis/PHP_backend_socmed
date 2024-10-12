@@ -14,9 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include '../../../config/config.php'; // Connexion à la base de données via config.php
 
-if (!$conn) {
+// Vérifier si la connexion à la base de données est établie
+if ($conn->connect_error) {
     http_response_code(500);
-    echo json_encode(['message' => 'Erreur de connexion à la base de données']);
+    echo json_encode(['message' => 'Erreur de connexion à la base de données : ' . $conn->connect_error]);
     exit();
 }
 
@@ -25,31 +26,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (isset($_GET['id']) && !empty($_GET['id'])) {
         $id = intval($_GET['id']); // Convertir en entier pour éviter toute injection
 
-        // Préparer et exécuter la requête SQL pour supprimer le post
-        $sql = "DELETE FROM posts WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-
-        if (!$stmt) {
+        // Supprimer les commentaires associés à ce post dans la table comments
+        $sql_comments = "DELETE FROM comments WHERE post_id = ?";
+        $stmt_comments = $conn->prepare($sql_comments);
+        
+        if (!$stmt_comments) {
             http_response_code(500);
-            echo json_encode(['message' => 'Erreur de préparation de la requête SQL : ' . $conn->error]);
+            echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour les commentaires : ' . $conn->error]);
             exit();
         }
 
-        $stmt->bind_param("i", $id);
+        $stmt_comments->bind_param("i", $id);
+        $stmt_comments->execute();
+        $stmt_comments->close();
 
-        if ($stmt->execute()) {
-            // Si le post est supprimé avec succès, mettre à jour le fichier JSON
+        // Supprimer le post dans la table posts
+        $sql_post = "DELETE FROM posts WHERE id = ?";
+        $stmt_post = $conn->prepare($sql_post);
+
+        if (!$stmt_post) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour le post : ' . $conn->error]);
+            exit();
+        }
+
+        $stmt_post->bind_param("i", $id);
+
+        // Si la suppression du post est réussie
+        if ($stmt_post->execute()) {
+            // Mise à jour du fichier posts.json après suppression
             updatePostsJson($conn);
 
             // Réponse de succès
-            http_response_code(200); // Code HTTP pour succès
-            echo json_encode(['message' => 'Post supprimé avec succès']);
+            http_response_code(200);
+            echo json_encode(['message' => 'Post et ses commentaires supprimés avec succès']);
         } else {
-            http_response_code(500); // Erreur interne du serveur
-            echo json_encode(['message' => 'Erreur lors de la suppression du post : ' . $stmt->error]);
+            http_response_code(500);
+            echo json_encode(['message' => 'Erreur lors de la suppression du post : ' . $stmt_post->error]);
         }
 
-        $stmt->close();
+        $stmt_post->close();
     } else {
         http_response_code(400); // Mauvaise requête si l'ID est manquant ou invalide
         echo json_encode(['message' => 'ID manquant ou invalide']);
@@ -62,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 // Fonction pour mettre à jour le fichier JSON avec les posts actuels
 function updatePostsJson($conn) {
     // Récupérer tous les posts actuels depuis la base de données
-    $sql = "SELECT * FROM posts";
+    $sql = "SELECT id, content, user_id, created_at, photos, comment_count FROM posts";
     $result = $conn->query($sql);
     $posts = [];
 
@@ -73,12 +89,18 @@ function updatePostsJson($conn) {
                 'id' => $row['id'],
                 'content' => $row['content'],
                 'user_id' => $row['user_id'],
-                'created_at' => $row['created_at']
+                'created_at' => $row['created_at'],
+                'photos' => $row['photos'],
+                'comment_count' => $row['comment_count']
             ];
         }
 
         // Écrire le contenu dans posts.json
-        file_put_contents('../createPost/posts.json', json_encode($posts));
+        if (file_put_contents('../createPost/posts.json', json_encode($posts, JSON_PRETTY_PRINT)) === false) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erreur lors de la mise à jour du fichier JSON']);
+            exit();
+        }
     }
 }
 ?>

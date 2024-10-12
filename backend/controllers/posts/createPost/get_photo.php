@@ -49,8 +49,33 @@ $stmt->bind_param("si", $photoUrl, $lastPostId);
 // Exécuter la requête
 if ($stmt->execute()) {
     echo json_encode(['status' => 'success', 'message' => 'Photo insérée avec succès.']);
-    // Appeler get_post.php pour mettre à jour post.json
-    include './updatePosts.php'; // Inclure get_post.php ici
+    
+    // Mise à jour du fichier JSON avec tous les posts
+    $sql = "SELECT id, content, user_id, created_at, photos FROM posts";
+    $result = $conn->query($sql);
+
+    // Vérifier si des posts ont été trouvés
+    if ($result->num_rows > 0) {
+        // Créer un tableau pour stocker tous les posts
+        $postsArray = [];
+        
+        // Parcourir les résultats et les ajouter au tableau
+        while ($row = $result->fetch_assoc()) {
+            $postsArray[] = [
+                'id' => $row['id'],
+                'content' => $row['content'],
+                'user_id' => $row['user_id'],
+                'created_at' => $row['created_at'],
+                'photos' => $row['photos'], // Convertir en tableau, sinon vide
+                'comment_count' => $row['comment_count']
+            ];
+        }
+
+        // Sauvegarder tous les posts dans un fichier JSON
+        file_put_contents('./posts.json', json_encode($postsArray, JSON_PRETTY_PRINT));
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Aucun post trouvé pour la mise à jour du JSON.']);
+    }
 } else {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion de la photo : ' . $stmt->error]);

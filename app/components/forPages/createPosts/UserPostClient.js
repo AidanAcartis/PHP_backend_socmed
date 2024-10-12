@@ -8,11 +8,15 @@ import Card from '../Cards';
 import ClickOutHandler from '../ClickOutHandler';
 import UserNameClient from '../../forIdentity/UserNameClient';
 import { ServerFetchUsername } from '../../ServerFetchUsername';
-import { handleDeletePost } from '../../../api/deletePost';
+import { handleDeletePost } from '../../../api/posts/deletePost';
+import { useCommentActions } from '../../../api/comments/actions';
 
 const PostCard = ({ post }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [username, setUsername] = useState(null);
+    const { commText, setCommText, handleShare, loading } = useCommentActions(); // Récupération des actions et des états
+    const postId = post.id; // Assurez-vous que 'post' a une propriété 'id'
+    const userId = post.userId; // Assurez-vous que 'post' a une propriété 'userId'
 
     // Récupérer le nom d'utilisateur
     useEffect(() => {
@@ -106,7 +110,7 @@ const PostCard = ({ post }) => {
             <div>
                 {post.content}
                 <div className="rounded-md overflow-hidden">
-                    <img src={post.imageUrl} alt="photos" />
+                    <img src={post.photos} alt="photos" />
                 </div>
             </div>
 
@@ -117,11 +121,15 @@ const PostCard = ({ post }) => {
                     </svg>
                     {post.likes}
                 </button>
-                <button className="flex gap-2 items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
-                    </svg>
-                </button>
+                {/*Boutton des commentaires*/}
+                <Link href={`/home/comments?postId=${post.id}`} passHref>
+                    <button className="flex gap-2 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                        </svg>
+                        {post.comment_count} {/* Remplacer avec le nombre réel de commentaires */}
+                    </button>
+                </Link>
                 <button className="flex gap-2 items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
@@ -129,13 +137,26 @@ const PostCard = ({ post }) => {
                     {post.shares}
                 </button>
             </div>
-
+            {/*Comments  */}
             <div className="flex mt-4 gap-3">
-                <Avatar />
-                <div className="border grow rounded-full relative">
-                    <textarea className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full" placeholder="Laissez un commentaire" />
-                </div>
-            </div>
+    <Avatar />
+    <div className="border grow rounded-full relative">
+        <textarea 
+            className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full" 
+            placeholder="Laissez un commentaire"
+            value={commText}
+            onChange={(e) => setCommText(e.target.value)}
+        />
+        <button 
+            type="submit" 
+            onClick={() => handleShare(postId, userId)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2"
+        >
+            ➤ {/* Utilisez une flèche ici, ou vous pouvez ajouter une icône */}
+        </button>
+    </div>
+</div>
+
         </Card>
     );
 };

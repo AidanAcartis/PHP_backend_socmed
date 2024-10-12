@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Exécuter la requête SQL pour récupérer tous les posts
-$sql = "SELECT id, content, user_id, created_at, photo FROM posts";
+// Exécuter la requête SQL pour récupérer tous les posts, y compris les photos
+$sql = "SELECT id, content, user_id, created_at, photos FROM posts";
 $result = $conn->query($sql);
 
 // Vérifier si des posts ont été trouvés
@@ -38,7 +38,8 @@ if ($result->num_rows > 0) {
             'content' => $row['content'],
             'user_id' => $row['user_id'],
             'created_at' => $row['created_at'],
-            'photo' => $row['photo']
+            // Vérifiez si photos est null ou une chaîne vide, sinon décodez
+            'photos' => $row['photos'] ? json_decode($row['photos']) : [] // Ajouter l'URL de la photo
         ];
     }
 
@@ -55,5 +56,5 @@ if ($result->num_rows > 0) {
 }
 
 // Fermer la connexion à la base de données
-
+$conn->close(); // Assurez-vous de fermer la connexion
 ?>
