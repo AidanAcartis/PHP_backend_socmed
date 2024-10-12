@@ -1,17 +1,13 @@
 <?php
-
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
-session_start(); // Start the session
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+session_start();
 
-// Inclusion du fichier de configuration pour la connexion à la base de données
-include_once '../../config/config.php';
+include '../../config/config.php'; // Connexion à la base de données
 
 // Vérification de la connexion à la base de données
 if ($conn->connect_error) {
@@ -20,32 +16,42 @@ if ($conn->connect_error) {
     exit();
 }
 
+// Gérer les requêtes OPTIONS pour CORS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
+
+  // Récupérer les données JSON envoyées dans la requête
+  $data = json_decode(file_get_contents('php://input'), true);
+
+// Vérification des erreurs de décodage JSON
+if (json_last_error() !== JSON_ERROR_NONE) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Erreur de décodage JSON : ' . json_last_error_msg()]);
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if user is logged in by verifying session
-    if (isset($_SESSION['userId'])) {
-        $userId = $_SESSION['userId']; // Get userId from session
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'User not authenticated']);
-        exit;
-    }
+    // Vérification de la connexion de l'utilisateur
+    if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
+        $userId = $_SESSION['user_id'];
 
-    // Get the JSON data from the request body
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    // Check if required fields are present
+    
+    // Vérifier que les champs requis sont présents
     if (isset($data['postId'], $data['reaction'])) {
         $postId = $data['postId'];
         $reaction = $data['reaction'];
 
-        // Prepare the reaction data
+        // Préparer les données de la réaction
         $reactionData = [
             'userId' => $userId,
             'postId' => $postId,
             'reaction' => $reaction,
-            'timestamp' => time() // Store the timestamp if needed
+            'timestamp' => time() // Ajouter un timestamp si nécessaire
         ];
 
-        // Load existing reactions from JSON file
+        // Charger les réactions existantes depuis le fichier JSON
         $filePath = './reactions.json';
         $existingReactions = [];
 
@@ -53,21 +59,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $existingReactions = json_decode(file_get_contents($filePath), true);
         }
 
-        // Append the new reaction
+        // Ajouter la nouvelle réaction
         $existingReactions[] = $reactionData;
 
-        // Save the updated reactions back to the file
+        // Enregistrer les réactions mises à jour dans le fichier JSON
         file_put_contents($filePath, json_encode($existingReactions));
 
-        // Send a success response
+        // Répondre avec un message de succès
         echo json_encode(['status' => 'success']);
     } else {
-        // Invalid input response
-        echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+        // Répondre avec un message d'erreur si les données sont invalides
+        http_response_code(400); // Statut 400 Bad Request
+        echo json_encode(['status' => 'error', 'message' => 'Données invalides']);
+    }
+
+    } else {
+        // Répondre avec un message d'erreur si l'utilisateur n'est pas authentifié
+        http_response_code(401); // Statut 401 Unauthorized
+        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non authentifié']);
+        exit();
     }
 } else {
-    // Method not allowed response
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+    // Répondre avec un message d'erreur pour les méthodes non autorisées
+    http_response_code(405); // Statut 405 Method Not Allowed
+    echo json_encode(['status' => 'error', 'message' => 'Méthode non autorisée']);
 }
 ?>
