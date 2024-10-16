@@ -65,6 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Mise à jour du nombre de commentaires dans la table posts
                 updateCommentCount($conn, $postId);
                 updatePostsJson($conn); // Mise à jour du fichier JSON
+
+                // Mettre à jour le fichier comments.json
+                updateCommentsJson($conn);
+
+                // Écrire l'userId dans userId.txt
+                file_put_contents('./userId.txt', $userId);
+
                 echo json_encode(['status' => 'success', 'message' => 'Commentaire ajouté avec succès']);
             } else {
                 http_response_code(500);
@@ -87,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fonction pour mettre à jour le nombre de commentaires dans la table posts
 function updateCommentCount($conn, $postId) {
-    // Compter le nombre de commentaires pour le post donné
     $sql = "SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?";
     $stmt = $conn->prepare($sql);
 
@@ -102,7 +108,6 @@ function updateCommentCount($conn, $postId) {
     $stmt->fetch();
     $stmt->close();
 
-    // Mettre à jour la table posts avec le nouveau nombre de commentaires
     $updateSql = "UPDATE posts SET comment_count = ? WHERE id = ?";
     $updateStmt = $conn->prepare($updateSql);
 
@@ -123,25 +128,32 @@ function updatePostsJson($conn) {
 
     if ($result->num_rows > 0) {
         $postsArray = [];
-        
         while ($row = $result->fetch_assoc()) {
             $postsArray[] = $row;
         }
-
-        // Convertir les données en JSON
         $jsonData = json_encode($postsArray, JSON_PRETTY_PRINT);
-
-        // Chemin vers le fichier JSON
         $filePath = '../posts/createPost/posts.json';
-
-        // Écrire les données JSON dans le fichier
-        if (file_put_contents($filePath, $jsonData)) {
-            echo json_encode(['status' => 'success', 'message' => 'Fichier posts.json mis à jour']);
-        } else {
+        if (!file_put_contents($filePath, $jsonData)) {
             echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la mise à jour du fichier posts.json']);
         }
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Aucun post trouvé']);
+    }
+}
+
+// Fonction pour mettre à jour le fichier comments.json
+function updateCommentsJson($conn) {
+    $sql = "SELECT * FROM comments";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $commentsArray = [];
+        while ($row = $result->fetch_assoc()) {
+            $commentsArray[] = $row;
+        }
+        $jsonData = json_encode($commentsArray, JSON_PRETTY_PRINT);
+        $filePath = './comments.json';
+        if (!file_put_contents($filePath, $jsonData)) {
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la mise à jour du fichier comments.json']);
+        }
     }
 }
 
