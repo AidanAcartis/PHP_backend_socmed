@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-  // Récupérer les données JSON envoyées dans la requête
-  $data = json_decode(file_get_contents('php://input'), true);
+// Récupérer les données JSON envoyées dans la requête
+$data = json_decode(file_get_contents('php://input'), true);
 
 // Vérification des erreurs de décodage JSON
 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -37,51 +37,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
         $userId = $_SESSION['user_id'];
 
-    
-    // Vérifier que les champs requis sont présents
-    if (isset($data['postId'], $data['reaction'])) {
-        $postId = $data['postId'];
-        $reaction = $data['reaction'];
+        // Vérifier que les champs requis sont présents
+        if (isset($data['postId'], $data['reaction'])) {
+            $postId = $data['postId'];
+            $reaction = $data['reaction'];
 
-        // Préparer les données de la réaction
-        $reactionData = [
-            'userId' => $userId,
-            'postId' => $postId,
-            'reaction' => $reaction,
-            'timestamp' => time() // Ajouter un timestamp si nécessaire
-        ];
+            // Vérifier si une réaction existe déjà pour cet utilisateur et ce post
+            $stmt = $conn->prepare("SELECT id FROM post_reactions WHERE user_id = ? AND post_id = ?");
+            $stmt->bind_param("ii", $userId, $postId);
+            $stmt->execute();
+            $stmt->store_result();
 
-        // Charger les réactions existantes depuis le fichier JSON
-        $filePath = './reactions.json';
-        $existingReactions = [];
+            if ($stmt->num_rows > 0) {
+                // Mettre à jour la réaction existante
+                $updateStmt = $conn->prepare("UPDATE post_reactions SET reaction_type = ?, created_at = CURRENT_TIMESTAMP WHERE user_id = ? AND post_id = ?");
+                $updateStmt->bind_param("sii", $reaction, $userId, $postId);
+                if ($updateStmt->execute()) {
+                    echo json_encode(['status' => 'success', 'message' => 'Réaction mise à jour']);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la mise à jour de la réaction']);
+                }
+                $updateStmt->close();
+            } else {
+                // Insérer une nouvelle réaction
+                $insertStmt = $conn->prepare("INSERT INTO post_reactions (post_id, user_id, reaction_type) VALUES (?, ?, ?)");
+                $insertStmt->bind_param("iis", $postId, $userId, $reaction);
+                if ($insertStmt->execute()) {
+                    echo json_encode(['status' => 'success', 'message' => 'Réaction ajoutée']);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'ajout de la réaction']);
+                }
+                $insertStmt->close();
+            }
 
-        if (file_exists($filePath)) {
-            $existingReactions = json_decode(file_get_contents($filePath), true);
+            $stmt->close();
+
+            // Mettre à jour le fichier JSON avec les données de la base de données
+            updateReactionsJson($conn);
+        } else {
+            // Répondre avec un message d'erreur si les données sont invalides
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Données invalides']);
         }
-
-        // Ajouter la nouvelle réaction
-        $existingReactions[] = $reactionData;
-
-        // Enregistrer les réactions mises à jour dans le fichier JSON
-        file_put_contents($filePath, json_encode($existingReactions));
-
-        // Répondre avec un message de succès
-        echo json_encode(['status' => 'success']);
-    } else {
-        // Répondre avec un message d'erreur si les données sont invalides
-        http_response_code(400); // Statut 400 Bad Request
-        echo json_encode(['status' => 'error', 'message' => 'Données invalides']);
-    }
-
     } else {
         // Répondre avec un message d'erreur si l'utilisateur n'est pas authentifié
-        http_response_code(401); // Statut 401 Unauthorized
+        http_response_code(401);
         echo json_encode(['status' => 'error', 'message' => 'Utilisateur non authentifié']);
         exit();
     }
 } else {
     // Répondre avec un message d'erreur pour les méthodes non autorisées
-    http_response_code(405); // Statut 405 Method Not Allowed
+    http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Méthode non autorisée']);
+}
+
+// Fonction pour mettre à jour le fichier reactions.json avec les données de la table post_reactions
+function updateReactionsJson($conn) {
+    $filePath = './reactions.json';
+    $query = "SELECT post_id, user_id, reaction_type, created_at FROM post_reactions";
+    $result = $conn->query($query);
+
+    if ($result) {
+        $reactions = [];
+        while ($row = $result->fetch_assoc()) {
+            $reactions[] = [
+                'postId' => $row['post_id'],
+                'userId' => $row['user_id'],
+                'reaction' => $row['reaction_type'],
+                'createdAt' => $row['created_at']
+            ];
+        }
+        // Enregistrer les réactions mises à jour dans le fichier JSON
+        file_put_contents($filePath, json_encode($reactions));
+    } else {
+        error_log("Erreur lors de la récupération des données : " . $conn->error);
+    }
 }
 ?>
