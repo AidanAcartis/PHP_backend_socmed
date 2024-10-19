@@ -37,6 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
         $userId = $_SESSION['user_id'];
 
+         // Écrire l'userId dans userId.txt
+         //file_put_contents('../users/userId.txt', $userId);
+
         // Vérifier que les champs requis sont présents
         if (isset($data['postId'], $data['reaction'])) {
             $postId = $data['postId'];
@@ -115,4 +118,5 @@ function updateReactionsJson($conn) {
         error_log("Erreur lors de la récupération des données : " . $conn->error);
     }
 }
+
 ?>

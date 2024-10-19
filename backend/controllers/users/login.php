@@ -46,6 +46,8 @@ while ($row = $result->fetch_assoc()) {
             session_start();
             $_SESSION['user_logged_in'] = true;
             $_SESSION['user_id'] = $row['id'];
+            $userId = $_SESSION['user_id'];
+            file_put_contents('./userId.txt', $userId);
             
             // Créer un cookie d'authentification
             $authToken = bin2hex(random_bytes(16)); // Générer un token aléatoire

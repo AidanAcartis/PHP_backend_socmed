@@ -11,6 +11,7 @@ import { ServerFetchUsername } from '../../ServerFetchUsername';
 import { handleDeletePost } from '../../../api/posts/deletePost';
 import { useCommentActions } from '../../../api/comments/actions';
 import { handleReactionClick } from '../../../api/reactions/reactionAction';
+import UserReactions from '../React/UserReaction';
 
 const PostCard = ({ post }) => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ const PostCard = ({ post }) => {
     
     const handleReaction = (reactionType) => {
         handleReactionClick(reactionType, postId, setSelectedReaction, setShowEmojis, setHovered);
+        window.location.reload();
     };
     
 
@@ -132,7 +134,8 @@ const PostCard = ({ post }) => {
                         onMouseEnter={() => setHovered(true)} 
                         onClick={() => setShowEmojis(!showEmojis)} // Toggle emoji display
                     >
-                        {selectedReaction || 'Réagir'} {/* Affiche l'icône sélectionnée ou "Réagir" */}
+                        <UserReactions posts={[post]} />
+                         {/* Affiche l'icône sélectionnée ou "Réagir" */}
                     </span>
                     {/* Affichage des emojis au survol */}
                     {hovered && showEmojis && (

@@ -131,5 +131,12 @@
         "user_id": "2",
         "content": "clara",
         "created_at": "2024-10-16 22:35:26"
+    },
+    {
+        "id": "28",
+        "post_id": "40",
+        "user_id": "2",
+        "content": "cool!",
+        "created_at": "2024-10-17 09:23:36"
     }
 ]
