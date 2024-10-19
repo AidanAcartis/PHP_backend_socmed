@@ -141,7 +141,10 @@ function updatePostsJson($conn) {
 
 // Fonction pour mettre à jour le fichier comments.json
 function updateCommentsJson($conn) {
-    $sql = "SELECT * FROM comments";
+    $sql = "SELECT c.id, c.post_id, c.user_id, c.content, c.created_at, u.username 
+            FROM comments c 
+            JOIN users u ON c.user_id = u.id";
+
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

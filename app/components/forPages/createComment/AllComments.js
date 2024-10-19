@@ -50,7 +50,9 @@ const AllComments = () => {
             {/* Affichage des commentaires */}
             {comments.length > 0 ? (
                 comments.map(comment => (
-                    <div key={comment.id}>{comment.content}</div>
+                    <div key={comment.id}>
+                        {comment.username}
+                        {comment.content}</div>
                 ))
             ) : (
                 <div>Aucun commentaire trouvé.</div>

@@ -212,7 +212,12 @@ const AllComments = () => {
                 <div className="mt-2">
                     {comments.map(comment => (
                         <div key={comment.id} className="mt-2 bg-gray-100 rounded-lg p-2">
-                            <small>{new Date(comment.created_at).toLocaleString()}</small>
+                            <span className="mr-1 font-semibold cursor-pointer hover:underline">
+                                {comment.username}
+                            </span>
+                            <p>
+                               <small>{new Date(comment.created_at).toLocaleString()}</small>
+                            </p>
                             <p>{comment.content}</p>
                         </div>
                     ))}
