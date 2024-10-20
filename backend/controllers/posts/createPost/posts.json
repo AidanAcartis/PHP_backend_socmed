@@ -1,10 +1,10 @@
 [
     {
         "id": "23",
-        "user_id": "3",
         "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
+        "user_id": "3",
         "created_at": "2024-10-08 14:41:47",
         "photos": " https:\/\/crawforduniversity.edu.ng\/conas\/wp-content\/uploads\/2020\/06\/computer-science-header-1024x370.jpg",
-        "comment_count": "20"
+        "comment_count": "2"
     }
 ]
