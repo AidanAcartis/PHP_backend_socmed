@@ -4,8 +4,8 @@ const Reaction = ({ commentId }) => {
     const [reactionCount, setReactionCount] = useState(0);
     const [userId, setUserId] = useState(null);
     const [reactionType, setReactionType] = useState(null);
-    const [showEmojis, setShowEmojis] = useState(false); // État pour gérer l'affichage des emojis
-    const reactionRef = useRef(null); // Référence pour détecter les clics à l'extérieur
+    const [showEmojis, setShowEmojis] = useState(false); // State to manage emoji display
+    const reactionRef = useRef(null); // Reference for detecting outside clicks
     const [reactions, setReactions] = useState({});
 
     const MySvgIcon = (
@@ -25,19 +25,24 @@ const Reaction = ({ commentId }) => {
         </svg>
     );
 
-    // Fonction pour récupérer l'ID de l'utilisateur depuis le fichier userId.txt
+    // Log the commentId to the console for verification
+    useEffect(() => {
+        console.log("Current commentId:", commentId);
+    }, [commentId]);
+
+    // Function to fetch user ID from userId.txt
     const fetchUserId = async () => {
         try {
             const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
             const userIdFromFile = await response.text();
             setUserId(userIdFromFile.trim());
         } catch (error) {
-            console.error("Erreur lors de la récupération de l'ID de l'utilisateur:", error);
+            console.error("Error fetching user ID:", error);
         }
     };
 
     useEffect(() => {
-        fetchUserId(); // Appeler la fonction pour récupérer l'ID de l'utilisateur lors du montage du composant
+        fetchUserId(); // Fetch user ID when component mounts
     }, []);
 
     useEffect(() => {
@@ -48,30 +53,34 @@ const Reaction = ({ commentId }) => {
                 // Fetch the reactions JSON file
                 const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/comments/commentReaction.json');
                 const data = await response.json();
-
+                console.log("All reactions data:", data); 
+        
                 // Filter reactions for the connected user
                 const userReactions = data.filter(
-                    (reaction) => reaction.userId === userId
+                    (reaction) => reaction.user_id === userId // Change userId to user_id
                 );
-
-                // Create an object to associate reactions by postId
-                const reactionsByPost = {};
+                console.log("User reactions filtered:", userReactions);
+        
+                // Create an object to associate reactions by comment_id
+                const reactionsByComment = {};
                 userReactions.forEach((reaction) => {
-                    reactionsByPost[reaction.postId] = reaction.reaction;
+                    reactionsByComment[reaction.comment_id] = reaction.reaction_type; // Change commentId to comment_id and reactionType to reaction_type
                 });
-
-                setReactions(reactionsByPost);
+                console.log("Reactions by post:", reactionsByComment);
+        
+                setReactions(reactionsByComment);
             } catch (error) {
-                console.error('Erreur lors de la récupération des réactions:', error);
+                console.error('Error fetching reactions:', error);
             }
         };
+        
 
         fetchReactions();
     }, [userId]);
 
     const handleReaction = async (type) => {
         if (!userId) {
-            console.error("L'ID de l'utilisateur n'est pas disponible.");
+            console.error("User ID is not available.");
             return;
         }
 
@@ -95,26 +104,32 @@ const Reaction = ({ commentId }) => {
 
             if (result.success) {
                 setReactionCount(prevCount => prevCount + 1);
+                // Update reactions state
+                setReactions((prevReactions) => ({
+                    ...prevReactions,
+                    [commentId]: type
+                }));
             } else {
                 console.error(result.error);
             }
         } catch (error) {
-            console.error("Erreur lors de la requête:", error);
+            console.error("Error during request:", error);
         }
+        window.location.reload();
     };
 
-    // Gérer les clics à l'extérieur pour fermer le menu des emojis
+    // Handle outside clicks to close emoji menu
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (reactionRef.current && !reactionRef.current.contains(event.target)) {
-                setShowEmojis(false); // Fermer le menu des emojis si le clic est en dehors du composant
+                setShowEmojis(false); // Close emoji menu if clicked outside
             }
         };
 
-        // Ajouter un écouteur d'événements pour les clics
+        // Add event listener for clicks
         document.addEventListener('mousedown', handleClickOutside);
 
-        // Nettoyer l'écouteur d'événements lorsqu'on démonte le composant
+        // Clean up event listener when component unmounts
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -130,10 +145,12 @@ const Reaction = ({ commentId }) => {
             <span
                 onClick={() => setShowEmojis(!showEmojis)}
             >
-                {/* Afficher l'icône sélectionnée ou "Réagir" */}
-                {reactionEmojis[reactions[commentId]] || MySvgIcon}
+                {/* Display the selected emoji or the default icon */}
+                <div key={commentId}>
+                    {reactionEmojis[reactions[commentId]] || MySvgIcon}
+                </div>
             </span>
-            {/* Affichage des emojis */}
+            {/* Emoji menu */}
             {showEmojis && (
                 <div className="absolute bottom-full mb-1 flex gap-2 bg-white rounded-md shadow-lg p-2">
                     <button onClick={() => handleReaction('like')}>👍</button>
