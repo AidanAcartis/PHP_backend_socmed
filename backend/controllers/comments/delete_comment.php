@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
             // Mise à jour du fichier posts.json après la suppression du commentaire
             updatePostsJson($conn);
+            updateCommentsJson($conn);
 
             // Réponse de succès
             http_response_code(200);
@@ -109,6 +110,27 @@ function updatePostsJson($conn) {
             http_response_code(500);
             echo json_encode(['message' => 'Erreur lors de la mise à jour du fichier JSON']);
             exit();
+        }
+    }
+}
+
+// Fonction pour mettre à jour le fichier comments.json
+function updateCommentsJson($conn) {
+    $sql = "SELECT c.id, c.post_id, c.user_id, c.content, c.created_at, u.username 
+            FROM comments c 
+            JOIN users u ON c.user_id = u.id";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $commentsArray = [];
+        while ($row = $result->fetch_assoc()) {
+            $commentsArray[] = $row;
+        }
+        $jsonData = json_encode($commentsArray, JSON_PRETTY_PRINT);
+        $filePath = './comments.json';
+        if (!file_put_contents($filePath, $jsonData)) {
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la mise à jour du fichier comments.json']);
         }
     }
 }
