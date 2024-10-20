@@ -25,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Récupération des données de la requête
 $data = json_decode(file_get_contents("php://input"), true);
 $commentId = $data['comment_id'];
-$userId = $data['user_id']; // Vous devez obtenir l'ID de l'utilisateur connecté
-$reactionType = $data['reaction_type']; // Ex : "J'aime" ou "Je n'aime pas"
+$userId = $data['user_id'];
+$reactionType = $data['reaction_type'];
 
 // Vérifier si l'utilisateur a déjà réagi au commentaire
 $stmt = $conn->prepare("SELECT reaction_type FROM comment_reactions WHERE comment_id = ? AND user_id = ?");
@@ -55,6 +55,35 @@ if ($result->num_rows > 0) {
         echo json_encode(["success" => false, "error" => "Erreur lors de l'ajout de la réaction: " . $stmt->error]);
     }
 }
+
+// Fonction pour exporter les données de la table comment_reactions dans un fichier JSON
+function exportCommentReactionsToJson($conn) {
+    $query = "SELECT * FROM comment_reactions";
+    $result = $conn->query($query);
+
+    if ($result->num_rows > 0) {
+        $reactions = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $reactions[] = $row;
+        }
+
+        // Convertir les données en JSON
+        $jsonData = json_encode($reactions, JSON_PRETTY_PRINT);
+
+        // Écrire les données JSON dans le fichier commentReaction.json
+        if (file_put_contents('./commentReaction.json', $jsonData)) {
+            echo json_encode(["success" => true, "message" => "Données exportées dans commentReaction.json"]);
+        } else {
+            echo json_encode(["success" => false, "error" => "Erreur lors de l'écriture des données dans le fichier JSON."]);
+        }
+    } else {
+        echo json_encode(["success" => false, "message" => "Aucune donnée trouvée dans la table comment_reactions."]);
+    }
+}
+
+// Appeler la fonction pour exporter les données
+exportCommentReactionsToJson($conn);
 
 // Fermer la connexion
 $stmt->close();
