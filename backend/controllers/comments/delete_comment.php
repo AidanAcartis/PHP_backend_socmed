@@ -37,6 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $stmt_get_post_id->close();
 
         if ($post_id) {
+            // Supprimer les réactions du commentaire
+            $sql_delete_reactions = "DELETE FROM comment_reactions WHERE comment_id = ?";
+            $stmt_delete_reactions = $conn->prepare($sql_delete_reactions);
+            
+            if (!$stmt_delete_reactions) {
+                http_response_code(500);
+                echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour les réactions : ' . $conn->error]);
+                exit();
+            }
+
+            $stmt_delete_reactions->bind_param("i", $comment_id);
+            $stmt_delete_reactions->execute();
+            $stmt_delete_reactions->close();
+
             // Supprimer le commentaire
             $sql_delete_comment = "DELETE FROM comments WHERE id = ?";
             $stmt_delete_comment = $conn->prepare($sql_delete_comment);
@@ -71,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
             // Réponse de succès
             http_response_code(200);
-            echo json_encode(['message' => 'Commentaire supprimé avec succès']);
+            echo json_encode(['message' => 'Commentaire et ses réactions supprimés avec succès']);
         } else {
             http_response_code(404); // Le commentaire n'a pas été trouvé
             echo json_encode(['message' => 'Commentaire introuvable']);
