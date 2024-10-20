@@ -36,6 +36,7 @@ export const useCommentActions = () => {
             console.error('Erreur de connexion : ', error.message);
             setCommText('');
         }
+        window.location.reload();
     };
 
     return { commText, setCommText, handleShare, loading }; 
