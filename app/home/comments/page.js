@@ -14,6 +14,7 @@ import ClickOutHandler from '../../components/forPages/ClickOutHandler'; // Gest
 import { ServerFetchCommentById } from '../../components/FetchPost'; // Fonction de récupération des détails du post
 import UserNameClient from '../../components/forIdentity/UserNameClient';
 import DeleteCommentButton from '../../api/comments/deleteComment';
+import Reaction from '../../api/comments/commentReactionAction';
 
 const AllComments = () => {
     const router = useRouter();
@@ -256,6 +257,7 @@ const AllComments = () => {
                                 </small>
                             </div>
                             <p className="mt-1">{comment.content}</p>
+                            <Reaction commentId={comment.id} />
                     </div>
                     
                     ))}
