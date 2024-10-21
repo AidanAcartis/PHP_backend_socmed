@@ -23,7 +23,8 @@ const PostCard = ({ post }) => {
     const [hovered, setHovered] = useState(false);
     const [showEmojis, setShowEmojis] = useState(false); // État pour afficher les emojis
     const postId = post.id; // Assurez-vous que 'post' a une propriété 'id'
-    const userId = post.userId; // Assurez-vous que 'post' a une propriété 'userId'
+    const userId = post.userId; // Assurez-vous que 'post' a une propriété 'userId' 
+    // Menu handlers
 
     // Récupérer le nom d'utilisateur
     useEffect(() => {
@@ -50,7 +51,6 @@ const PostCard = ({ post }) => {
         handleReactionClick(reactionType, postId, setSelectedReaction, setShowEmojis, setHovered);
         window.location.reload();
     };
-    
 
     return (
         <Card>
@@ -188,34 +188,63 @@ const PostCard = ({ post }) => {
     );
 };
 
-const PostList = ({ posts }) => {
-    return (
-        <div>
-            {posts.map(post => (
-                <PostCard key={post.id} post={post} />
-            ))}
-        </div>
-    );
-};
-
 const UserPostClient = () => {
+    const [loggedInUserId, setLoggedInUserId] = useState(null);
     const [posts, setPosts] = useState([]);
 
+    // Récupérer l'userId depuis l'URL et le stocker dans le sessionStorage
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
+                const text = await response.text();
+                const userId = text.trim();
+                sessionStorage.setItem('userId', userId);
+                setLoggedInUserId(userId);
+                console.log("User ID récupéré :", userId);
+            } catch (error) {
+                console.error("Erreur lors de la récupération de l'userId :", error);
+            }
+        };
+        fetchUserId();
+    }, []);
+
+    // Récupérer, trier et filtrer les posts
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const data = await ServerFetchPost();
+                console.log("Données des posts récupérées :", data);
                 // Trier les posts du plus grand ID au plus petit
                 const sortedPosts = data.sort((a, b) => b.id - a.id);
-                setPosts(sortedPosts);
+
+                // Filtrer les posts pour n'afficher que ceux du user connecté
+                const filteredPosts = loggedInUserId 
+                    ? sortedPosts.filter(post => post.user_id === loggedInUserId)
+                    : [];
+                
+                setPosts(filteredPosts);
+                console.log("Posts triés et filtrés :", filteredPosts);
             } catch (error) {
                 console.error("Erreur lors de la récupération des posts :", error);
             }
         };
+        
         fetchPosts();
-    }, []);
+    }, [loggedInUserId]);
 
-    return <PostList posts={posts} />;
+    return (
+        <div>
+            {posts.length > 0 ? (
+                posts.map(post => (
+                    <PostCard key={post.id} post={post} />
+                ))
+            ) : (
+                <p>Aucun post trouvé pour l'utilisateur connecté.</p>
+            )}
+        </div>
+    );
 };
 
 export default UserPostClient;
+
