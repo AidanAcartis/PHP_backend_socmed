@@ -12,6 +12,8 @@ import ListOfFriend from '../../components/forProfile/ListOfFriends.js';
 import Photos from '../../components/forProfile/Photos.js';
 import { ServerFetchUsername } from '../../components/ServerFetchUsername.js';
 import UserNameClient from '../../components/forIdentity/UserNameClient.js';
+import Cover from '../../components/forPages/Cover.js';
+import UploadCoverPhoto from '../../components/forPages/UploadCoverPhoto.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -20,8 +22,12 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
 export default function ProfilePage() {
   const pathname = usePathname(); // Récupérer l'URL actuelle
   const [activeTab, setActiveTab] = useState('posts');
+  {/*const userId = router.query.id;
+      const isMyUser = userId === session?.user?.id;
+      const session = useSession();
+    */}
 
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState(null); 
 
     // Utiliser useEffect pour effectuer des appels asynchrones après le rendu
     useEffect(() => {
@@ -55,9 +61,13 @@ export default function ProfilePage() {
     <Layout>
       <Card noPadding={true}>
         <div className="relative overflow-hidden rounded-md">
-          <div className="h-56 overflow-hidden flex justify-center items-start">
+          {/*<Cover url={profile?.cover editable=isMyUser}/>
+            <div className="h-56 overflow-hidden flex justify-center items-start">
             <img src="https://static.zerochan.net/Anteater.Team.full.2361473.jpg" alt="cover image"/>
           </div>
+          <Cover />
+          */}
+          <UploadCoverPhoto />
           <div className="relative">
             <div className="absolute bottom-2 top-0 left-6">
               <Avatar size={'lg'} />

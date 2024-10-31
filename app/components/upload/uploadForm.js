@@ -1,5 +1,4 @@
 // components/UploadForm.js
-
 import { useState, useEffect } from 'react';
 
 const UploadForm = () => {
@@ -71,7 +70,7 @@ const UploadForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex gap-1 items-center mt-1">
             <input
                 type="file"
                 name="file"
@@ -79,14 +78,14 @@ const UploadForm = () => {
                 onChange={handleFileChange}
                 style={{ display: 'none' }} // Cacher l'élément input de fichier
             />
-            <div className="flex gap-2" onClick={handleUploadClick} style={{ cursor: 'pointer' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                </svg>
-            </div>
-            <button type="submit" className="mt-2 p-2 hidden md:block">
-                   Upload
-                </button>
+            <button type="submit" className="px-6 py-1 rounded-md">
+                <div className="flex gap-2 items-center" onClick={handleUploadClick} style={{ cursor: 'pointer' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                    </svg>
+                    <span className="bg-socialBlue text-white px-6 py-1 rounded-md hidden md:block">Upload</span>
+                </div>
+            </button>
         </form>
     );
 };
