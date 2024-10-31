@@ -1,0 +1,14 @@
+[
+    {
+        "photo_id": "1",
+        "user_id": "2",
+        "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/cover_photos\/6723960a61e25_keima-katsuragi-keima.gif",
+        "uploaded_at": "2024-10-31 17:36:58"
+    },
+    {
+        "photo_id": "2",
+        "user_id": "3",
+        "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/cover_photos\/672397c8a4fa9_18br-jinx-arcane-loadingscreen-1920x1080-2.jpg",
+        "uploaded_at": "2024-10-31 17:44:24"
+    }
+]

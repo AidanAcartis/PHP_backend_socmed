@@ -67,7 +67,7 @@ export default function ProfilePage() {
           </div>
           <Cover />
           */}
-          <UploadCoverPhoto />
+          <Cover />
           <div className="relative">
             <div className="absolute bottom-2 top-0 left-6">
               <Avatar size={'lg'} />

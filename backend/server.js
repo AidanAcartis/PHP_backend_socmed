@@ -88,6 +88,18 @@ app.get('/Devoi_socila_media/src/backend/controllers/comments/commentReaction.js
     });
 });
 
+app.get('/Devoi_socila_media/src/backend/controllers/users/cover_photo.json', (req, res) => {
+    const filePath = path.join(__dirname, 'controllers/users/cover_photo.json');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erreur lors de l\'envoi du fichier:', err);
+            res.status(err.status || 500).end();
+        } else {
+            console.log('Fichier envoyé:', filePath);
+        }
+    });
+});
+
 // Écoute sur le port 3003
 app.listen(3003, () => {
     console.log('Server running on port 3003');

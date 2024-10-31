@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['cover_photo']) && $_FILES['cover_photo']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['cover_photo'];
             $uploadDir = '../../uploads/cover_photos/';
+            $baseURL = 'http://localhost/Devoi_socila_media/src/backend/uploads/cover_photos/';
 
             // Vérifier et créer le répertoire d'uploads si nécessaire
             if (!is_dir($uploadDir)) {
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Définir le chemin du fichier
             $fileName = uniqid() . "_" . basename($file['name']);
             $targetPath = $uploadDir . $fileName;
+            $photoURL = $baseURL . $fileName; // URL complète de la photo
 
             // Déplacer le fichier vers le répertoire d'uploads
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -57,14 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         SET photo_path = ?, uploaded_at = CURRENT_TIMESTAMP 
                         WHERE user_id = ?
                     ");
-                    $stmt->bind_param("si", $targetPath, $userId);
+                    $stmt->bind_param("si", $photoURL, $userId); // Utiliser l'URL complète
                 } else {
                     // Si l'utilisateur n'a pas de photo, insérez une nouvelle entrée
                     $stmt = $conn->prepare("
                         INSERT INTO cover_photo (user_id, photo_path, uploaded_at)
                         VALUES (?, ?, CURRENT_TIMESTAMP)
                     ");
-                    $stmt->bind_param("is", $userId, $targetPath);
+                    $stmt->bind_param("is", $userId, $photoURL); // Utiliser l'URL complète
                 }
 
                 // Exécutez la requête d'insertion ou de mise à jour
@@ -86,6 +88,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             http_response_code(400);
             echo json_encode(['status' => 'error', 'message' => 'Photo de couverture manquante ou téléchargement échoué']);
         }
+
+        // Récupération des données de la table 'cover_photo' et écriture dans 'cover_photo.json'
+        $data = [];
+        $result = $conn->query("SELECT photo_id, user_id, photo_path, uploaded_at FROM cover_photo");
+
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+
+            // Écriture des données dans 'cover_photo.json'
+            $json_data = json_encode($data, JSON_PRETTY_PRINT);
+
+            if (file_put_contents('./cover_photo.json', $json_data) === false) {
+                http_response_code(500);
+                echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'écriture du fichier JSON']);
+            }
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la récupération des données de la base']);
+        }
     } else {
         http_response_code(401);
         echo json_encode(['status' => 'error', 'message' => 'Utilisateur non authentifié']);
@@ -94,4 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Méthode non autorisée']);
 }
+
+// Fermeture de la connexion à la base de données
+$conn->close();
 ?>
