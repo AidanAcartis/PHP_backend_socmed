@@ -13,7 +13,6 @@ import Photos from '../../components/forProfile/Photos.js';
 import { ServerFetchUsername } from '../../components/ServerFetchUsername.js';
 import UserNameClient from '../../components/forIdentity/UserNameClient.js';
 import Cover from '../../components/forPages/Cover.js';
-import UploadCoverPhoto from '../../components/forPages/UploadCoverPhoto.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
