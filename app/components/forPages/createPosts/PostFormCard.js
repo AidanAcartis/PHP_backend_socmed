@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { usePhotoActions } from "./PhotoActions.js";
 import { usePostActions } from "./actions.js";
 import UploadForm from "../../upload/uploadForm.js";
+import ProfilePhoto from "../ProfilePhoto.js";
 
 export default function PostFormCard({ userId }) {
     const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions(); // Mettez à jour pour utiliser handlePhotoSubmit
@@ -40,7 +41,7 @@ export default function PostFormCard({ userId }) {
         <Card>
             <div className="flex gap-1">
                 <div>
-                    <Avatar />
+                    <ProfilePhoto />
                 </div>
                 {isPhotoLink ? (
                     <div className="flex grow">

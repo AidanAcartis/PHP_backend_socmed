@@ -12,6 +12,7 @@ import { handleDeletePost } from '../../../api/posts/deletePost';
 import { useCommentActions } from '../../../api/comments/actions';
 import { handleReactionClick } from '../../../api/reactions/reactionAction';
 import UserReactions from '../React/UserReaction';
+import ProfilePhoto from '../ProfilePhoto';
 
 const PostCard = ({ post }) => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -58,7 +59,7 @@ const PostCard = ({ post }) => {
                 <div>
                     <Link href='./home/profile'>
                         <span className="cursor-pointer">
-                            <Avatar />
+                            <ProfilePhoto />
                         </span>
                     </Link>
                 </div>
@@ -166,7 +167,7 @@ const PostCard = ({ post }) => {
             </div>
             {/*Comments  */}
             <div className="flex mt-4 gap-3">
-    <Avatar />
+    <ProfilePhoto />
     <div className="border grow rounded-full relative">
         <textarea 
             className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full" 
