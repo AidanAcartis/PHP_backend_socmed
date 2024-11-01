@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 // Fonction pour mettre à jour le fichier JSON avec les posts actuels
 function updatePostsJson($conn) {
     // Récupérer tous les posts actuels depuis la base de données
-    $sql = "SELECT id, content, user_id, created_at, photos, comment_count FROM posts";
+    $sql = "SELECT id, content, user_id, created_at, comment_count, doc_type, doc_url FROM posts";
     $result = $conn->query($sql);
     $posts = [];
 
@@ -90,8 +90,9 @@ function updatePostsJson($conn) {
                 'content' => $row['content'],
                 'user_id' => $row['user_id'],
                 'created_at' => $row['created_at'],
-                'photos' => $row['photos'],
-                'comment_count' => $row['comment_count']
+                'comment_count' => $row['comment_count'],
+                'doc_type' => $row['doc_type'],  // Ajout du type de document
+                'doc_url' => $row['doc_url']     // Ajout de l'URL du document
             ];
         }
 
@@ -103,4 +104,5 @@ function updatePostsJson($conn) {
         }
     }
 }
+
 ?>
