@@ -3,7 +3,7 @@
 import Card from "../Cards.js";
 import Avatar from "../Avatar.js";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePhotoActions } from "./PhotoActions.js";
 import { usePostActions } from "./actions.js";
 import UploadForm from "../../upload/uploadForm.js";
@@ -13,6 +13,8 @@ export default function PostFormCard({ userId }) {
     const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions(); // Mettez à jour pour utiliser handlePhotoSubmit
     const [isPhotoLink, setIsPhotoLink] = useState(false);
     const { postText, setPostText, handleShare, loading } = usePostActions(); // Récupération des actions et des états
+    const [showUpload, setShowUpload] = useState(false);
+    const inputRef = useRef(null); // Référence pour le champ de texte
 
     const handleShareClick = async () => {
         await handleShare(); // Attendre que le post soit partagé
@@ -37,6 +39,20 @@ export default function PostFormCard({ userId }) {
         return null;
     };
 
+    // Efface showUpload quand on clique en dehors du champ de texte
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (inputRef.current && !inputRef.current.contains(event.target)) {
+                setShowUpload(false); // Cache le formulaire d'upload
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
         <Card>
             <div className="flex gap-1">
@@ -60,12 +76,16 @@ export default function PostFormCard({ userId }) {
                         </button>
                     </div>
                 ) : (
-                    <textarea
-                        className="grow p-3 h-14"
-                        placeholder="Que pensez-vous, Nekota ?"
-                        value={postText}
-                        onChange={(e) => setPostText(e.target.value)}
-                    />
+                    <div className="flex flex-col grow" ref={inputRef}>
+                        <textarea
+                            className="grow p-3 h-14"
+                            placeholder="Que pensez-vous, Nekota ?"
+                            value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
+                            onClick={() => setShowUpload(true)} // Affiche l'upload au clic
+                        />
+                        {showUpload && <UploadForm />} {/* Affiche le formulaire d'upload au clic */}
+                    </div>
                 )}
             </div>
             {renderLoading()}
@@ -78,10 +98,11 @@ export default function PostFormCard({ userId }) {
                         <span className="hidden md:block">Photos</span>
                     </button>
                 </div>*/}
-                {/* ... autres boutons ... */}
+                {/* ... autres boutons ... 
                     <div>
                         <UploadForm />
                     </div>
+                */}
                     <div>
                         <button className="flex gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
