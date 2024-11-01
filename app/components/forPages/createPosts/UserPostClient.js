@@ -124,7 +124,20 @@ const PostCard = ({ post }) => {
             <div>
                 {post.content}
                 <div className="rounded-md overflow-hidden">
-                    <img src={post.doc_url} alt="photos" />
+                    {post.doc_type === 'photo' && (
+                        <img src={post.doc_url} alt="photo" />
+                    )}
+                    {post.doc_type === 'video' && (
+                        <video controls>
+                            <source src={post.doc_url} type="video/mp4" />
+                            Votre navigateur ne supporte pas la lecture des vidéos.
+                        </video>
+                    )}
+                    {post.doc_type === 'pdf' && (
+                        <a href={post.doc_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                            Ouvrir le document PDF
+                        </a>
+                    )}
                 </div>
             </div>
 
