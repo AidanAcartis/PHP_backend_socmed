@@ -124,7 +124,7 @@ const PostCard = ({ post }) => {
             <div>
                 {post.content}
                 <div className="rounded-md overflow-hidden">
-                    <img src={post.photos} alt="photos" />
+                    <img src={post.doc_url} alt="photos" />
                 </div>
             </div>
 

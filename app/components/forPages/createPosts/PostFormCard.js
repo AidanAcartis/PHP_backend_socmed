@@ -2,7 +2,6 @@
 
 import Card from "../Cards.js";
 import Avatar from "../Avatar.js";
-
 import { useEffect, useRef, useState } from 'react';
 import { usePhotoActions } from "./PhotoActions.js";
 import { usePostActions } from "./actions.js";
@@ -10,26 +9,81 @@ import UploadForm from "../../upload/uploadForm.js";
 import ProfilePhoto from "../ProfilePhoto.js";
 
 export default function PostFormCard({ userId }) {
-    const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions(); // Mettez à jour pour utiliser handlePhotoSubmit
-    const [isPhotoLink, setIsPhotoLink] = useState(false);
-    const { postText, setPostText, handleShare, loading } = usePostActions(); // Récupération des actions et des états
+    const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions();
+    const { postText, setPostText, handleShare, loading } = usePostActions();
     const [showUpload, setShowUpload] = useState(false);
-    const inputRef = useRef(null); // Référence pour le champ de texte
+    const inputRef = useRef(null); 
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileUserId, setFileUserId] = useState(null);
+
+    const handleFileSelected = (file, userId) => {
+        setSelectedFile(file);
+        setFileUserId(userId);
+        console.log("Fichier reçu dans PostFormCard:", file);
+        console.log("userId reçu dans PostFormCard:", userId);
+    };
 
     const handleShareClick = async () => {
-        await handleShare(); // Attendre que le post soit partagé
+        if (selectedFile && fileUserId) {
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("user_id", fileUserId);
+            formData.append("content", postText); // Ajout du texte dans formData
+
+            // Log pour afficher les données ajoutées à formData
+            console.log("Contenu de formData :");
+            console.log("file:", selectedFile.name, "| Taille:", selectedFile.size, "| Type:", selectedFile.type);
+            console.log("user_id:", fileUserId);
+            console.log("content:", postText); // Afficher le texte dans la console
+
+            // Déterminer le dossier en fonction du type de fichier
+            let folder;
+            if (selectedFile.type.startsWith('image/')) {
+                folder = 'photos';
+            } else if (selectedFile.type.startsWith('application/pdf')) {
+                folder = 'pdfs';
+            } else if (selectedFile.type.startsWith('video/')) {
+                folder = 'videos';
+            } else {
+                console.error('Type de fichier non supporté');
+                return;
+            }
+
+            const docUrl = `http://localhost/Devoi_socila_media/public/documents/${folder}/${selectedFile.name}`;
+
+            try {
+                console.log("Début du fetch vers create_post.php...");
+                const response = await fetch("http://localhost/Devoi_socila_media/src/backend/controllers/posts/createPost/create_post.php", {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                console.log("Fetch terminé, en attente de la réponse...");
+
+                const responseText = await response.text();
+                console.log("Réponse brute reçue :", responseText);
+
+                try {
+                    const result = JSON.parse(responseText);
+                    console.log("Réponse JSON reçue :", result);
+                    alert(result.message);
+
+                    const docType = selectedFile.type.startsWith('video/') ? 'video' : (selectedFile.type === 'application/pdf' ? 'pdf' : 'photo');
+                    //await createPost(result.message, docUrl, docType);
+                } catch (jsonError) {
+                    console.error("Erreur de parsing JSON :", jsonError);
+                    alert("Erreur de format dans la réponse du serveur.");
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'envoi du fichier :", error);
+                alert("Échec du téléchargement du fichier.");
+            }
+        } else {
+            console.error("Aucun fichier sélectionné ou ID utilisateur manquant.");
+            alert("Veuillez sélectionner un fichier avant de partager.");
+        }
+
         setPostText(''); // Effacer le texte après un partage réussi
-        window.location.reload(); // Recharger la page pour afficher le nouveau post
-    };
-
-    const handleSubmitClick = async () => {
-        // Appelle handlePhotoSubmit directement au lieu de handleShare
-        await handlePhotoSubmit();
-        window.location.reload(); // Recharger la page après le partage
-    };
-
-    const handlePhotoButtonClick = () => {
-        setIsPhotoLink(!isPhotoLink); // Alterner l'état
     };
 
     const renderLoading = () => {
@@ -39,11 +93,10 @@ export default function PostFormCard({ userId }) {
         return null;
     };
 
-    // Efface showUpload quand on clique en dehors du champ de texte
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (inputRef.current && !inputRef.current.contains(event.target)) {
-                setShowUpload(false); // Cache le formulaire d'upload
+                setShowUpload(false);
             }
         };
 
@@ -59,34 +112,16 @@ export default function PostFormCard({ userId }) {
                 <div>
                     <ProfilePhoto />
                 </div>
-                {isPhotoLink ? (
-                    <div className="flex grow">
-                        <input
-                            type="text"
-                            className="grow p-3 h-14"
-                            placeholder="Entrez le lien de la photo"
-                            value={photoText}
-                            onChange={(e) => setPhotoText(e.target.value)}
-                        />
-                        <button
-                            onClick={handleSubmitClick}
-                            className="ml-2 p-3 h-10 bg-blue-500 text-white rounded"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex flex-col grow" ref={inputRef}>
-                        <textarea
-                            className="grow p-3 h-14"
-                            placeholder="Que pensez-vous, Nekota ?"
-                            value={postText}
-                            onChange={(e) => setPostText(e.target.value)}
-                            onClick={() => setShowUpload(true)} // Affiche l'upload au clic
-                        />
-                        {showUpload && <UploadForm />} {/* Affiche le formulaire d'upload au clic */}
-                    </div>
-                )}
+                <div className="flex flex-col grow" ref={inputRef}>
+                    <textarea
+                        className="grow p-3 h-14"
+                        placeholder="Que pensez-vous, Nekota ?"
+                        value={postText}
+                        onChange={(e) => setPostText(e.target.value)}
+                        onClick={() => setShowUpload(true)}
+                    />
+                    {showUpload && <UploadForm onFileSelected={handleFileSelected} />}
+                </div>
             </div>
             {renderLoading()}
             <div className="flex gap-5 mt-2 items-center">

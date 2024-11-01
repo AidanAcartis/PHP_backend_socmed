@@ -1,17 +1,15 @@
 <?php
-// Ajoutez les en-têtes CORS pour autoriser les requêtes depuis votre frontend
+// create_post.php
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
-header('Content-Type: application/json'); // Définit le type de contenu à JSON
+header('Content-Type: application/json');
 
-// Démarrage de la session
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Inclusion du fichier de configuration pour la connexion à la base de données
 include_once '../../../config/config.php';
 
 // Vérification de la connexion à la base de données
@@ -27,62 +25,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Vérifier si la méthode de la requête est POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer le corps de la requête (le texte du post)
-    $data = json_decode(file_get_contents("php://input"), true);
+// Fonction pour gérer le téléchargement de fichiers
+function handleFileUpload($file, $userId, $content, $conn) {
+    $targetDir = '/var/www/site1/Devoi_socila_media/public/documents/';
 
-    if (isset($data['text'])) {
-        // Nettoyer les données (prévention contre les injections SQL)
-        $postText = mysqli_real_escape_string($conn, trim($data['text']));
+    // Vérifier le type de fichier
+    $docType = '';
+    if (strpos($file['type'], 'video/') === 0) {
+        $targetDir .= 'videos/';
+        $docType = 'video';
+    } elseif ($file['type'] === 'application/pdf') {
+        $targetDir .= 'pdfs/';
+        $docType = 'pdf';
+    } elseif (strpos($file['type'], 'image/') === 0) {
+        $targetDir .= 'photos/';
+        $docType = 'photo';
+    } else {
+        return ['status' => 'error', 'message' => 'Type de fichier non supporté.'];
+    }
 
-        // Debugging session
-        print_r($_SESSION); // Afficher les variables de session pour le débogage
+    // Créer le répertoire si nécessaire
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
 
-        // Vérifier si l'utilisateur est connecté
-        if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
-            $userId = $_SESSION['user_id'];
-
-            // Créer la requête SQL pour insérer le post dans la base de données
-            $sql = "INSERT INTO posts (user_id, content, created_at) VALUES ('$userId', '$postText', NOW())";
-
-            if ($conn->query($sql) === TRUE) {
-                // Si l'insertion est réussie, retourner l'ID du post créé
-                $postId = $conn->insert_id;
-
-                // Créer un tableau de réponse
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Post créé avec succès',
-                    'post_id' => $postId,
-                    'user_logged_in' => $_SESSION['user_logged_in'],
-                    'user_id' => $userId
-                ];
-
-                // Sauvegarder les données dans un fichier JSON
-                file_put_contents('data.json', json_encode($response));
-
-                // Appeler get_post.php pour mettre à jour post.json
-                include './get_posts.php'; // Inclure get_post.php ici
-
-                // Afficher la réponse
-                http_response_code(201); // Created
-                echo json_encode($response);
-            } else {
-                http_response_code(500); // Internal Server Error
-                echo json_encode(['status' => 'error', 'message' => 'Erreur lors du partage du post : ' . $conn->error]);
-            }
+    $newFilePath = $targetDir . basename($file['name']);
+    
+    // Vérification de l'upload
+    if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
+        // Construire l'URL correcte
+        $baseUrl = 'http://localhost/Devoi_socila_media/public/documents/';
+        $docUrl = $baseUrl . ($docType === 'photo' ? 'photos/' : ($docType === 'video' ? 'videos/' : 'pdfs/')) . basename($file['name']);
+        
+        // Enregistrer le chemin dans la base de données
+        $stmt = $conn->prepare("INSERT INTO posts (user_id, content, doc_type, doc_url) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $userId, $content, $docType, $docUrl);
+        
+        if ($stmt->execute()) {
+            // Mettre à jour le fichier JSON après une insertion réussie
+            updateJsonFile($conn);
+            return ['status' => 'success', 'message' => 'Fichier téléchargé avec succès.'];
         } else {
-            http_response_code(401); // Unauthorized
-            echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté']);
+            return ['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la base de données : ' . $stmt->error];
         }
     } else {
-        http_response_code(400); // Bad Request
-        echo json_encode(['status' => 'error', 'message' => 'Données invalides ou texte manquant']);
+        return ['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.'];
+    }
+}
+
+// Fonction pour mettre à jour le fichier JSON
+function updateJsonFile($conn) {
+    $result = $conn->query("SELECT * FROM posts");
+    $posts = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $posts[] = $row;
+        }
+        // Écrire les données dans le fichier JSON
+        file_put_contents('./posts.json', json_encode($posts, JSON_PRETTY_PRINT));
+    }
+}
+
+// Vérifier que la requête est POST avant de traiter les données
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupérer les données envoyées
+    $userId = $_POST['user_id'] ?? null;
+    $content = $_POST['content'] ?? null;
+    $file = $_FILES['file'] ?? null;
+
+    // Vérification des données reçues
+    if ($userId && $content && $file && $file['error'] === UPLOAD_ERR_OK) {
+        ob_clean(); // Nettoyer le tampon de sortie
+        $result = handleFileUpload($file, $userId, $content, $conn);
+        echo json_encode($result);
+    } else {
+        ob_clean(); // Nettoyer le tampon de sortie
+        echo json_encode(['status' => 'error', 'message' => 'Données manquantes ou erreur dans le fichier.']);
     }
 } else {
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(['status' => 'error', 'message' => 'Méthode non autorisée']);
+    // Si la requête n'est pas POST, afficher un message d'information
+    ob_clean(); // Nettoyer le tampon de sortie
+    echo json_encode(['status' => 'error', 'message' => 'Veuillez envoyer une requête POST.']);
 }
 
 // Fermer la connexion à la base de données

@@ -1,18 +1,110 @@
 [
     {
         "id": "23",
-        "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
         "user_id": "3",
+        "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
         "created_at": "2024-10-08 14:41:47",
-        "photos": " https:\/\/crawforduniversity.edu.ng\/conas\/wp-content\/uploads\/2020\/06\/computer-science-header-1024x370.jpg",
-        "comment_count": "0"
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": ""
     },
     {
         "id": "44",
-        "content": "posts",
         "user_id": "2",
+        "content": "posts",
         "created_at": "2024-10-22 17:39:28",
-        "photos": null,
-        "comment_count": "0"
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": ""
+    },
+    {
+        "id": "48",
+        "user_id": "1",
+        "content": "",
+        "created_at": "2024-11-01 12:21:01",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": ""
+    },
+    {
+        "id": "49",
+        "user_id": "1",
+        "content": "",
+        "created_at": "2024-11-01 14:12:40",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/1712765931919.jpg"
+    },
+    {
+        "id": "50",
+        "user_id": "1",
+        "content": "",
+        "created_at": "2024-11-01 14:15:50",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/girls.jpg"
+    },
+    {
+        "id": "51",
+        "user_id": "1",
+        "content": "sfsdds",
+        "created_at": "2024-11-01 17:44:51",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "\/var\/www\/site1\/Devoi_socila_media\/public\/documents\/photos\/95eda73aa9cd11ed27acc28a210c6d73.jpg"
+    },
+    {
+        "id": "52",
+        "user_id": "1",
+        "content": "sdas",
+        "created_at": "2024-11-01 18:02:22",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "\/var\/www\/site1\/Devoi_socila_media\/public\/documents\/photos\/301642af-62a5-4cee-83e2-b6e7591c86d8.jpeg"
+    },
+    {
+        "id": "53",
+        "user_id": "1",
+        "content": "fsfs",
+        "created_at": "2024-11-01 18:17:31",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "\/var\/www\/site1\/Devoi_socila_media\/public\/documents\/photos\/1712765971046.jpg"
+    },
+    {
+        "id": "54",
+        "user_id": "1",
+        "content": "Essaie",
+        "created_at": "2024-11-01 19:06:07",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/1712765971046.jpg"
+    },
+    {
+        "id": "55",
+        "user_id": "1",
+        "content": "I love you Neko",
+        "created_at": "2024-11-01 19:11:19",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/gi2.jpg"
+    },
+    {
+        "id": "56",
+        "user_id": "1",
+        "content": "hgfgh",
+        "created_at": "2024-11-01 19:35:35",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/gi3.jpg"
+    },
+    {
+        "id": "57",
+        "user_id": "1",
+        "content": "asfa",
+        "created_at": "2024-11-01 19:47:27",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/1712765931919.jpg"
     }
 ]
