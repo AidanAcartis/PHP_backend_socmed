@@ -103,6 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("isss", $userId, $content, $docType, $docUrl);
         
         if ($stmt->execute()) {
+            // Insérer dans uploaded_documents si doc_type et doc_url ne sont pas NULL
+            if ($docType && $docUrl) {
+                $stmtUpload = $conn->prepare("INSERT INTO uploaded_documents (user_id, doc_type, doc_url) VALUES (?, ?, ?)");
+                $stmtUpload->bind_param("iss", $userId, $docType, $docUrl);
+
+                if (!$stmtUpload->execute()) {
+                    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans uploaded_documents : ' . $stmtUpload->error]);
+                }
+            }
             // Mettre à jour le fichier JSON après une insertion réussie
             updateJsonFile($conn);
             echo json_encode(['status' => 'success', 'message' => 'Post ajouté avec succès.', 'fileMessage' => $result['message']]);
