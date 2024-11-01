@@ -1,8 +1,8 @@
 [
     {
         "id": "23",
-        "user_id": "3",
         "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
+        "user_id": "3",
         "created_at": "2024-10-08 14:41:47",
         "comment_count": "0",
         "doc_type": "photo",
@@ -10,8 +10,8 @@
     },
     {
         "id": "44",
-        "user_id": "2",
         "content": "posts",
+        "user_id": "2",
         "created_at": "2024-10-22 17:39:28",
         "comment_count": "0",
         "doc_type": "photo",
@@ -19,8 +19,8 @@
     },
     {
         "id": "58",
-        "user_id": "1",
         "content": "\"Keima Katsuragi, le ma\u00eetre des c\u0153urs, prouve que m\u00eame dans le monde r\u00e9el, l'amour m\u00e9rite d'\u00eatre conquis. \u2764\ufe0f #Husbando #KeimaKatsuragi\"",
+        "user_id": "1",
         "created_at": "2024-11-01 20:10:57",
         "comment_count": "1",
         "doc_type": "photo",
@@ -28,8 +28,8 @@
     },
     {
         "id": "59",
-        "user_id": "1",
         "content": "\"Moments inoubliables avec les meilleures ! \ud83c\udfca\u200d\u2640\ufe0f\ud83d\udca6 Entre rires, \u00e9claboussures et d\u00e9fis, chaque instant dans la piscine devient un souvenir pr\u00e9cieux. Rien de mieux que des amies pour rendre tout \u00e7a encore plus fun ! #PiscineVibes #Amiti\u00e9 #MomentsPr\u00e9cieux\"",
+        "user_id": "1",
         "created_at": "2024-11-01 20:14:23",
         "comment_count": "1",
         "doc_type": "photo",
@@ -37,8 +37,8 @@
     },
     {
         "id": "61",
-        "user_id": "1",
         "content": "Ito ary ny lesona e!",
+        "user_id": "1",
         "created_at": "2024-11-01 21:07:05",
         "comment_count": "1",
         "doc_type": "pdf",
@@ -46,11 +46,29 @@
     },
     {
         "id": "63",
-        "user_id": "1",
         "content": "J'adore ce boutique!",
+        "user_id": "1",
         "created_at": "2024-11-01 21:11:56",
         "comment_count": "1",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Jinx_boutique.mp4"
+    },
+    {
+        "id": "64",
+        "content": "With the right boy!",
+        "user_id": "1",
+        "created_at": "2024-11-01 21:22:10",
+        "comment_count": "0",
+        "doc_type": "video",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Boa.mp4"
+    },
+    {
+        "id": "65",
+        "content": "hi!, I share this cause I love it so much!",
+        "user_id": "1",
+        "created_at": "2024-11-01 21:27:50",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/my_cover_photo.jpeg"
     }
 ]

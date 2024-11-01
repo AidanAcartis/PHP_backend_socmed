@@ -26,51 +26,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Fonction pour gérer le téléchargement de fichiers
-function handleFileUpload($file, $userId, $content, $conn) {
+function handleFileUpload($file, &$docType, &$docUrl) {
     $targetDir = '/var/www/site1/Devoi_socila_media/public/documents/';
+    $docType = null;
+    $docUrl = null;
 
-    // Vérifier le type de fichier
-    $docType = '';
-    if (strpos($file['type'], 'video/') === 0) {
-        $targetDir .= 'videos/';
-        $docType = 'video';
-    } elseif ($file['type'] === 'application/pdf') {
-        $targetDir .= 'pdfs/';
-        $docType = 'pdf';
-    } elseif (strpos($file['type'], 'image/') === 0) {
-        $targetDir .= 'photos/';
-        $docType = 'photo';
-    } else {
-        return ['status' => 'error', 'message' => 'Type de fichier non supporté.'];
-    }
+    // Vérifier si un fichier a été reçu
+    if ($file && $file['error'] === UPLOAD_ERR_OK) {
+        // Déterminer le type de fichier
+        if (strpos($file['type'], 'video/') === 0) {
+            $targetDir .= 'videos/';
+            $docType = 'video';
+        } elseif ($file['type'] === 'application/pdf') {
+            $targetDir .= 'pdfs/';
+            $docType = 'pdf';
+        } elseif (strpos($file['type'], 'image/') === 0) {
+            $targetDir .= 'photos/';
+            $docType = 'photo';
+        } else {
+            return ['status' => 'error', 'message' => 'Type de fichier non supporté.'];
+        }
 
-    // Créer le répertoire si nécessaire
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
-    }
+        // Créer le répertoire si nécessaire
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
 
-    $newFilePath = $targetDir . basename($file['name']);
-    
-    // Vérification de l'upload
-    if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
-        // Construire l'URL correcte
-        $baseUrl = 'http://localhost/Devoi_socila_media/public/documents/';
-        $docUrl = $baseUrl . ($docType === 'photo' ? 'photos/' : ($docType === 'video' ? 'videos/' : 'pdfs/')) . basename($file['name']);
+        $newFilePath = $targetDir . basename($file['name']);
         
-        // Enregistrer le chemin dans la base de données
-        $stmt = $conn->prepare("INSERT INTO posts (user_id, content, doc_type, doc_url) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("isss", $userId, $content, $docType, $docUrl);
-        
-        if ($stmt->execute()) {
-            // Mettre à jour le fichier JSON après une insertion réussie
-            updateJsonFile($conn);
+        // Déplacer le fichier téléchargé
+        if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
+            // Construire l'URL
+            $baseUrl = 'http://localhost/Devoi_socila_media/public/documents/';
+            $docUrl = $baseUrl . ($docType === 'photo' ? 'photos/' : ($docType === 'video' ? 'videos/' : 'pdfs/')) . basename($file['name']);
             return ['status' => 'success', 'message' => 'Fichier téléchargé avec succès.'];
         } else {
-            return ['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la base de données : ' . $stmt->error];
+            return ['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.'];
         }
-    } else {
-        return ['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.'];
     }
+    // Si aucun fichier n'est reçu, considérer docType et docUrl comme NULL
+    return ['status' => 'success', 'message' => 'Aucun fichier téléchargé, doc_type et doc_url définis à NULL.'];
 }
 
 // Fonction pour mettre à jour le fichier JSON
@@ -94,14 +89,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = $_POST['content'] ?? null;
     $file = $_FILES['file'] ?? null;
 
-    // Vérification des données reçues
-    if ($userId && $content && $file && $file['error'] === UPLOAD_ERR_OK) {
+    // Initialiser docType et docUrl comme null
+    $docType = null;
+    $docUrl = null;
+
+    // Vérifier les données et gérer le fichier
+    if ($userId && $content) {
         ob_clean(); // Nettoyer le tampon de sortie
-        $result = handleFileUpload($file, $userId, $content, $conn);
-        echo json_encode($result);
+        $result = handleFileUpload($file, $docType, $docUrl);
+        
+        // Enregistrer le post dans la base de données
+        $stmt = $conn->prepare("INSERT INTO posts (user_id, content, doc_type, doc_url) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $userId, $content, $docType, $docUrl);
+        
+        if ($stmt->execute()) {
+            // Mettre à jour le fichier JSON après une insertion réussie
+            updateJsonFile($conn);
+            echo json_encode(['status' => 'success', 'message' => 'Post ajouté avec succès.', 'fileMessage' => $result['message']]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la base de données : ' . $stmt->error]);
+        }
     } else {
         ob_clean(); // Nettoyer le tampon de sortie
-        echo json_encode(['status' => 'error', 'message' => 'Données manquantes ou erreur dans le fichier.']);
+        echo json_encode(['status' => 'error', 'message' => 'Données manquantes pour l\'utilisateur ou le contenu.']);
     }
 } else {
     // Si la requête n'est pas POST, afficher un message d'information
