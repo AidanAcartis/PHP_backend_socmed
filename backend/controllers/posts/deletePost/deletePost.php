@@ -26,6 +26,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (isset($_GET['id']) && !empty($_GET['id'])) {
         $id = intval($_GET['id']); // Convertir en entier pour éviter toute injection
 
+        // Récupérer doc_url du post avant suppression
+        $sql_get_doc_url = "SELECT doc_url FROM posts WHERE id = ?";
+        $stmt_get_doc_url = $conn->prepare($sql_get_doc_url);
+        if (!$stmt_get_doc_url) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour doc_url : ' . $conn->error]);
+            exit();
+        }
+
+        $stmt_get_doc_url->bind_param("i", $id);
+        $stmt_get_doc_url->execute();
+        $stmt_get_doc_url->bind_result($doc_url);
+        $stmt_get_doc_url->fetch();
+        $stmt_get_doc_url->close();
+
         // Supprimer les commentaires associés à ce post dans la table comments
         $sql_comments = "DELETE FROM comments WHERE post_id = ?";
         $stmt_comments = $conn->prepare($sql_comments);
@@ -39,6 +54,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $stmt_comments->bind_param("i", $id);
         $stmt_comments->execute();
         $stmt_comments->close();
+
+        // Supprimer l'enregistrement dans uploaded_documents si doc_url n'est pas vide
+        if (!empty($doc_url)) {
+            $sql_delete_uploaded_document = "DELETE FROM uploaded_documents WHERE doc_url = ?";
+            $stmt_delete_uploaded_document = $conn->prepare($sql_delete_uploaded_document);
+            
+            if (!$stmt_delete_uploaded_document) {
+                http_response_code(500);
+                echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour uploaded_documents : ' . $conn->error]);
+                exit();
+            }
+
+            $stmt_delete_uploaded_document->bind_param("s", $doc_url);
+            $stmt_delete_uploaded_document->execute();
+            $stmt_delete_uploaded_document->close();
+        }
 
         // Supprimer le post dans la table posts
         $sql_post = "DELETE FROM posts WHERE id = ?";
@@ -90,9 +121,9 @@ function updatePostsJson($conn) {
                 'content' => $row['content'],
                 'user_id' => $row['user_id'],
                 'created_at' => $row['created_at'],
-                'comment_count' => $row['comment_count'],
-                'doc_type' => $row['doc_type'],  // Ajout du type de document
-                'doc_url' => $row['doc_url']     // Ajout de l'URL du document
+                'doc_type' => $row['doc_type'], // Ajout du type de document
+                'doc_url' => $row['doc_url'],   // Ajout de l'URL du document
+                'comment_count' => $row['comment_count']
             ];
         }
 
@@ -104,5 +135,4 @@ function updatePostsJson($conn) {
         }
     }
 }
-
 ?>

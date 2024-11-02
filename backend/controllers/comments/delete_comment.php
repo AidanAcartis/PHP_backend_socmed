@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include '../../config/config.php'; // Connexion à la base de données via config.php
 
-// Vérifier si la connexion à la base de données est établie
+// Vérifier la connexion à la base de données
 if ($conn->connect_error) {
     http_response_code(500);
     echo json_encode(['message' => 'Erreur de connexion à la base de données : ' . $conn->connect_error]);
@@ -79,9 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             $stmt_update_post->execute();
             $stmt_update_post->close();
 
-            // Mise à jour du fichier posts.json après la suppression du commentaire
+            // Mise à jour des fichiers JSON
             updatePostsJson($conn);
-            updateCommentsJson($conn);
+            updateCommentsJson($conn); // Mise à jour des commentaires JSON
+            updateCommentReactionsJson($conn); // Mise à jour des réactions JSON
 
             // Réponse de succès
             http_response_code(200);
@@ -99,53 +100,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     echo json_encode(['message' => 'Méthode HTTP non autorisée. Méthode reçue : ' . $_SERVER['REQUEST_METHOD']]);
 }
 
-// Fonction pour mettre à jour le fichier JSON avec les posts actuels
+// Fonction pour mettre à jour le fichier JSON des posts
 function updatePostsJson($conn) {
-    // Récupérer tous les posts actuels depuis la base de données
-    $sql = "SELECT id, content, user_id, created_at, photos, comment_count FROM posts";
+    $sql = "SELECT id, content, user_id, created_at, comment_count, doc_type, doc_url FROM posts";
     $result = $conn->query($sql);
     $posts = [];
 
     if ($result->num_rows > 0) {
-        // Remplir le tableau $posts avec les données actuelles
-        while($row = $result->fetch_assoc()) {
-            $posts[] = [
-                'id' => $row['id'],
-                'content' => $row['content'],
-                'user_id' => $row['user_id'],
-                'created_at' => $row['created_at'],
-                'photos' => $row['photos'],
-                'comment_count' => $row['comment_count']
-            ];
+        while ($row = $result->fetch_assoc()) {
+            $posts[] = $row;
         }
-
-        // Écrire le contenu dans posts.json
-        if (file_put_contents('../posts/createPost/posts.json', json_encode($posts, JSON_PRETTY_PRINT)) === false) {
-            http_response_code(500);
-            echo json_encode(['message' => 'Erreur lors de la mise à jour du fichier JSON']);
-            exit();
-        }
+        file_put_contents('../posts/createPost/posts.json', json_encode($posts, JSON_PRETTY_PRINT));
     }
 }
 
 // Fonction pour mettre à jour le fichier comments.json
 function updateCommentsJson($conn) {
-    $sql = "SELECT c.id, c.post_id, c.user_id, c.content, c.created_at, u.username 
-            FROM comments c 
-            JOIN users u ON c.user_id = u.id";
-
+    // Sélectionner toutes les données de la table comments
+    $sql = "SELECT * FROM comments";
     $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        $commentsArray = [];
+    $commentsArray = [];
+    if ($result && $result->num_rows > 0) {
+        // Récupérer chaque ligne de résultat et l'ajouter au tableau des commentaires
         while ($row = $result->fetch_assoc()) {
             $commentsArray[] = $row;
         }
-        $jsonData = json_encode($commentsArray, JSON_PRETTY_PRINT);
-        $filePath = './comments.json';
-        if (!file_put_contents($filePath, $jsonData)) {
-            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la mise à jour du fichier comments.json']);
-        }
+        // Écrire le contenu dans comments.json
+        file_put_contents('./comments.json', json_encode($commentsArray, JSON_PRETTY_PRINT));
+    } else {
+        file_put_contents('./comments.json', json_encode([])); // Écrire un tableau vide si aucun commentaire trouvé
     }
 }
+
+// Fonction pour mettre à jour le fichier commentReaction.json
+function updateCommentReactionsJson($conn) {
+    // Sélectionner toutes les données de la table comment_reactions
+    $sql = "SELECT * FROM comment_reactions";
+    $result = $conn->query($sql);
+
+    $reactions = [];
+    if ($result && $result->num_rows > 0) {
+        // Récupérer chaque ligne de résultat et l'ajouter au tableau des réactions
+        while ($row = $result->fetch_assoc()) {
+            $reactions[] = $row;
+        }
+        // Écrire le contenu dans commentReaction.json
+        file_put_contents('./commentReaction.json', json_encode($reactions, JSON_PRETTY_PRINT));
+    } else {
+        file_put_contents('./commentReaction.json', json_encode([])); // Écrire un tableau vide si aucune réaction trouvée
+    }
+}
+
 ?>

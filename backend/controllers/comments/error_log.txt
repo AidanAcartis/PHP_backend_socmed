@@ -1,0 +1,10 @@
+[2024-11-02 11:28:16] Début de l'exécution de add_comment.php
+[2024-11-02 11:28:16] Requête OPTIONS reçue
+[2024-11-02 11:28:16] Début de l'exécution de add_comment.php
+[2024-11-02 11:28:16] Requête POST reçue
+[2024-11-02 11:28:16] Utilisateur connecté avec user_id : 1
+[2024-11-02 11:28:16] postId : 75, content : error message
+[2024-11-02 11:28:16] Commentaire ajouté avec succès, ID : 73
+[2024-11-02 11:28:16] Mise à jour du nombre de commentaires pour postId : 75
+[2024-11-02 11:28:16] Mise à jour du fichier posts.json
+[2024-11-02 11:28:16] Mise à jour du fichier comments.json
