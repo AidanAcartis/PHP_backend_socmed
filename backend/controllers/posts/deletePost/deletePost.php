@@ -49,18 +49,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         deleteComments($conn, $id);
 
         // Supprimer l'enregistrement dans uploaded_documents si doc_url n'est pas vide
-        if (!empty($doc_url)) {
-            $sql_delete_uploaded_document = "DELETE FROM uploaded_documents WHERE doc_url = ?";
-            $stmt_delete_uploaded_document = $conn->prepare($sql_delete_uploaded_document);
-            if (!$stmt_delete_uploaded_document) {
-                http_response_code(500);
-                echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour uploaded_documents : ' . $conn->error]);
-                exit();
-            }
-            $stmt_delete_uploaded_document->bind_param("s", $doc_url);
-            $stmt_delete_uploaded_document->execute();
-            $stmt_delete_uploaded_document->close();
+      
+if (!empty($doc_url)) {
+    // Extraire le chemin du fichier à partir de l'URL
+    $parsed_url = parse_url($doc_url);
+    $file_path = $_SERVER['DOCUMENT_ROOT'] . $parsed_url['path']; // Crée le chemin absolu du fichier
+
+    // Supprimer le fichier du système de fichiers
+    if (file_exists($file_path)) {
+        if (!unlink($file_path)) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erreur lors de la suppression du fichier : ' . $file_path]);
+            exit();
         }
+    } else {
+        echo json_encode(['message' => 'Fichier non trouvé : ' . $file_path]);
+    }
+
+    // Supprimer l'enregistrement dans uploaded_documents
+    $sql_delete_uploaded_document = "DELETE FROM uploaded_documents WHERE doc_url = ?";
+    $stmt_delete_uploaded_document = $conn->prepare($sql_delete_uploaded_document);
+    if (!$stmt_delete_uploaded_document) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Erreur de préparation de la requête SQL pour uploaded_documents : ' . $conn->error]);
+        exit();
+    }
+    $stmt_delete_uploaded_document->bind_param("s", $doc_url);
+    $stmt_delete_uploaded_document->execute();
+    $stmt_delete_uploaded_document->close();
+}
 
         // Supprimer le post dans la table posts
         $sql_post = "DELETE FROM posts WHERE id = ?";

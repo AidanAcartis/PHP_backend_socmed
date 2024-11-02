@@ -108,7 +108,7 @@ export default function PostFormCard() {
         }
     
         setPostText(''); // Effacer le texte après un partage réussi
-        // window.location.reload();
+         window.location.reload();
     };
 
     const renderLoading = () => {

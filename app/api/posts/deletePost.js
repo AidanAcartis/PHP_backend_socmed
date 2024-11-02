@@ -25,4 +25,5 @@ export const handleDeletePost = async (post) => {
             alert('Une erreur est survenue');
         }
     }
+    window.location.reload();
 };
