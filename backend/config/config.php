@@ -26,6 +26,6 @@ if ($conn->connect_error) {
 }
 
 // Envoyer la réponse JSON
-//echo json_encode($response);
+// echo json_encode($response);
 
 ?>
