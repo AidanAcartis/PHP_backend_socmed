@@ -102,6 +102,7 @@ if (!empty($doc_url)) {
         http_response_code(400);
         echo json_encode(['message' => 'ID manquant ou invalide']);
     }
+    updateUserFileJson($conn);
 } else {
     http_response_code(405);
     echo json_encode(['message' => 'Méthode HTTP non autorisée']);
@@ -174,6 +175,23 @@ function updatePostsJson($conn) {
         http_response_code(500);
         echo json_encode(['message' => 'Erreur lors de la mise à jour du fichier JSON']);
         exit();
+    }
+}
+
+function updateUserFileJson($conn) {
+    // Vider le fichier userFile.json avant d'ajouter de nouvelles données
+    file_put_contents('../createPost/userFile.json', json_encode([])); // Créer un fichier vide
+
+    // Récupérer les données de uploaded_documents
+    $result = $conn->query("SELECT * FROM uploaded_documents");
+    $documents = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $documents[] = $row;
+        }
+        // Écrire les nouvelles données dans le fichier JSON
+        file_put_contents('../createPost/userFile.json', json_encode($documents, JSON_PRETTY_PRINT));
     }
 }
 

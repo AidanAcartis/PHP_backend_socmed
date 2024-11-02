@@ -82,6 +82,23 @@ function updateJsonFile($conn) {
     }
 }
 
+function updateUserFileJson($conn) {
+    // Vider le fichier userFile.json avant d'ajouter de nouvelles données
+    file_put_contents('./userFile.json', json_encode([])); // Créer un fichier vide
+
+    // Récupérer les données de uploaded_documents
+    $result = $conn->query("SELECT * FROM uploaded_documents");
+    $documents = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $documents[] = $row;
+        }
+        // Écrire les nouvelles données dans le fichier JSON
+        file_put_contents('./userFile.json', json_encode($documents, JSON_PRETTY_PRINT));
+    }
+}
+
 // Vérifier que la requête est POST avant de traiter les données
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer les données envoyées
@@ -114,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             // Mettre à jour le fichier JSON après une insertion réussie
             updateJsonFile($conn);
+            updateUserFileJson($conn);
             echo json_encode(['status' => 'success', 'message' => 'Post ajouté avec succès.', 'fileMessage' => $result['message']]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la base de données : ' . $stmt->error]);
