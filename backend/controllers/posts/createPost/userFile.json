@@ -1,1 +1,37 @@
-[]
+[
+    {
+        "id": "17",
+        "user_id": "1",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/95eda73aa9cd11ed27acc28a210c6d73.jpg",
+        "upload_date": "2024-11-02 17:10:27"
+    },
+    {
+        "id": "18",
+        "user_id": "1",
+        "doc_type": "pdf",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/pdfs\/transport.pdf",
+        "upload_date": "2024-11-02 17:11:54"
+    },
+    {
+        "id": "19",
+        "user_id": "1",
+        "doc_type": "video",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Boa.mp4",
+        "upload_date": "2024-11-02 17:13:35"
+    },
+    {
+        "id": "21",
+        "user_id": "1",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/beautiful.jpeg",
+        "upload_date": "2024-11-02 17:51:16"
+    },
+    {
+        "id": "22",
+        "user_id": "1",
+        "doc_type": "pdf",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/pdfs\/Ralaikoto_Mamilalao_Sitraka_Nadia.pdf",
+        "upload_date": "2024-11-02 17:53:11"
+    }
+]

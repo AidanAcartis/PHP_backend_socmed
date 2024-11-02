@@ -34,7 +34,7 @@ export const usePostActions = () => {
             setPostText('');
             console.error('Erreur de connexion : ', error.message);
         }
-        window.location.reload();
+        
     };
 
     return { postText, setPostText, handleShare, loading }; // Ne plus retourner posts

@@ -1,8 +1,8 @@
 [
     {
         "id": "23",
-        "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
         "user_id": "3",
+        "content": "L'informatique est un domaine d'\u00e9tude qui englobe la conception, le d\u00e9veloppement et l'utilisation des syst\u00e8mes informatiques. Elle se divise en plusieurs sous-domaines, tels que la programmation, l'intelligence artificielle, la s\u00e9curit\u00e9 informatique et les bases de donn\u00e9es, ayant des applications dans divers secteurs comme la m\u00e9decine, l'\u00e9ducation et les affaires. Avec l'\u00e9volution rapide des technologies, l'informatique joue un r\u00f4le crucial dans l'innovation et la transformation num\u00e9rique, n\u00e9cessitant des comp\u00e9tences en r\u00e9solution de probl\u00e8mes et en pens\u00e9e critique pour s'adapter aux nouvelles tendances et d\u00e9fis.",
         "created_at": "2024-10-08 14:41:47",
         "comment_count": "0",
         "doc_type": "photo",
@@ -10,11 +10,56 @@
     },
     {
         "id": "44",
-        "content": "posts",
         "user_id": "2",
+        "content": "posts",
         "created_at": "2024-10-22 17:39:28",
         "comment_count": "0",
         "doc_type": "photo",
         "doc_url": ""
+    },
+    {
+        "id": "91",
+        "user_id": "1",
+        "content": "The word of my man!! :)",
+        "created_at": "2024-11-02 17:10:27",
+        "comment_count": "1",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/95eda73aa9cd11ed27acc28a210c6d73.jpg"
+    },
+    {
+        "id": "92",
+        "user_id": "1",
+        "content": "Bonne lecture!!",
+        "created_at": "2024-11-02 17:11:54",
+        "comment_count": "0",
+        "doc_type": "pdf",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/pdfs\/transport.pdf"
+    },
+    {
+        "id": "93",
+        "user_id": "1",
+        "content": "With the right boy!! XD",
+        "created_at": "2024-11-02 17:13:35",
+        "comment_count": "0",
+        "doc_type": "video",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Boa.mp4"
+    },
+    {
+        "id": "95",
+        "user_id": "1",
+        "content": "Beautiful me!",
+        "created_at": "2024-11-02 17:51:16",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/beautiful.jpeg"
+    },
+    {
+        "id": "96",
+        "user_id": "1",
+        "content": "Ito ilay pdf",
+        "created_at": "2024-11-02 17:53:11",
+        "comment_count": "0",
+        "doc_type": "pdf",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/pdfs\/Ralaikoto_Mamilalao_Sitraka_Nadia.pdf"
     }
 ]
