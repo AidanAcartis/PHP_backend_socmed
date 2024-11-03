@@ -16,5 +16,11 @@
         "user_id": "4",
         "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/profile_photos\/6723cdacdf7df_73671120146532-2.jpeg",
         "uploaded_at": "2024-10-31 21:34:20"
+    },
+    {
+        "photo_id": "4",
+        "user_id": "2",
+        "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/profile_photos\/6726434938717_zU1SBSa2_400x400.jpg",
+        "uploaded_at": "2024-11-02 18:20:41"
     }
 ]
