@@ -13,6 +13,7 @@ import Photos from '../../components/forProfile/Photos.js';
 import { ServerFetchUsername } from '../../components/ServerFetchUsername.js';
 import UserNameClient from '../../components/forIdentity/UserNameClient.js';
 import Cover from '../../components/forPages/Cover.js';
+import SearchComponent from '../../components/forSearch/SearchComponent.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -127,6 +128,7 @@ export default function ProfilePage() {
         <div>
           <Card className="max-w-4xl mx-auto">  {/* Uniformiser la largeur */}
             <h2 className="font-bold text-3xl mb-2">Friends</h2>
+            <SearchComponent activeTab={activeTab} />
             <ListOfFriend />
           </Card>
         </div>
