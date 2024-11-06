@@ -4,6 +4,15 @@
         "post_id": "91",
         "user_id": "1",
         "content": "My first love and my only one!!",
-        "created_at": "2024-11-02 17:10:58"
+        "created_at": "2024-11-02 17:10:58",
+        "username": "Nadia"
+    },
+    {
+        "id": "92",
+        "post_id": "97",
+        "user_id": "2",
+        "content": "Kawaii!!",
+        "created_at": "2024-11-06 17:23:40",
+        "username": "Nekonya"
     }
 ]

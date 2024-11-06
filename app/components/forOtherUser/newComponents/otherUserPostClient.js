@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { ServerFetchPost } from '../../ServerFetchPost';
 import Link from 'next/link';
-import Card from '../Cards';
 import ClickOutHandler from '../../forPages/ClickOutHandler';
 import UserNameClient from '../../forIdentity/UserNameClient';
 import { handleDeletePost } from '../../../api/posts/deletePost';
@@ -12,6 +11,7 @@ import { handleReactionClick } from '../../../api/reactions/reactionAction';
 import UserReactions from '../../forPages/React/UserReaction';
 import { getUserProfile } from './otherUserName';
 import OtherProfilePhoto from './otherProfilePhoto';
+import Card from '../../forPages/Cards';
 
 const PostCard = ({ post, userId }) => {
     const [menuOpen, setMenuOpen] = useState(false);

@@ -1,5 +1,6 @@
 // otherUserName.js
 export async function getUserProfile(userId) {
+    console.log("userId de la personne:", userId);
     try {
         // Envoie une requête GET avec l'userId en paramètre
         const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/users/get_username.php?userId=${userId}`, {

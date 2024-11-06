@@ -3,30 +3,34 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-import Card from "../forPages/Cards.js";
-import Layout from "../forPages/PageLayout.js";
-import ListOfFriend from '../forProfile/ListOfFriends.js';
-import UserNameClient from '../forIdentity/UserNameClient.js';
-import SearchComponent from '../../forSearch/SearchComponent.js';
-import { getUserProfile } from './newComponents/otherUserName.js';
-import UserFiles from './newComponents/otherPhoto.js';
-import OtherPostCard from './newComponents/otherPostCard.js';
-import OtherProfilePhoto from './newComponents/otherProfilePhoto.js';
-import OtherCover from './newComponents/otherCover.js';
+import { usePathname, useRouter } from 'next/navigation';
+import Card from "../../components/forPages/Cards.js";
+import Layout from "../../components/forPages/PageLayout.js";
+import ListOfFriend from '../../components/forProfile/ListOfFriends.js';
+import UserNameClient from '../../components/forIdentity/UserNameClient.js';
+import { getUserProfile } from '../../components/forOtherUser/newComponents/otherUserName.js';
+import UserFiles from '../../components/forOtherUser/newComponents/otherPhoto.js';
+import OtherPostCard from '../../components/forOtherUser/newComponents/otherPostCard.js';
+import OtherProfilePhoto from '../../components/forOtherUser/newComponents/otherProfilePhoto.js';
+import OtherCover from '../../components/forOtherUser/newComponents/otherCover.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
 
-export default function followedPage({ userId }) {
-  const pathname = usePathname(); // Récupérer l'URL actuelle 
-  const [activeTab, setActiveTab] = useState('posts');
-  {/*const userId = router.query.id;
-      const isMyUser = userId === session?.user?.id;
-      const session = useSession();
-    */}
-
+  export default function FollowedPage() {
+    const router = useRouter();
+    const [userId, setUserId] = useState(null);
+    const [activeTab, setActiveTab] = useState('posts');
+    const pathname = usePathname(); // Récupérer l'URL actuelle 
+  
+    useEffect(() => {
+      if (router.isReady && router.query && router.query.userId) {
+        setUserId(router.query.userId); // Définir userId lorsque router.query est prêt
+        console.log("userId de la personne pour cette page:", router.query.userId);
+      }
+    }, [router.isReady, router.query]); // Supprimez router.query.userId pour éviter l'accès direct
+    console.log("userId de la personne pour cette page:", userId);
   const [username, setUsername] = useState(null); 
 
     // Utiliser useEffect pour effectuer des appels asynchrones après le rendu

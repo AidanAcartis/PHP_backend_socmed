@@ -4,13 +4,13 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import Card from "../forPages/Cards.js";
-import Layout from "../forPages/PageLayout.js";
-import ListOfFriend from '../forProfile/ListOfFriends.js';
-import UserNameClient from '../forIdentity/UserNameClient.js';
-import { getUserProfile } from './newComponents/otherUserName.js';
-import OtherCover from './newComponents/otherCover.js';
-import OtherProfilePhoto from './newComponents/otherProfilePhoto.js';
+import Card from "../../components/forPages/Cards.js";
+import Layout from "../../components/forPages/PageLayout.js";
+import ListOfFriend from '../../components/forProfile/ListOfFriends.js';
+import UserNameClient from '../../components/forIdentity/UserNameClient.js';
+import { getUserProfile } from '../../components/forOtherUser/newComponents/otherUserName.js';
+import OtherCover from '../../components/forOtherUser/newComponents/otherCover.js';
+import OtherProfilePhoto from '../../components/forOtherUser/newComponents/otherProfilePhoto.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';

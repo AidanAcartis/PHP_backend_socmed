@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Import from 'next/navigation'
 
 function SearchComponent({ activeTab }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState([]);
     const [userId, setUserId] = useState(''); // State to store the user ID
     const [noResults, setNoResults] = useState(false); // State to manage no results message
+
+    const router = useRouter(); // Initialize useRouter for navigation
 
     // Function to fetch user ID from 'userId.txt'
     const fetchUserId = async () => {
@@ -68,14 +71,34 @@ function SearchComponent({ activeTab }) {
 
     const handleFollow = async (followedId) => {
         try {
-            await fetch('http://localhost/.../follow.php', {
+            await fetch('http://localhost/Devoi_socila_media/src/backend/api/followers/follow.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
                 body: JSON.stringify({ follower_id: userId, followed_id: followedId }),
             });
             // Mettre à jour le statut de suivi dans `results` si nécessaire
         } catch (error) {
             console.error("Erreur lors du suivi de l'utilisateur :", error);
+        }
+    };
+
+    // Nouvelle fonction pour vérifier le statut de suivi et rediriger
+    const handleProfileClick = async (targetUserId) => {
+        console.log("targetUserId:", targetUserId);
+        try {
+            const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/followers/check_follow_status.php?userId=${targetUserId}`, {
+                credentials: 'include',
+            });
+            const data = await response.json();
+
+            if (data.isFollowing) {
+                router.push(`/home/followedPage?userId=${targetUserId}`);
+            } else {
+                router.push(`/home/unfollowedPage?userId=${targetUserId}`);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification du statut de suivi :", error);
         }
     };
 
@@ -103,8 +126,14 @@ function SearchComponent({ activeTab }) {
                     {results.map((user) => (
                         <li key={user.id} className="flex items-center space-x-2 border-b pb-2">
                             <div>
-                                <div className="flex items-center space-x-20 mb-3">
-                                    <a href={`/home/profile/about?userId=${user.id}`}>
+                                <div className="flex items-center space-x-20 mb-2">
+                                    <a 
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleProfileClick(user.id);
+                                        }}
+                                    >
                                         <div className='flex items-center gap-3'> 
                                             <div className="rounded-full overflow-hidden w-12 h-12">
                                                 <img src={user.photo_path || '/default-avatar.png'} alt="Avatar" className="w-full h-full object-cover" />
