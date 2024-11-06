@@ -19,33 +19,48 @@ const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-whi
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
 
   export default function FollowedPage() {
-    const router = useRouter();
+    
+    const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState(null);
     const [activeTab, setActiveTab] = useState('posts');
     const pathname = usePathname(); // Récupérer l'URL actuelle 
   
+    // Récupérer l'ID depuis l'URL
     useEffect(() => {
-      if (router.isReady && router.query && router.query.userId) {
-        setUserId(router.query.userId); // Définir userId lorsque router.query est prêt
-        console.log("userId de la personne pour cette page:", router.query.userId);
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('userId');
+
+      if (id) {
+          setUserId(Number(id)); // Convertir l'ID en nombre
+      } else {
+          console.error("userId est undefined");
+          setLoading(false);
+          return;
       }
-    }, [router.isReady, router.query]); // Supprimez router.query.userId pour éviter l'accès direct
+  }, []);
+    
     console.log("userId de la personne pour cette page:", userId);
+
+
   const [username, setUsername] = useState(null); 
 
-    // Utiliser useEffect pour effectuer des appels asynchrones après le rendu
-    useEffect(() => {
-        const fetchUsername = async () => {
-          try {
-            const username = await getUserProfile(userId);
-            console.log("Nom d'utilisateur récupéré :", username);
-            setUsername(username);
-          } catch (error) {
+   // Utiliser useEffect pour effectuer des appels asynchrones après que userId ait été défini
+   useEffect(() => {
+    const fetchUsername = async () => {
+        try {
+            if (userId !== null) { // Vérifiez que userId est défini
+                const username = await getUserProfile(userId);
+                console.log("Nom d'utilisateur récupéré :", username);
+                setUsername(username);
+            }
+        } catch (error) {
             console.error("Erreur lors de la récupération du nom d'utilisateur :", error);
-          }
-        };
-        fetchUsername();
-      }, []);
+        }
+    };
+
+    fetchUsername();
+}, [userId]); // Ajoutez userId comme dépendance pour que ce useEffect se déclenche quand userId change
+
 
   useEffect(() => {
     const currentPath = pathname.split('/').pop(); 
