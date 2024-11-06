@@ -1,7 +1,7 @@
+// otherCover.js
 import React, { useState, useEffect } from 'react';
 
-export default function OtherCover(userId) {
-    const [coverUrl, setCoverUrl] = useState('');
+export default function OtherCover(userId) { // Déstructurer `userId`
 
     // Fonction pour récupérer l'URL de la photo de couverture de l'utilisateur
     const fetchCoverPhoto = async () => {
@@ -21,18 +21,4 @@ export default function OtherCover(userId) {
         }
     };
 
-    // Effect pour charger la photo de couverture une fois que l'ID utilisateur est défini
-    useEffect(() => {
-        if (userId) {
-            fetchCoverPhoto();
-        }
-    }, [userId]);
-
-    return (
-        <div className="h-56 overflow-hidden flex justify-center items-start relative">
-            <div>
-               <img src={coverUrl || "https://static.zerochan.net/Anteater.Team.full.2361473.jpg"} alt="cover image" />
-            </div>
-        </div>
-    );
 }
