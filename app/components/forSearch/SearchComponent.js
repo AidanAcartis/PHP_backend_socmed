@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 function SearchComponent({ activeTab }) {
@@ -65,6 +66,19 @@ function SearchComponent({ activeTab }) {
         }
     };
 
+    const handleFollow = async (followedId) => {
+        try {
+            await fetch('http://localhost/.../follow.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ follower_id: userId, followed_id: followedId }),
+            });
+            // Mettre à jour le statut de suivi dans `results` si nécessaire
+        } catch (error) {
+            console.error("Erreur lors du suivi de l'utilisateur :", error);
+        }
+    };
+
     return (
         <div>
             <div className="flex items-center space-x-4 mb-6"> {/* Utilisez flexbox pour aligner les éléments sur la même ligne */}
@@ -88,17 +102,21 @@ function SearchComponent({ activeTab }) {
                 <ul className="flex flex-col space-y-2">
                     {results.map((user) => (
                         <li key={user.id} className="flex items-center space-x-2 border-b pb-2">
-                            <div className="rounded-full overflow-hidden w-12 h-12">
-                                <img src={user.photo_path || '/default-avatar.png'} alt="Avatar" className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-semibold">{user.username}</span>
-                                {/* Assuming 'canViewProfile' is a property to determine profile visibility */}
+                            <div>
+                                <a href={`/home/profile/about?userId=${user.id}`}>
+                                    <div className="rounded-full overflow-hidden w-12 h-12">
+                                        <img src={user.photo_path || '/default-avatar.png'} alt="Avatar" className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="font-semibold">{user.username}</span>
+                                        {/* Assuming 'canViewProfile' is a property to determine profile visibility*/}
+                                    </div>
+                                </a>
                                 {user.canViewProfile ? (
-                                    <p className="text-sm text-green-600">Profil visible</p>
-                                ) : (
-                                    <p className="text-sm text-red-600">Accès restreint</p>
-                                )}
+                                            <p className="text-sm text-green-600">Profil visible</p>
+                                        ) : (
+                                            <p className="text-sm text-red-600">Accès restreint</p>
+                                        )}
                             </div>
                         </li>
                     ))}

@@ -35,20 +35,28 @@ if ($conn->connect_error) {
 if (isset($_GET['userId']) && !empty($_GET['userId'])) {
     $userId = intval($_GET['userId']); // Convertit en entier pour la sécurité
 
-    // SQL query to select username based on userId
-    $query = "SELECT username FROM users WHERE id = $userId";
-    $result = $conn->query($query);
+    // Préparer la requête pour obtenir la photo de profil
+    $sql = "SELECT photo_path FROM profile_photo WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $stmt->store_result();
 
-    if ($result && $result->num_rows > 0) {
-        // Fetch the result as an associative array and return only the username
-        $user = $result->fetch_assoc();
-        echo json_encode(['username' => $user['username']]);
+    // Vérifier si un résultat a été trouvé
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($photoPath);
+        $stmt->fetch();
+        // Retourner le chemin de la photo sous forme de JSON
+        echo json_encode(['photo_path' => $photoPath]);
     } else {
-        // Return error message if no user is found
-        echo json_encode(['error' => 'Utilisateur non trouvé']);
+        echo json_encode(['error' => 'Aucune photo trouvée pour cet utilisateur.']);
     }
+
+    // Fermer la connexion
+    $stmt->close();
 } else {
-    // Handle missing userId parameter
-    echo json_encode(['error' => 'Aucun userId fourni']);
+    echo json_encode(['error' => 'Aucune userId fourni.']);
 }
+
+$conn->close();
 ?>
