@@ -103,15 +103,25 @@ function SearchComponent({ activeTab }) {
                     {results.map((user) => (
                         <li key={user.id} className="flex items-center space-x-2 border-b pb-2">
                             <div>
-                                <a href={`/home/profile/about?userId=${user.id}`}>
-                                    <div className="rounded-full overflow-hidden w-12 h-12">
-                                        <img src={user.photo_path || '/default-avatar.png'} alt="Avatar" className="w-full h-full object-cover" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="font-semibold">{user.username}</span>
-                                        {/* Assuming 'canViewProfile' is a property to determine profile visibility*/}
-                                    </div>
-                                </a>
+                                <div className="flex items-center space-x-20 mb-3">
+                                    <a href={`/home/profile/about?userId=${user.id}`}>
+                                        <div className='flex items-center gap-3'> 
+                                            <div className="rounded-full overflow-hidden w-12 h-12">
+                                                <img src={user.photo_path || '/default-avatar.png'} alt="Avatar" className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className="flex">
+                                                <span className="font-semibold">{user.username}</span>
+                                                {/* Assuming 'canViewProfile' is a property to determine profile visibility*/}
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <button
+                                        className="bg-socialBlue text-white px-2 py-1 rounded-md" 
+                                        onClick={() => handleFollow(user.id)}
+                                    >
+                                        Suivre
+                                    </button>
+                                </div>
                                 {user.canViewProfile ? (
                                             <p className="text-sm text-green-600">Profil visible</p>
                                         ) : (
