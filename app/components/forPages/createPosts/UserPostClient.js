@@ -185,25 +185,25 @@ const PostCard = ({ post }) => {
             </div>
             {/*Comments  */}
             <div className="flex mt-4 gap-3">
-    <ProfilePhoto />
-    <div className="border grow rounded-full relative">
-        <textarea 
-            className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full" 
-            placeholder="Laissez un commentaire"
-            value={commText}
-            onChange={(e) => setCommText(e.target.value)}
-        />
-        <button 
-            type="submit" 
-            onClick={() => handleShare(postId, userId)}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2"
-        >
-            ➤ {/* Utilisez une flèche ici, ou vous pouvez ajouter une icône */}
-        </button>
-    </div>
-</div>
+                <ProfilePhoto />
+                <div className="border grow rounded-full relative">
+                    <textarea 
+                        className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full" 
+                        placeholder="Laissez un commentaire"
+                        value={commText}
+                        onChange={(e) => setCommText(e.target.value)}
+                    />
+                    <button 
+                        type="submit" 
+                        onClick={() => handleShare(postId, userId)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2"
+                    >
+                        ➤ {/* Utilisez une flèche ici, ou vous pouvez ajouter une icône */}
+                    </button>
+                </div>
+            </div>
 
-        </Card>
+</Card>
     );
 };
 

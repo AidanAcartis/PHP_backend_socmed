@@ -16,12 +16,13 @@ import { ServerFetchPost } from '../../components/ServerFetchPost.js';
 import { useCommentActions } from '../../api/comments/actions.js';
 import UserReactions from '../../components/forPages/React/UserReaction.js';
 import { handleReactionClick } from '../../api/reactions/reactionAction.js';
+import FollowedUserNameClient from '../../components/forOtherUser/newComponents/otherUserNameClient.js';
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
 
-  export default function FollowedPage({ size = 'lg' }) {
-    
+  export default function FollowedPage() {
+
     const [Loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('posts');
     const pathname = usePathname(); // Récupérer l'URL actuelle 
@@ -31,15 +32,6 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
     </svg>); // Réaction par défaut
     const [hovered, setHovered] = useState(false);
     const [showEmojis, setShowEmojis] = useState(false); // État pour afficher les emojis
-
-    let width = 'w-12';
-
-    if (size === 'lg') {
-        width = 'w-12 md:w-24';
-    } else if (size === 'sm') {
-        width = 'w-8';
-    }
-
     const [userId, setUserId] = useState(null);
   
     // Récupérer l'ID depuis l'URL
@@ -184,7 +176,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
             </div>
           <div className="relative">
             <div className="absolute bottom-2 top-0 left-6">
-              <div className={`${width} relative`}>
+              <div className='w-12 md:w-24 relative'>
                   <div className="rounded-full overflow-hidden">
                       <img 
                           src={avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
@@ -196,7 +188,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
             <div className="p-4 pt-0 md:pt-4 pb-8">
               <div className="ml-24 md:ml-40">
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
-                 {username ? <UserNameClient initialUsername={username} /> : 'Chargement...'}
+                 {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
                 <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
               </div>
               <div className="mt-4 md:mt-10 flex gap-5 text-sm">
@@ -231,28 +223,30 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
                 {posts.length > 0 ? (
                     posts.map(post => (
                       <Card>
-                           <div>
-                                <Link href={`./home/profile?userId=${userId}`}>
-                                    <span className="cursor-pointer">
-                                        <div className={`${width} relative`}>
-                                            <div className="rounded-full overflow-hidden">
-                                                <img 
-                                                    src={avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
-                                                    alt="avatar" 
-                                                />
+                           <div className='flex gap-3'>
+                                <div>
+                                  <Link href={`/home/followedPage?userId=${userId}`}>
+                                        <span className="cursor-pointer">
+                                            <div className='w-11 relative'>
+                                                <div className="rounded-full overflow-hidden">
+                                                    <img 
+                                                        src={avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
+                                                        alt="avatar" 
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </span>
-                                </Link>
-                            </div>
-                            <div className="grow">
-                                <p>
-                                    {username ? (
-                                        <UserNameClient initialUsername={username} />
-                                    ) : 'Chargement...'} 
-                                    partage un <a className="text-socialBlue">album</a>
-                                </p>
-                                <p><small>{new Date(post.created_at).toLocaleString()}</small></p>
+                                        </span>
+                                    </Link>
+                                </div>
+                                <div className="grow">
+                                    <p>
+                                        {username ? (
+                                            <FollowedUserNameClient initialUsername={username} />
+                                        ) : 'Chargement...'} 
+                                        partage un <a className="text-socialBlue">album</a>
+                                    </p>
+                                    <p><small>{new Date(post.created_at).toLocaleString()}</small></p>
+                                </div>
                             </div>
                           <div>
                 {post.content}
@@ -313,7 +307,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
             </div>
             {/*Comments  */}
             <div className="flex mt-4 gap-3">
-                <div className={`${width} relative`}>
+                <div className='w-11 relative'>
                     <div className="rounded-full overflow-hidden">
                       <img 
                           src={avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
