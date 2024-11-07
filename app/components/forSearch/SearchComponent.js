@@ -189,7 +189,7 @@ function SearchComponent({ activeTab }) {
                                         {followingStatus[user.id] ? 'Unfollow' : 'Follow'}
                                     </button>
                                 </div>
-                                {user.canViewProfile ? (
+                                {followingStatus[user.id] ? (
                                             <p className="text-sm text-green-600">Profil visible</p>
                                         ) : (
                                             <p className="text-sm text-red-600">Accès restreint</p>

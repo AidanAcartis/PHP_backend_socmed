@@ -18,6 +18,9 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
     const [Loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('posts');
     const [userId, setUserId] = useState(null);
+    const [FollowerUserId, setFollowerUserId] = useState(null);
+
+    const router = useRouter();
 
     // Récupérer l'ID depuis l'URL
     useEffect(() => {
@@ -34,6 +37,21 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
   }, []);
     
     console.log("userId de la personne pour cette page:", userId);
+
+    // Function to fetch user ID from userId.txt
+    const fetchUserId = async () => {
+      try {
+          const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
+          const userIdFromFile = await response.text();
+          setFollowerUserId(userIdFromFile.trim());
+      } catch (error) {
+          console.error("Error fetching user ID:", error);
+      }
+  };
+
+  useEffect(() => {
+      fetchUserId(); // Fetch user ID when component mounts
+  }, []);
 
   const [username, setUsername] = useState(null); 
 
@@ -98,6 +116,24 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
       }
   }, [userId]);
 
+      // Fonction pour gérer le clic sur le bouton "Unfollow"
+      const handleFollow = async (followedId) => {
+        const Id = followedId;
+        try {
+          await fetch('http://localhost/Devoi_socila_media/src/backend/api/followers/follow.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', 
+            body: JSON.stringify({ follower_id: FollowerUserId, followed_id: followedId }),
+          });
+          console.log("follower_id :", FollowerUserId);
+          console.log("followed_id :", followedId);
+          router.push(`/home/followedPage?userId=${Id}`);
+        } catch (error) {
+          console.error("Erreur lors du désabonnement de l'utilisateur :", error);
+        }
+      };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     window.history.pushState(null, '', `/home/profile/${tab}?userId=${userId}`);
@@ -128,6 +164,14 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
                  {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
                 <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
+                <div>
+                    <button
+                      className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none"
+                      onClick={() => handleFollow(userId)}
+                    >
+                      follow
+                    </button>
+                </div>
               </div>
               <div className="mt-4 md:mt-10 flex gap-5 text-sm">
                 <button onClick={() => handleTabChange('about')} className={activeTab === 'about' ? activeTabClasses : tabClasses}>

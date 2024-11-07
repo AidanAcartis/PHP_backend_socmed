@@ -23,10 +23,13 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
     const [activeTab, setActiveTab] = useState('posts');
     const pathname = usePathname(); // Récupérer l'URL actuelle 
     const [userId, setUserId] = useState(null);
+    const [FollowerUserId, setFollowerUserId] = useState(null);
 
     const [photos, setPhotos] = useState([]); // Pour stocker les photos
     const [videos, setVideos] = useState([]); // Pour stocker les vidéos
     const [pdfs, setPdfs] = useState([]); // Pour stocker les PDF
+
+    const router = useRouter();
 
     // Récupérer l'ID depuis l'URL
     useEffect(() => {
@@ -43,6 +46,21 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
   }, []);
     
     console.log("userId de la personne pour cette page:", userId);
+
+    // Function to fetch user ID from userId.txt
+    const fetchUserId = async () => {
+      try {
+          const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
+          const userIdFromFile = await response.text();
+          setFollowerUserId(userIdFromFile.trim());
+      } catch (error) {
+          console.error("Error fetching user ID:", error);
+      }
+  };
+
+  useEffect(() => {
+      fetchUserId(); // Fetch user ID when component mounts
+  }, []);
 
     useEffect(() => {
       const fetchUserFiles = async () => {
@@ -157,6 +175,24 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
         fetchPosts();
     }, [userId]);
 
+      // Fonction pour gérer le clic sur le bouton "Unfollow"
+  const handleUnFollow = async (followedId) => {
+    const Id = followedId;
+    try {
+      await fetch('http://localhost/Devoi_socila_media/src/backend/api/followers/unfollow.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', 
+        body: JSON.stringify({ follower_id: FollowerUserId, followed_id: followedId }),
+      });
+      console.log("follower_id :", FollowerUserId);
+      console.log("followed_id :", followedId);
+      router.push(`/home/unfollowedPage?userId=${Id}`);
+    } catch (error) {
+      console.error("Erreur lors du désabonnement de l'utilisateur :", error);
+    }
+  };
+
   useEffect(() => {
     const currentPath = pathname.split('/').pop(); 
     if (['posts', 'about', 'photos'].includes(currentPath)) {
@@ -196,6 +232,14 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
                  {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
                 <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
+                <div>
+                    <button
+                      className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none"
+                      onClick={() => handleUnFollow(userId)}
+                    >
+                      Unfollow
+                    </button>
+                </div>
               </div>
               <div className="mt-4 md:mt-10 flex gap-5 text-sm">
                 <button onClick={() => handleTabChange('posts')} className={activeTab === 'posts' ? activeTabClasses : tabClasses}>
