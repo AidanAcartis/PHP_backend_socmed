@@ -2,42 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
-
-export default function UserFiles(userId) {
-  const [photos, setPhotos] = useState([]); // Pour stocker les photos
-  const [videos, setVideos] = useState([]); // Pour stocker les vidéos
-  const [pdfs, setPdfs] = useState([]); // Pour stocker les PDF
-
-  // Fonction pour récupérer les fichiers de l'utilisateur connecté depuis 'userFile.json'
-  const fetchUserFiles = async () => {
-    try {
-      const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/posts/createPost/userFile.json');
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des fichiers de l'utilisateur");
-      }
-      const data = await response.json();
-      
-      // Filtrer les fichiers selon le userId et séparer par type
-      const userFiles = data.filter(file => file.user_id === userId);
-      setPhotos(userFiles.filter(file => file.doc_type === 'photo'));
-      setVideos(userFiles.filter(file => file.doc_type === 'video'));
-      setPdfs(userFiles.filter(file => file.doc_type === 'pdf'));
-    } catch (error) {
-      console.error("Erreur lors du chargement des fichiers de l'utilisateur :", error);
-    }
-  };
-
-  // Utiliser useEffect pour appeler fetchUserId et fetchUserFiles au chargement du composant
-  useEffect(() => {
-    fetchUserId();
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      fetchUserFiles();
-    }
-  }, [userId]);
+export default function OtherUserFiles({ photos, videos, pdfs }) {
 
    // Fonction pour extraire le nom du fichier depuis l'URL
    const extractFileName = (url) => {

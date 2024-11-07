@@ -4,7 +4,7 @@
         "user_id": "1",
         "content": "The word of my man!! :)",
         "created_at": "2024-11-02 17:10:27",
-        "comment_count": "1",
+        "comment_count": "2",
         "doc_type": "photo",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/95eda73aa9cd11ed27acc28a210c6d73.jpg"
     },
@@ -292,7 +292,7 @@
         "user_id": "1",
         "content": "woke_up",
         "created_at": "2024-11-02 22:07:38",
-        "comment_count": "0",
+        "comment_count": "1",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/woke_up.mp4"
     },
@@ -301,7 +301,7 @@
         "user_id": "1",
         "content": "Just right",
         "created_at": "2024-11-02 22:10:39",
-        "comment_count": "0",
+        "comment_count": "1",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/just_right.mp4"
     },
@@ -310,7 +310,7 @@
         "user_id": "1",
         "content": "Katseye",
         "created_at": "2024-11-02 22:11:24",
-        "comment_count": "0",
+        "comment_count": "2",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/katseye.mp4"
     }
