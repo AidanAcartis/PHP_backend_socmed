@@ -7,6 +7,7 @@ import { usePhotoActions } from "./PhotoActions.js";
 import { usePostActions } from "./actions.js";
 import UploadForm from "../../upload/uploadForm.js";
 import ProfilePhoto from "../ProfilePhoto.js";
+import AboutMeForm from "../../../api/about/AboutMe.js";
 
 export default function PostFormCard() {
     const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions();
@@ -132,7 +133,8 @@ export default function PostFormCard() {
     }, []);
 
     return (
-        <Card>
+        <div>
+            <Card>
             <div className="flex gap-1">
                 <div>
                     <ProfilePhoto />
@@ -191,7 +193,7 @@ export default function PostFormCard() {
                 <div className="flex gap-5 mt-2 items-center">
                     <div className="grow text-right">
                         <button
-                            className="bg-socialBlue text-white px-6 py-1 rounded-md"
+                            className="bg-socialBlue text-white px-4 py-1 rounded-md"
                             onClick={handleShareClick}
                         >
                             Share
@@ -200,5 +202,7 @@ export default function PostFormCard() {
                 </div>
             </div>
         </Card>
+            <AboutMeForm userId={userId} />
+        </div>
     );
 }

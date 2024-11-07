@@ -145,7 +145,6 @@ const PostCard = ({ post }) => {
                     )}
                 </div>
             </div>
-
             <div className="mt-5 flex gap-8">
                 {/*Boutton des reactions*/}
                 <div className="relative">

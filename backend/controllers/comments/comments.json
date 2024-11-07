@@ -4,55 +4,41 @@
         "post_id": "91",
         "user_id": "1",
         "content": "My first love and my only one!!",
-        "created_at": "2024-11-02 17:10:58",
-        "username": "Nadia"
+        "created_at": "2024-11-02 17:10:58"
     },
     {
         "id": "92",
         "post_id": "97",
         "user_id": "2",
         "content": "Kawaii!!",
-        "created_at": "2024-11-06 17:23:40",
-        "username": "Nekonya"
+        "created_at": "2024-11-06 17:23:40"
     },
     {
         "id": "93",
         "post_id": "141",
         "user_id": "2",
         "content": "Oohh-We-ee-ee ain\\'t flexing babe we do what we do! ^^",
-        "created_at": "2024-11-07 08:36:37",
-        "username": "Nekonya"
+        "created_at": "2024-11-07 08:36:37"
     },
     {
         "id": "94",
         "post_id": "140",
         "user_id": "2",
         "content": "Just right!! :D",
-        "created_at": "2024-11-07 08:40:38",
-        "username": "Nekonya"
+        "created_at": "2024-11-07 08:40:38"
     },
     {
         "id": "95",
         "post_id": "137",
         "user_id": "2",
         "content": "Woke up like this! *^^*",
-        "created_at": "2024-11-07 08:41:42",
-        "username": "Nekonya"
+        "created_at": "2024-11-07 08:41:42"
     },
     {
         "id": "96",
         "post_id": "141",
         "user_id": "2",
         "content": "Love you sweetie!!",
-        "created_at": "2024-11-07 08:42:25",
-        "username": "Nekonya"
-    },
-    {
-        "id": "97",
-        "post_id": "91",
-        "user_id": "2",
-        "content": "Aaah-hanhh!!",
-        "created_at": "2024-11-07 08:43:23",
-        "username": "Nekonya"
+        "created_at": "2024-11-07 08:42:25"
     }
 ]
