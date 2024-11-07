@@ -46,7 +46,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
   }, []);
     
     console.log("userId de la personne pour cette page:", userId);
-
+  
     // Function to fetch user ID from userId.txt
     const fetchUserId = async () => {
       try {

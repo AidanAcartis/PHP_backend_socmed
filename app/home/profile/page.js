@@ -14,6 +14,7 @@ import { ServerFetchUsername } from '../../components/ServerFetchUsername.js';
 import UserNameClient from '../../components/forIdentity/UserNameClient.js';
 import Cover from '../../components/forPages/Cover.js';
 import SearchComponent from '../../components/forSearch/SearchComponent.js';
+import GetAboutMeForm from '../../api/about/getAboutMe.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -28,6 +29,21 @@ export default function ProfilePage() {
     */}
 
   const [username, setUsername] = useState(null); 
+  const [userId, setUserId] = useState(null);
+    // Function to fetch user ID from userId.txt
+    const fetchUserId = async () => {
+      try {
+          const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
+          const userIdFromFile = await response.text();
+          setUserId(userIdFromFile.trim());
+      } catch (error) {
+          console.error("Error fetching user ID:", error);
+      }
+  };
+
+  useEffect(() => {
+      fetchUserId(); // Fetch user ID when component mounts
+  }, []);
 
     // Utiliser useEffect pour effectuer des appels asynchrones après le rendu
     useEffect(() => {
@@ -118,9 +134,8 @@ export default function ProfilePage() {
       {activeTab === 'about' && (
         <div>
           <Card>
-            <h2 className="font-bold text-3xl mb-2">About Section</h2>
-              <p className="mb-2 text-sm">Miaou ! Je suis Nekota Tsutomu, mais tout le monde m&apos;appelle Nekonya. Avec mes longues mèches blondes et mes oreilles de chat perchées sur ma tête, on me remarque facilement. Qu&apos;est-ce que je fais de mes journées ? Eh bien, je suis une NEET fière de l&apos;être ! Les responsabilités, ce n&apos;est pas trop mon truc... je préfère largement passer des heures plongée dans mes jeux vidéo, où je suis une vraie pro. Le monde réel est si ennuyeux comparé à l&apos;univers virtuel, tu ne trouves pas ?</p>
-              <p className="mb-2 text-sm">Je suis peut-être un peu bizarre aux yeux des autres, mais j&apos;assume totalement. Les tanks et les batailles, ça peut être intéressant, mais donne-moi une manette et je te montre ce que c&apos;est d&apos;être une véritable gamer. Mon style est unique, et mes passions le sont aussi. Tu ne me verras jamais sans mes oreilles de chat, elles sont mon emblème, ma signature. Nyaa !</p>
+            <h2 className="font-bold text-3xl mb-2">About Me</h2>
+              <GetAboutMeForm userId={userId} />
           </Card>
         </div>
       )}
