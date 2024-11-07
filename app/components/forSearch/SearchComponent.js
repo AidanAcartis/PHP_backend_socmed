@@ -100,6 +100,7 @@ function SearchComponent({ activeTab }) {
         } catch (error) {
             console.error("Erreur lors du suivi de l'utilisateur :", error);
         }
+        window.location.reload();
     };
 
      // Fonction pour gérer le clic sur le bouton "Unfollow"
@@ -119,6 +120,7 @@ function SearchComponent({ activeTab }) {
     } catch (error) {
       console.error("Erreur lors du désabonnement de l'utilisateur :", error);
     }
+    window.location.reload();
   };
 
     // Nouvelle fonction pour vérifier le statut de suivi et rediriger
@@ -183,8 +185,8 @@ function SearchComponent({ activeTab }) {
                                         </div>
                                     </a>
                                     <button
-                                    className="bg-socialBlue text-white px-2 py-1 rounded-md"
-                                    onClick={() => followingStatus[user.id] ? handleUnFollow(user.id) : handleFollow(user.id)}
+                                     className="bg-socialBlue text-white px-2 py-1 rounded-md"
+                                     onClick={() => followingStatus[user.id] ? handleUnFollow(user.id) : handleFollow(user.id)}
                                     >
                                         {followingStatus[user.id] ? 'Unfollow' : 'Follow'}
                                     </button>

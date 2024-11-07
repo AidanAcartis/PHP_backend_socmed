@@ -1,7 +1,7 @@
 import Card from "../forPages/Cards";
 import FriendInfo from "./FriendInfo";
 
-const numberOfFriends = 10;
+const numberOfFriends = 1;
 
 export default function ListOfFriend() {
     return (
