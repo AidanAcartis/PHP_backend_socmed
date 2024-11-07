@@ -9,7 +9,9 @@ function SearchComponent({ activeTab }) {
     const [results, setResults] = useState([]);
     const [userId, setUserId] = useState(''); // State to store the user ID
     const [noResults, setNoResults] = useState(false); // State to manage no results message
-
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followingStatus, setFollowingStatus] = useState({}); 
+   
     const router = useRouter(); // Initialize useRouter for navigation
 
     // Function to fetch user ID from 'userId.txt'
@@ -64,9 +66,22 @@ function SearchComponent({ activeTab }) {
 
             setResults(data);
             setNoResults(data.length === 0); // Set noResults if no users were found
+
+            // Vérification du statut de suivi pour chaque utilisateur dans les résultats
+            const status = {};
+            for (const user of data) {
+                const followResponse = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/followers/check_follow_status.php?userId=${user.id}`, {
+                    credentials: 'include',
+                });
+                const followData = await followResponse.json();
+                status[user.id] = followData.isFollowing;
+            }
+            setFollowingStatus(status);
+
         } catch (error) {
             console.error('Erreur de récupération des résultats de recherche:', error);
         }
+        
     };
 
     const handleFollow = async (followedId) => {
@@ -77,11 +92,34 @@ function SearchComponent({ activeTab }) {
                 credentials: 'include', 
                 body: JSON.stringify({ follower_id: userId, followed_id: followedId }),
             });
-            // Mettre à jour le statut de suivi dans `results` si nécessaire
+            // Mise à jour de l'état de suivi pour cet utilisateur
+            setFollowingStatus(prevStatus => ({
+                ...prevStatus,
+                [followedId]: true
+            }));
         } catch (error) {
             console.error("Erreur lors du suivi de l'utilisateur :", error);
         }
     };
+
+     // Fonction pour gérer le clic sur le bouton "Unfollow"
+  const handleUnFollow = async (followedId) => {
+    try {
+      await fetch('http://localhost/Devoi_socila_media/src/backend/api/followers/unfollow.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', 
+        body: JSON.stringify({ follower_id: userId, followed_id: followedId }),
+      });
+      // Mise à jour de l'état de suivi pour cet utilisateur
+      setFollowingStatus(prevStatus => ({
+        ...prevStatus,
+        [followedId]: false
+    }));
+    } catch (error) {
+      console.error("Erreur lors du désabonnement de l'utilisateur :", error);
+    }
+  };
 
     // Nouvelle fonction pour vérifier le statut de suivi et rediriger
     const handleProfileClick = async (targetUserId) => {
@@ -145,10 +183,10 @@ function SearchComponent({ activeTab }) {
                                         </div>
                                     </a>
                                     <button
-                                        className="bg-socialBlue text-white px-2 py-1 rounded-md" 
-                                        onClick={() => handleFollow(user.id)}
+                                    className="bg-socialBlue text-white px-2 py-1 rounded-md"
+                                    onClick={() => followingStatus[user.id] ? handleUnFollow(user.id) : handleFollow(user.id)}
                                     >
-                                        Suivre
+                                        {followingStatus[user.id] ? 'Unfollow' : 'Follow'}
                                     </button>
                                 </div>
                                 {user.canViewProfile ? (
