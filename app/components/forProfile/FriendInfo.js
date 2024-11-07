@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { getUserProfilePhoto } from "../forOtherUser/newComponents/otherProfilePhoto";
 import { getUserProfile } from "../forOtherUser/newComponents/otherUserName";
 import Avatar from "../forPages/Avatar";
@@ -11,6 +12,7 @@ export default function FriendInfo() {
   const [friendsData, setFriendsData] = useState([]); // État pour les données enrichies des amis
   const [followingStatus, setFollowingStatus] = useState({}); // État pour suivre ou ne pas suivre un ami
 
+  const router = useRouter(); // Initialize useRouter for navigation
   // Fonction pour récupérer l'ID utilisateur depuis 'userId.txt'
   const fetchUserId = async () => {
     try {
@@ -152,32 +154,65 @@ export default function FriendInfo() {
     }
   }, [friendsData]);
 
+  const handleProfileClick = async (targetUserId) => {
+    console.log("targetUserId:", targetUserId);
+    try {
+        const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/followers/check_follow_status.php?userId=${targetUserId}`, {
+            credentials: 'include',
+        });
+        const data = await response.json();
+
+            router.push(`/home/followedPage?userId=${targetUserId}`);
+        
+    } catch (error) {
+        console.error("Erreur lors de la vérification du statut de suivi :", error);
+    }
+};
+
   return (
     <div className="flex flex-col gap-4">
-      {friendsData.map((friend, index) => (
-        <div key={index} className="flex gap-2 border-b p-4 border-b-gray-100 -mx-4">
-          <div className='w-11 relative'>
-            <div className="rounded-full overflow-hidden">
-              <img 
-                src={friend.avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
-                alt="avatar" 
-              />
-            </div>
+  {friendsData.map((friend, index) => (
+    <div key={index} className="flex gap-4 border-b p-4 border-b-gray-100 -mx-4">
+      <a 
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          handleProfileClick(friend.followed_id);
+        }}
+      >
+        <div className='flex items-center gap-4'>
+          {/* Avatar */}
+          <div className="w-20 h-20 rounded-full overflow-hidden">
+            <img 
+              src={friend.avatarUrl || "https://static.miraheze.org/allthetropeswiki/0/0b/Girls_und_Panzer_-_Nekonyaa.png"} 
+              alt="avatar" 
+              className="object-cover w-full h-full"
+            />
           </div>
-          <div>
+
+          {/* Info on the right (username + followers count) */}
+          <div className="flex flex-col justify-between">
+            {/* Username */}
             <h2 className="font-bold text-xl">{friend.username}</h2>
-            <div className="text-sm leading-4">
+
+            {/* Follower count */}
+            <div className="text-sm text-gray-500">
               {friend.followerCount} followers
             </div>
           </div>
-          <button
-            className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none ml-12"
-            onClick={() => followingStatus[friend.followed_id] ? handleUnFollow(friend.followed_id) : handleFollow(friend.followed_id)}
-          >
-            {followingStatus[friend.followed_id] ? 'Unfollow' : 'Follow'}
-          </button>
         </div>
-      ))}
+      </a>
+
+      {/* Follow/Unfollow button */}
+      <button
+        className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none ml-auto"
+        onClick={() => followingStatus[friend.followed_id] ? handleUnFollow(friend.followed_id) : handleFollow(friend.followed_id)}
+      >
+        {followingStatus[friend.followed_id] ? 'Unfollow' : 'Follow'}
+      </button>
     </div>
+  ))}
+</div>
+
   );
 }
