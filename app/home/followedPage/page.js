@@ -13,6 +13,7 @@ import { ServerFetchPost } from '../../components/ServerFetchPost.js';
 import FollowedUserNameClient from '../../components/forOtherUser/newComponents/otherUserNameClient.js';
 import OtherPostCard from '../../components/forOtherUser/newComponents/otherPostCard.js';
 import OtherUserFiles from '../../components/forOtherUser/newComponents/otherPhoto.js';
+import GetAboutMeForm from '../../api/about/getAboutMe.js';
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
@@ -27,7 +28,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
 
     const [photos, setPhotos] = useState([]); // Pour stocker les photos
     const [videos, setVideos] = useState([]); // Pour stocker les vidéos
-    const [pdfs, setPdfs] = useState([]); // Pour stocker les PDF
+    const [pdfs, setPdfs] = useState([]); // Pour stocker les PDF 
 
     const router = useRouter();
 
@@ -46,6 +47,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
   }, []);
     
     console.log("userId de la personne pour cette page:", userId);
+    const AboutId = userId;
   
     // Function to fetch user ID from userId.txt
     const fetchUserId = async () => {
@@ -84,6 +86,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
       fetchUserFiles();
     }, [userId]);
   
+    
 
   const [username, setUsername] = useState(null); 
 
@@ -310,9 +313,9 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
       {activeTab === 'about' && (
         <div>
           <Card>
-            <h2 className="font-bold text-3xl mb-2">About Section</h2>
-              <p className="mb-2 text-sm">Miaou ! Je suis Nekota Tsutomu, mais tout le monde m&apos;appelle Nekonya. Avec mes longues mèches blondes et mes oreilles de chat perchées sur ma tête, on me remarque facilement. Qu&apos;est-ce que je fais de mes journées ? Eh bien, je suis une NEET fière de l&apos;être ! Les responsabilités, ce n&apos;est pas trop mon truc... je préfère largement passer des heures plongée dans mes jeux vidéo, où je suis une vraie pro. Le monde réel est si ennuyeux comparé à l&apos;univers virtuel, tu ne trouves pas ?</p>
-              <p className="mb-2 text-sm">Je suis peut-être un peu bizarre aux yeux des autres, mais j&apos;assume totalement. Les tanks et les batailles, ça peut être intéressant, mais donne-moi une manette et je te montre ce que c&apos;est d&apos;être une véritable gamer. Mon style est unique, et mes passions le sont aussi. Tu ne me verras jamais sans mes oreilles de chat, elles sont mon emblème, ma signature. Nyaa !</p>
+            <h2 className="font-bold text-3xl mb-2">About Me</h2>
+              {/*Afficher le contenu de about me ici*/}
+              <GetAboutMeForm userId={AboutId} />
           </Card>
         </div>
       )}

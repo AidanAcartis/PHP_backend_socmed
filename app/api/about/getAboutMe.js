@@ -1,60 +1,60 @@
-// AboutMeForm.js
 import React, { useState, useEffect } from 'react';
 import Card from '../../components/forPages/Cards';
 
 const GetAboutMeForm = ({ userId }) => {
-  // État pour stocker les résultats récupérés
   const [aboutData, setAboutData] = useState(null);
-  const [loading, setLoading] = useState(true);  // Pour gérer le chargement des données
-  const [error, setError] = useState(null);      // Pour gérer les erreurs éventuelles
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fonction pour récupérer les données de "About Me"
-  const getAboutMe = async () => {
-    try {
-      const response = await fetch('http://localhost/Devoi_socila_media/src/backend/api/about/getAbout.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ user_id: userId }), // Envoyer l'userId dans la requête
-      });
-
-      const responseText = await response.text(); // Récupérer la réponse sous forme de texte
-      console.log("Contenu de la réponse :", responseText); // Pour déboguer
-
-      const data = JSON.parse(responseText); // Parser la réponse JSON
-
-      if (response.ok) {
-        // Filtrer les données pour ne garder que celles de l'utilisateur spécifié
-        const filteredData = data.data.filter(item => item.user_id === userId);
-        setAboutData(filteredData); // Stocker les données filtrées dans l'état
-      } else {
-        setError(data.message || 'Erreur inconnue'); // Gérer les erreurs
-      }
-    } catch (error) {
-      setError(error.message); // Gérer les erreurs de connexion
-    } finally {
-      setLoading(false); // Marquer comme terminé le chargement des données
-    }
-  };
-
-  // Utiliser useEffect pour appeler la fonction au moment du montage du composant
   useEffect(() => {
-    getAboutMe();
-  }, [userId]); // Recharger les données lorsque userId change
+    const getAboutMe = async () => {
+      try {
+        console.log("Appel API avec userId :", userId);
+
+        const response = await fetch('http://localhost/Devoi_socila_media/src/backend/api/about/getAbout.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ user_id: userId }),
+        });
+
+        const responseText = await response.text();
+        console.log("Contenu de la réponse :", responseText);
+
+        const data = JSON.parse(responseText);
+
+        if (response.ok) {
+          const filteredData = data.data.filter(item => Number(item.user_id) === Number(userId));
+          console.log("Données filtrées :", filteredData);
+          setAboutData(filteredData);
+        } else {
+          setError(data.message || 'Erreur inconnue');
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      getAboutMe();
+    }
+  }, [userId]);
 
   return (
     <div>
       <Card>
         {loading ? (
-          <p>Chargement...</p> // Afficher un message pendant le chargement
+          <p>Chargement...</p>
         ) : error ? (
-          <p style={{ color: 'red' }}>Erreur : {error}</p> // Afficher l'erreur, si elle existe
+          <p style={{ color: 'red' }}>Erreur : {error}</p>
         ) : aboutData && aboutData.length > 0 ? (
-          <p>{aboutData[0].description}</p> // Afficher la description de l'utilisateur
+          <p>{aboutData[0].description}</p>
         ) : (
-          <p>Aucune description trouvée pour cet utilisateur.</p> // Si aucune donnée n'est trouvée
+          <p>Aucune description trouvée pour cet utilisateur.</p>
         )}
       </Card>
     </div>
