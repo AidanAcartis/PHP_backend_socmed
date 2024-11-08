@@ -54,7 +54,7 @@ const AboutMeForm = ({ userId }) => {
         <form onSubmit={handleSubmit}>
           <textarea
             className="w-full p-3 h-48 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-black grow"
-            placeholder="Écrivez votre texte ici..."
+            placeholder="Introduce yourself here..."
             value={aboutText}
             onChange={(e) => setAboutText(e.target.value)}
           />

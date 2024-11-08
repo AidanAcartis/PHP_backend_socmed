@@ -143,7 +143,7 @@ export default function PostFormCard() {
                 <div className="flex flex-col grow" ref={inputRef}>
                     <textarea
                         className="grow p-3 h-14"
-                        placeholder="Que pensez-vous, Nekota ?"
+                        placeholder="What's on your mind?"
                         value={postText}
                         onChange={(e) => setPostText(e.target.value)}
                         onClick={() => setShowUpload(true)}

@@ -51,7 +51,7 @@ const MyLocation = ({ userId }) => {
             <h2 className="font-normal text-3sm mb-2">Country :</h2>
             <textarea
             className="w-full p-3 h-12 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-black grow"
-            placeholder="Écrivez votre pays ici..."
+            placeholder="Write your country here..."
             value={aboutCountry}
             onChange={(e) => setAboutCountry(e.target.value)}
           />
@@ -60,7 +60,7 @@ const MyLocation = ({ userId }) => {
             <h2 className="font-normal text-3sm mb-2">City :</h2>
             <textarea
             className="w-full p-3 h-12 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-black grow"
-            placeholder="Écrivez votre ville ici..."
+            placeholder="Write your city here..."
             value={aboutCity}
             onChange={(e) => setAboutCity(e.target.value)}
           />
