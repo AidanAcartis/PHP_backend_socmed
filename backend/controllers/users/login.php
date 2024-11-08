@@ -60,10 +60,11 @@ while ($row = $result->fetch_assoc()) {
             ]);
 
             // Réponse avec l'username
-            $monfihcier = fopen('./fichier.txt', 'r+');
+            //$monfihcier = fopen('./fichier.txt', 'r+');
             $name = $row['username'];
-            fputs($monfihcier, $name);
-            fclose($monfihcier);
+            file_put_contents('./fichier.txt', $name);
+            //fputs($monfihcier, $name);
+            //fclose($monfihcier);
             // Forcer la fermeture de la session
             session_write_close();
             echo json_encode(['success' => true, 'message' => 'connexion réussie', 'username' => $row['username']]);

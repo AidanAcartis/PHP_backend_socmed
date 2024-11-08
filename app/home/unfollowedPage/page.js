@@ -38,6 +38,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
   }, []);
     
     console.log("userId de la personne pour cette page:", userId);
+    const AboutId = userId;
 
     // Function to fetch user ID from userId.txt
     const fetchUserId = async () => {
@@ -164,7 +165,9 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
               <div className="ml-24 md:ml-40">
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
                  {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
-                <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
+                <div className="text-gray-500 leading-1 text-sm">
+                  <GetMyLocation userId={AboutId} />
+                </div>
                 <div>
                     <button
                       className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none"
@@ -201,7 +204,7 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
         <div>
           <Card>
             <h2 className="font-bold text-3xl mb-2">About Section</h2>
-             <GetAboutMeForm userId={userId} />
+             <GetAboutMeForm userId={AboutId} />
           </Card>
         </div>
       )}

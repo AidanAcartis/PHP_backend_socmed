@@ -15,6 +15,7 @@ import UserNameClient from '../../components/forIdentity/UserNameClient.js';
 import Cover from '../../components/forPages/Cover.js';
 import SearchComponent from '../../components/forSearch/SearchComponent.js';
 import GetAboutMeForm from '../../api/about/getAboutMe.js';
+import GetMyLocation from '../../api/location/getMyLocation.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -92,7 +93,9 @@ export default function ProfilePage() {
               <div className="ml-24 md:ml-40">
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
                  {username ? <UserNameClient initialUsername={username} /> : 'Chargement...'}
-                <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
+                <div className="text-gray-500 leading-1 text-sm">
+                  <GetMyLocation userId={userId}/>
+                </div>
               </div>
               <div className="mt-4 md:mt-10 flex gap-5 text-sm">
                 <button onClick={() => handleTabChange('posts')} className={activeTab === 'posts' ? activeTabClasses : tabClasses}>

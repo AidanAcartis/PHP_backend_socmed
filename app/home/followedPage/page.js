@@ -14,6 +14,7 @@ import FollowedUserNameClient from '../../components/forOtherUser/newComponents/
 import OtherPostCard from '../../components/forOtherUser/newComponents/otherPostCard.js';
 import OtherUserFiles from '../../components/forOtherUser/newComponents/otherPhoto.js';
 import GetAboutMeForm from '../../api/about/getAboutMe.js';
+import GetMyLocation from '../../api/location/getMyLocation.js';
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
@@ -234,7 +235,9 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
               <div className="ml-24 md:ml-40">
                  {/* Passez le nom d'utilisateur récupéré au composant client */}
                  {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
-                <div className="text-gray-500 leading-1 text-sm">Himeji, Japan</div>
+                <div className="text-gray-500 leading-1 text-sm">
+                  <GetMyLocation userId={AboutId} />
+                </div>
                 <div>
                     <button
                       className="text-gray-800 font-medium text-sm hover:text-blue-500 focus:outline-none"

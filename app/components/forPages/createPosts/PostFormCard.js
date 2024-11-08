@@ -8,6 +8,7 @@ import { usePostActions } from "./actions.js";
 import UploadForm from "../../upload/uploadForm.js";
 import ProfilePhoto from "../ProfilePhoto.js";
 import AboutMeForm from "../../../api/about/AboutMe.js";
+import MyLocation from "../../../api/location/locationForm.js";
 
 export default function PostFormCard() {
     const { photoText, setPhotoText, handlePhotoSubmit, Loading } = usePhotoActions();
@@ -202,6 +203,7 @@ export default function PostFormCard() {
                 </div>
             </div>
         </Card>
+            <MyLocation userId={userId} />
             <AboutMeForm userId={userId} />
         </div>
     );
