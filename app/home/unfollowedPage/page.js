@@ -10,6 +10,7 @@ import { getUserProfile } from '../../components/forOtherUser/newComponents/othe
 import { getUserProfilePhoto } from '../../components/forOtherUser/newComponents/otherProfilePhoto.js';
 import FollowedUserNameClient from '../../components/forOtherUser/newComponents/otherUserNameClient.js';
 import GetAboutMeForm from '../../api/about/getAboutMe.js';
+import GetMyLocation from '../../api/location/getMyLocation.js';
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
 const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue border-b-4 text-socialBlue font-bold cursor-pointer';
@@ -192,10 +193,9 @@ const activeTabClasses = 'flex gap-1 md:px-3 py-1 items-center border-socialBlue
 
       <div className="flex justify-center items-center mt-8 bg-gray-100">
         <p className="text-center text-xl font-normal p-6 bg-white shadow-md rounded-lg">
-          👋 Welcome to 
+        👋 Welcome to{' '}
           {username ? <FollowedUserNameClient initialUsername={username} /> : 'Chargement...'}
-          's profile! Click on the 'About' link to see her bio. 
-          🚀 Follow her if you want to see her posts. 👍✨
+          's profile! Click on the 'About' link to see her bio. 🚀 Follow her if you want to see her posts. 👍✨
         </p>
       </div>
 
