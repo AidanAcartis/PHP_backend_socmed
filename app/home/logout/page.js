@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Utilisez useRouter de Next.js
+import Layout from '../../components/forPages/PageLayout';
 
 export default function LogoutPage() {
   const router = useRouter();
@@ -33,7 +34,8 @@ export default function LogoutPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <Layout>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-96">
         <h2 className="text-xl font-bold mb-4 text-center">Se déconnecter</h2>
         
@@ -48,5 +50,6 @@ export default function LogoutPage() {
         </button>
       </div>
     </div>
+    </Layout>
   );
 }
