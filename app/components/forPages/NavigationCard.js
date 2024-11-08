@@ -26,7 +26,8 @@ export default function NavigationCard() {
     }, [pathname]);
  
     return (
-        <Card noPadding={true}>
+        <div className="md:fixed md:w-[200px]">
+            <Card noPadding={true}>
             <div className="px-4 py-2 flex justify-between md:block shadow-md shadow-gray-500">
                 <h2 className="text-gray-400 mb-3 hidden md:block">Navigation</h2>
                 <Link href="/home" className={activeTab === 'home' ? activeElementClasses : nonActiveElementClasses}>
@@ -67,5 +68,6 @@ export default function NavigationCard() {
                 </Link>
             </div>
         </Card>
+        </div>
     );
 }
