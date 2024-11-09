@@ -42,7 +42,22 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("ii", $follower_id, $followed_id);
 
 if ($stmt->execute()) {
-    echo json_encode(['status' => 'success', 'message' => 'Utilisateur suivi avec succès']);
+    // Insert notification into the notifications table
+    $notification_type = 'follow';
+    $is_read = 0;  // New notifications are unread
+
+    // Insert notification with actor_id (follower_id)
+    $notification_query = "INSERT INTO notifications (user_id, actor_id, type, is_read) VALUES (?, ?, ?, ?)";
+    $notification_stmt = $conn->prepare($notification_query);
+    $notification_stmt->bind_param("iisi", $followed_id, $follower_id, $notification_type, $is_read);
+
+    if ($notification_stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Utilisateur suivi et notification envoyée']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'envoi de la notification : ' . $notification_stmt->error]);
+    }
+
+    $notification_stmt->close();
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Erreur lors du suivi']);
 }

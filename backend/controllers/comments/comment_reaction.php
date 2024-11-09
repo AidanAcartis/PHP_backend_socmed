@@ -27,6 +27,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 $commentId = $data['comment_id'];
 $userId = $data['user_id'];
 $reactionType = $data['reaction_type'];
+$actorId = $userId;
 
 // Vérifier si l'utilisateur a déjà réagi au commentaire
 $stmt = $conn->prepare("SELECT reaction_type FROM comment_reactions WHERE comment_id = ? AND user_id = ?");
@@ -50,6 +51,17 @@ if ($result->num_rows > 0) {
     $stmt->bind_param("iis", $commentId, $userId, $reactionType);
     
     if ($stmt->execute()) {
+
+        // Récupérer le propriétaire du commentaire
+        $ownerId = getCommentOwnerId($conn, $commentId);
+
+        if ($ownerId !== null) {
+            // Insérer la notification après l'ajout réussi de la réaction
+            if (insertNotification($conn, $actorId, $ownerId)) {
+                echo json_encode(["success" => true, "message" => "Réaction ajoutée avec succès et notification envoyée."]);
+            }
+        }
+
         echo json_encode(["success" => true, "message" => "Réaction ajoutée avec succès."]);
     } else {
         echo json_encode(["success" => false, "error" => "Erreur lors de l'ajout de la réaction: " . $stmt->error]);
@@ -81,6 +93,37 @@ function exportCommentReactionsToJson($conn) {
         echo json_encode(["success" => false, "message" => "Aucune donnée trouvée dans la table comment_reactions."]);
     }
 }
+
+// Fonction pour insérer une notification
+function insertNotification($conn, $actorId, $ownerId) {
+    $type = 'comment_reaction';
+    $stmt = $conn->prepare("INSERT INTO notifications (actor_id, user_id, type, is_read) VALUES (?, ?, ?, 0)");
+    $stmt->bind_param("iis", $actorId, $ownerId, $type);
+    
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        echo json_encode(["success" => false, "error" => "Erreur lors de l'insertion de la notification: " . $stmt->error]);
+        return false;
+    }
+}
+
+// Récupérer l'ID de l'utilisateur propriétaire du commentaire
+function getCommentOwnerId($conn, $commentId) {
+    $stmt = $conn->prepare("SELECT user_id FROM comments WHERE id = ?");
+    $stmt->bind_param("i", $commentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['user_id'];
+    } else {
+        echo json_encode(["success" => false, "error" => "Aucun propriétaire de commentaire trouvé pour cet ID."]);
+        return null;
+    }
+}
+
 
 // Appeler la fonction pour exporter les données
 exportCommentReactionsToJson($conn);

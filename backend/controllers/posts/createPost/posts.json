@@ -31,7 +31,7 @@
         "user_id": "1",
         "content": "Beautiful me!",
         "created_at": "2024-11-02 17:51:16",
-        "comment_count": "0",
+        "comment_count": "1",
         "doc_type": "photo",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/beautiful.jpeg"
     },
@@ -103,7 +103,7 @@
         "user_id": "2",
         "content": "\"En plein combat avec mes amis dans Girl und Panzer ! \ud83d\udca3\ud83d\ude97\ud83d\udca8 Give it all for the fun and the adrenaline! Let\u2019s go! \ud83c\udf1f\ud83d\udcaa\ud83c\udfae\"",
         "created_at": "2024-11-02 19:44:51",
-        "comment_count": "0",
+        "comment_count": "2",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Girls und Panzer der Film[Chi-nu reload].mp4"
     },
@@ -229,7 +229,7 @@
         "user_id": "3",
         "content": "\ud83d\udca3\ud83c\udf89 \u201cStep right up to Jinx\u2019s Chaos Emporium, where every item is a blast! Get your hands on explosive goodies that\u2019ll blow your mind and bring a little mayhem to your life! Shop now and embrace the madness!\u201d \ud83c\udf89\ud83d\udca3",
         "created_at": "2024-11-02 20:43:41",
-        "comment_count": "0",
+        "comment_count": "1",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Jinx_boutique.mp4"
     },
@@ -310,8 +310,17 @@
         "user_id": "1",
         "content": "Katseye",
         "created_at": "2024-11-02 22:11:24",
-        "comment_count": "2",
+        "comment_count": "1",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/katseye.mp4"
+    },
+    {
+        "id": "145",
+        "user_id": "1",
+        "content": "Hey! Guys!!",
+        "created_at": "2024-11-09 15:44:38",
+        "comment_count": "0",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/lila.jpg"
     }
 ]

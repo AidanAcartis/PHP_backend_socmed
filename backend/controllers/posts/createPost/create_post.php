@@ -99,6 +99,50 @@ function updateUserFileJson($conn) {
     }
 }
 
+// Fonction pour ajouter des notifications pour tous les followers de l'actor_id
+function addNotificationsForFollowers($conn, $actorId, $type) {
+    // Récupérer les IDs de tous les followers de l'actor_id
+    $sqlFollowers = "SELECT follower_id FROM followers WHERE followed_id = ?";
+    $stmtFollowers = $conn->prepare($sqlFollowers);
+
+    if ($stmtFollowers === false) {
+        error_log("Erreur de préparation de la requête pour récupérer les followers : " . $conn->error);
+        return;
+    }
+
+    $stmtFollowers->bind_param("i", $actorId);
+    $stmtFollowers->execute();
+    $result = $stmtFollowers->get_result();
+
+    // Vérifier si des followers existent
+    if ($result->num_rows > 0) {
+        $sqlNotification = "INSERT INTO notifications (actor_id, user_id, type, is_read, created_at) VALUES (?, ?, ?, 0, NOW())";
+        $stmtNotification = $conn->prepare($sqlNotification);
+
+        if ($stmtNotification === false) {
+            error_log("Erreur de préparation de la requête d'insertion de la notification : " . $conn->error);
+            return;
+        }
+
+        // Insérer une notification pour chaque follower
+        while ($row = $result->fetch_assoc()) {
+            $followerId = $row['follower_id'];
+            $stmtNotification->bind_param("iis", $actorId, $followerId, $type);
+            
+            if ($stmtNotification->execute()) {
+                error_log("Notification ajoutée avec succès pour le follower ID : $followerId");
+            } else {
+                error_log("Erreur lors de l'ajout de la notification pour le follower ID : $followerId - " . $stmtNotification->error);
+            }
+        }
+
+        $stmtNotification->close();
+    }
+
+    $stmtFollowers->close();
+}
+
+
 // Vérifier que la requête est POST avant de traiter les données
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer les données envoyées
@@ -132,6 +176,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Mettre à jour le fichier JSON après une insertion réussie
             updateJsonFile($conn);
             updateUserFileJson($conn);
+            // Appeler la fonction pour ajouter des notifications pour tous les followers
+            addNotificationsForFollowers($conn, $userId, 'new_post');
             echo json_encode(['status' => 'success', 'message' => 'Post ajouté avec succès.', 'fileMessage' => $result['message']]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la base de données : ' . $stmt->error]);

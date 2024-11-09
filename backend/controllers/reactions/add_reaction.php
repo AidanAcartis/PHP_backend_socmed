@@ -67,6 +67,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $insertStmt = $conn->prepare("INSERT INTO post_reactions (post_id, user_id, reaction_type) VALUES (?, ?, ?)");
                 $insertStmt->bind_param("iis", $postId, $userId, $reaction);
                 if ($insertStmt->execute()) {
+                    // Récupérer l'user_id de l'auteur du post
+                    $postAuthorStmt = $conn->prepare("SELECT user_id FROM posts WHERE id = ?");
+                    $postAuthorStmt->bind_param("i", $postId);
+                    $postAuthorStmt->execute();
+                    $postAuthorStmt->bind_result($postAuthorId);
+                    $postAuthorStmt->fetch();
+                    $postAuthorStmt->close();
+
+                    if ($postAuthorId) {
+                        // Insérer une nouvelle notification
+                        $notificationStmt = $conn->prepare("INSERT INTO notifications (actor_id, user_id, type, created_at) VALUES (?, ?, 'reaction', CURRENT_TIMESTAMP)");
+                        $notificationStmt->bind_param("ii", $userId, $postAuthorId);
+                        if ($notificationStmt->execute()) {
+                            echo json_encode(['status' => 'success', 'message' => 'Réaction ajoutée et notification créée']);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'ajout de la notification']);
+                        }
+                        $notificationStmt->close();
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Auteur du post non trouvé']);
+                    }
+
                     echo json_encode(['status' => 'success', 'message' => 'Réaction ajoutée']);
                 } else {
                     http_response_code(500);

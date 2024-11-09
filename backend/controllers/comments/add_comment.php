@@ -52,6 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $postId = (int) $data->postId;
             $content = mysqli_real_escape_string($conn, trim($data->content)); // Assurez-vous que $conn est encore valide
             error_log("postId : $postId, content : $content");
+            // Récupérer l'ID de l'utilisateur propriétaire du post
+            $postOwnerSql = "SELECT user_id FROM posts WHERE id = ?";
+            $postOwnerStmt = $conn->prepare($postOwnerSql);
+            $postOwnerStmt->bind_param("i", $postId);
+            $postOwnerStmt->execute();
+            $postOwnerStmt->bind_result($postOwnerId);
+            $postOwnerStmt->fetch();
+            $postOwnerStmt->close();
 
             if ($postId <= 0 || $userId <= 0 || trim($content) === '') {
                 error_log("Données invalides : postId ou content non valide");
@@ -78,6 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 updateCommentCount($conn, $postId);
                 updatePostsJson($conn);
                 updateCommentsJson($conn);
+                // Appeler la fonction pour ajouter une notification
+                // Supposons que $postOwnerId est l'ID de l'utilisateur propriétaire du post que vous avez récupéré avant
+                addNotification($conn, $userId, $postOwnerId, $stmt->insert_id, 'comment'); // 'comment' est le type de notification   
 
                 // Écrire l'userId dans userId.txt
                 file_put_contents('./userId.txt', $userId);
@@ -176,6 +187,33 @@ function updateCommentsJson($conn) {
         }
     }
 }
+
+// Fonction pour ajouter une notification
+function addNotification($conn, $actorId, $receiverUserId, $commentId, $type) {
+    error_log("Ajout de notification pour l'utilisateur : $actorId pour le commentaireId : $commentId");
+
+    // Préparer la requête d'insertion de la notification
+    $sql = "INSERT INTO notifications (actor_id, user_id, type, is_read, created_at) VALUES (?, ?, ?, 0, NOW())";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        error_log("Erreur de préparation de la requête d'insertion de la notification : " . $conn->error);
+        return;
+    }
+
+    // On suppose que le type de notification est "comment" pour un commentaire
+    $stmt->bind_param("iis", $actorId, $receiverUserId, $type);
+
+    if ($stmt->execute()) {
+        error_log("Notification ajoutée avec succès pour le commentaireId : $commentId");
+    } else {
+        error_log("Erreur lors de l'ajout de la notification : " . $stmt->error);
+    }
+
+    $stmt->close();
+}
+
+
 
 // Fermer la connexion
 $conn->close();

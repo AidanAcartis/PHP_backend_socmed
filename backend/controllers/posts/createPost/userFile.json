@@ -236,5 +236,12 @@
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/katseye.mp4",
         "upload_date": "2024-11-02 22:11:24"
+    },
+    {
+        "id": "59",
+        "user_id": "1",
+        "doc_type": "photo",
+        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/lila.jpg",
+        "upload_date": "2024-11-09 15:44:38"
     }
 ]
