@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Card from "./Cards";
+import Notifications from "../../api/notifications/notifAlert";
+import NotificationComponent from "../../api/notifications/notifAlert";
 
 export default function NavigationCard() {
     const pathname = usePathname();
@@ -11,6 +13,28 @@ export default function NavigationCard() {
     const nonActiveElementClasses = 'text-sm md:text-md flex gap-1 md:gap-3 py-2 my-2 hover:bg-blue-200 hover:blue-opacity-20 md:-mx-4 md:px-4 rounded-md transition-all hover:scale-110 hover:shadow-md shadow-gray-300';
 
     const [activeTab, setActiveTab] = useState('home');
+    const [userId, setUserId] = useState(null); // Ajouter un état pour l'ID utilisateur
+
+    // Fonction pour récupérer l'ID utilisateur depuis 'userId.txt'
+    const fetchUserId = async () => {
+        try {
+            const response = await fetch('http://localhost:3003/Devoi_socila_media/src/backend/controllers/users/userId.txt');
+            if (!response.ok) {
+                throw new Error("Erreur lors de la récupération de l'ID utilisateur.");
+            }
+            const userIdFromFile = await response.text();
+            setUserId(userIdFromFile.trim());
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'ID utilisateur :", error);
+        }
+    };
+
+    // Charger l'ID utilisateur une seule fois au montage
+    useEffect(() => {
+        fetchUserId();
+    }, []);
+
+    const TheId = userId;
 
     useEffect(() => {
         const currentPath = pathname.split('/').pop();
@@ -49,9 +73,7 @@ export default function NavigationCard() {
                     <span className="hidden md:block">Friends</span>
                 </Link>
                 <Link href="/home/notifications" className={activeTab === 'notifications' ? activeElementClasses : nonActiveElementClasses}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                    </svg>
+                    <NotificationComponent userId={TheId} />
                     <span className="hidden md:block">Notifications</span>
                 </Link>
                 <Link href="/home/logout" className={activeTab === 'logout' ? activeElementClasses : nonActiveElementClasses}>
