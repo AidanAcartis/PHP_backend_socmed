@@ -6,6 +6,7 @@ import Link from "next/link";
 import Card from "./Cards";
 import Notifications from "../../api/notifications/notifAlert";
 import NotificationComponent from "../../api/notifications/notifAlert";
+import { handleUpdateNotif } from "../../api/updateNotif/updateNotif";
 
 export default function NavigationCard() {
     const pathname = usePathname();
@@ -72,7 +73,11 @@ export default function NavigationCard() {
                     </svg>
                     <span className="hidden md:block">Friends</span>
                 </Link>
-                <Link href="/home/notifications" className={activeTab === 'notifications' ? activeElementClasses : nonActiveElementClasses}>
+                <Link 
+                    href="/home/notifications" 
+                    className={activeTab === 'notifications' ? activeElementClasses : nonActiveElementClasses}
+                    onClick={() => handleUpdateNotif()}
+                >
                     <NotificationComponent userId={TheId} />
                     <span className="hidden md:block">Notifications</span>
                 </Link>
