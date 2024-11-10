@@ -219,8 +219,9 @@ const AllComments = () => {
                 </div>
 
                 <div className="mt-5 flex gap-8">
-                        {/*post.likes*/}
-                        <UserReactions posts={[post]} />
+                        {/*post.likes
+                            <UserReactions posts={[post]} />
+                        */}
                     {/* Bouton des commentaires */}
                     {post && (
                         <Link href={`/home/comments?postId=${post.id}`} passHref>
@@ -235,23 +236,6 @@ const AllComments = () => {
                         </Link>
                     )}
 
-                </div>
-
-                {/* Formulaire pour ajouter un commentaire */}
-                <div className="flex mt-4 gap-3">
-                    <div>
-                        <Avatar />
-                    </div>
-                    <div className="border grow rounded-full relative">
-                        <form onSubmit={(e) => handleShare(e, postId)} className="flex">
-                            <input 
-                                className="block w-full p-3 px-4 overflow-hidden h-12 rounded-full"
-                                placeholder="Leave a comment"
-                                value={commText}
-                                onChange={(e) => setCommText(e.target.value)}
-                            />
-                        </form>
-                    </div>
                 </div>
 
                 {/* Liste des commentaires */}

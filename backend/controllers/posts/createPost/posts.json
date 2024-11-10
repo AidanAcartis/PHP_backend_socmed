@@ -229,7 +229,7 @@
         "user_id": "3",
         "content": "\ud83d\udca3\ud83c\udf89 \u201cStep right up to Jinx\u2019s Chaos Emporium, where every item is a blast! Get your hands on explosive goodies that\u2019ll blow your mind and bring a little mayhem to your life! Shop now and embrace the madness!\u201d \ud83c\udf89\ud83d\udca3",
         "created_at": "2024-11-02 20:43:41",
-        "comment_count": "1",
+        "comment_count": "2",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/Jinx_boutique.mp4"
     },
@@ -310,7 +310,7 @@
         "user_id": "1",
         "content": "Katseye",
         "created_at": "2024-11-02 22:11:24",
-        "comment_count": "1",
+        "comment_count": "2",
         "doc_type": "video",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/videos\/katseye.mp4"
     },
@@ -319,8 +319,17 @@
         "user_id": "1",
         "content": "Hey! Guys!!",
         "created_at": "2024-11-09 15:44:38",
-        "comment_count": "0",
+        "comment_count": "1",
         "doc_type": "photo",
         "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/photos\/lila.jpg"
+    },
+    {
+        "id": "146",
+        "user_id": "3",
+        "content": "It's coming!!",
+        "created_at": "2024-11-10 20:56:18",
+        "comment_count": "0",
+        "doc_type": null,
+        "doc_url": null
     }
 ]
