@@ -12,7 +12,7 @@ const NotificationComponent = ({ userId }) => {
         }
 
         // Créer une nouvelle connexion SSE avec le serveur en incluant l'ID de l'utilisateur
-        const eventSource = new EventSource(`http://localhost:3001/notifications/sse/${userId}`);
+        const eventSource = new EventSource(`http://localhost:3003/notifications/sse/${userId}`);
 
         // Lorsque de nouvelles données sont reçues
         eventSource.onmessage = (event) => {

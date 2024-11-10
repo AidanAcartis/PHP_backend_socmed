@@ -58,7 +58,7 @@ app.get('/notifications/sse/:userId', (req, res) => {
     }
 
     // Envoyer les notifications toutes les 5 secondes
-    const intervalId = setInterval(sendUnreadNotifications, 5000);
+    const intervalId = setInterval(sendUnreadNotifications, 1000);
 
     // Fermer la connexion après un certain temps ou lorsque la requête est fermée
     req.on('close', () => {
