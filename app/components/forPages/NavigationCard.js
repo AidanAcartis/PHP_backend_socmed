@@ -6,7 +6,6 @@ import Link from "next/link";
 import Card from "./Cards";
 import Notifications from "../../api/notifications/notifAlert";
 import NotificationComponent from "../../api/notifications/notifAlert";
-import { handleUpdateNotif } from "../../api/updateNotif/updateNotif";
 
 export default function NavigationCard() {
     const pathname = usePathname();
@@ -49,6 +48,13 @@ export default function NavigationCard() {
             setActiveTab('home');
         }
     }, [pathname]);
+
+    const [isNotifClicked, setIsNotifClicked] = useState(false);
+
+    const handleUpdateNotif = () => {
+        // Logique pour la mise à jour des notifications
+        setIsNotifClicked(true); // Met à jour l'état pour indiquer que le bouton a été cliqué
+    };
  
     return (
         <div className="md:fixed md:w-[200px]">
@@ -78,7 +84,8 @@ export default function NavigationCard() {
                     className={activeTab === 'notifications' ? activeElementClasses : nonActiveElementClasses}
                     onClick={() => handleUpdateNotif()}
                 >
-                    <NotificationComponent userId={TheId} />
+                   {/* Affiche NotificationComponent seulement si isNotifClicked est faux */}
+                   {!isNotifClicked && <NotificationComponent userId={TheId} />} 
                     <span className="hidden md:block">Notifications</span>
                 </Link>
                 <Link href="/home/logout" className={activeTab === 'logout' ? activeElementClasses : nonActiveElementClasses}>

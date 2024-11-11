@@ -15,7 +15,7 @@ const NotificationCard = () => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await fetch("http://localhost/Devoi_socila_media/src/backend/api/displayNotification/Notifications.php", {
+                const response = await fetch("http://localhost/Devoi_socila_media/src/backend/api/displayNotification/updateNotif.php", {
                     method: "GET",
                     credentials: "include", // Assure que les cookies de session sont envoyés
                 });
