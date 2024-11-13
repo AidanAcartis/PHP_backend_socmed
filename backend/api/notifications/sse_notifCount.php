@@ -25,11 +25,11 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Vérifier que l'utilisateur est connecté et récupérer son ID
+// Vérification de l'utilisateur connecté
 if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
     $userId = $_SESSION['user_id'];
 
-    // Compter le nombre de notifications non lues pour l'utilisateur
+    // Compter les notifications non lues
     $stmt = $conn->prepare("SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = ? AND is_read = 0");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
@@ -38,11 +38,10 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
     $unreadCount = $row['unread_count'];
     $stmt->close();
 
-    // Envoyer les données sous forme de message texte SSE
-    echo "data: {\"unread_count\": $unreadCount}\n\n"; // Changement ici pour éviter d'envoyer un JSON encodé
+    // Envoyer la réponse SSE
+    echo "data: {\"unread_count\": $unreadCount}\n\n";
     flush();
 
-    // Fin de la connexion SSE
     echo "data: Fin de la vérification des notifications\n\n";
     flush();
     exit();
@@ -51,4 +50,5 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
     flush();
     exit();
 }
+
 ?>

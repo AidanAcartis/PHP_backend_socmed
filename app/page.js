@@ -8,7 +8,6 @@ export default async function Home() {
   return (
     <Layout>
     <PostFormCard />
-    <PostCard />
   </Layout>
   );
 }
