@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import ProfilePhotoCard from '../../components/forOtherUser/newComponents/ProfilePhotoCard';
 
 const socket = io('http://localhost:3003'); // URL du serveur Socket.IO
 
@@ -38,7 +39,7 @@ const Forum = () => {
 
         // Écouter les nouveaux messages
         socket.on('receiveForumMessage', (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
+            setMessages((prevMessages) => [...prevMessages, message]); // Met à jour les messages en temps réel
         });
 
         return () => {
@@ -48,15 +49,21 @@ const Forum = () => {
     }, []);
 
     const sendMessage = () => {
-        if (newMessage.trim()) {
+        if (newMessage.trim() && userId) {
+            // Envoi du message avec l'ID de l'utilisateur récupéré
             socket.emit('sendForumMessage', {
-                senderId: userId, // Remplacez par l'ID de l'utilisateur actuel
+                senderId: userId, // Utiliser l'ID utilisateur récupéré
                 content: newMessage
             });
             setNewMessage('');
+
+            // Rafraîchir la page après l'envoi
+        window.location.reload(); // Cela recharge la page
         }
     };
-    const MyId = Number(userId);
+
+    const MyId = userId ? Number(userId) : null;  // S'assurer que MyId est assigné correctement
+
     return (
         <div className="message-container space-y-4 p-4">
             {messages.map((msg, index) => (
@@ -66,8 +73,9 @@ const Forum = () => {
                 >
                     <div
                         className={`max-w-xs p-3 rounded-lg ${msg.sender_id === MyId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
-                    >
-                        <strong>{msg.sender_id === MyId ? 'Moi' : `Utilisateur ${msg.sender_id}`}</strong>: {msg.content}
+                    >   
+                        <ProfilePhotoCard userId={msg.sender_id} />     
+                        <strong>{msg.sender_id === MyId ? 'Moi' : `${msg.username}`}</strong>: {msg.content}
                     </div>
                 </div>
             ))}

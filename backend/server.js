@@ -12,18 +12,16 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Activer CORS pour toutes les origines
-//app.use(cors());
-
+// Activer CORS pour l'origine spécifique (par exemple, le frontend en développement)
 app.use(cors({
-    origin: '*',  // Autoriser toutes les origines pour tester
+    origin: 'http://localhost:3000', // Spécifie l'origine de ton frontend
     methods: ['GET', 'POST']
 }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000', // URL de votre application Next.js
+        origin: 'http://localhost:3000', // URL de ton frontend
         methods: ['GET', 'POST']
     }
 });
@@ -41,7 +39,7 @@ async function connectToDatabase() {
         return db;
     } catch (err) {
         console.error('Erreur de connexion à la base de données:', err);
-        process.exit(1);
+        process.exit(1); // Quitte le serveur si la connexion échoue
     }
 }
 
@@ -49,6 +47,9 @@ async function connectToDatabase() {
 let db;
 connectToDatabase().then(connection => {
     db = connection;
+}).catch(err => {
+    console.error('Erreur de connexion à la base de données:', err);
+    process.exit(1); // Quitte le serveur si la connexion échoue
 });
 
 // Route pour la racine, servant une page HTML ou un fichier
@@ -59,14 +60,94 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('Nouvelle connexion WebSocket:', socket.id);
 
+    // Recevoir un message privé
+    socket.on('sendPrivateMessage', async (data) => {
+        const { senderId, receiverId, content } = data;
+        console.log('Message privé reçu:', data);
+
+        try {
+            // Insertion du message privé dans la base de données
+            const [result] = await db.query(
+                'INSERT INTO private_messages (sender_id, receiver_id, content, sent_at) VALUES (?, ?, ?, ?)',
+                [senderId, receiverId, content, new Date()]
+            );
+
+            // Vérification si le destinataire est connecté
+            const receiverSocket = io.sockets.sockets.get(receiverId);
+            if (receiverSocket) {
+                // Envoi du message au destinataire si connecté
+                receiverSocket.emit('receivePrivateMessage', {
+                    senderId,
+                    receiverId,
+                    content,
+                    sentAt: new Date(),
+                });
+                console.log('Message privé envoyé au destinataire');
+            } else {
+                console.log('Destinataire non connecté, message non envoyé');
+            }
+
+            console.log('Message privé inséré avec succès dans la base de données');
+        } catch (err) {
+            console.error('Erreur lors de l\'insertion du message privé:', err);
+            socket.emit('error', 'Erreur d\'insertion du message privé');
+        }
+    });
+
+   // Récupérer les messages privés entre deux utilisateurs
+socket.on('getMessages', async (data) => {
+    const { senderId, receiverId } = data;
+    try {
+        const [messages] = await db.query(
+            `SELECT 
+                pm.sender_id, 
+                pm.receiver_id, 
+                pm.content, 
+                pm.sent_at, 
+                sender.username AS sender_username, 
+                receiver.username AS receiver_username
+            FROM private_messages pm
+            JOIN users sender ON pm.sender_id = sender.id
+            JOIN users receiver ON pm.receiver_id = receiver.id
+            WHERE (pm.sender_id = ? AND pm.receiver_id = ?) 
+               OR (pm.sender_id = ? AND pm.receiver_id = ?)
+            ORDER BY pm.sent_at ASC`,
+            [senderId, receiverId, receiverId, senderId]
+        );
+
+        // Afficher les messages dans la console (données JSON)
+        console.log('Messages privés récupérés:', JSON.stringify(messages));
+
+        // Envoi des messages au client
+        socket.emit('receiveMessages', messages);
+    } catch (err) {
+        console.error('Erreur lors de la récupération des messages privés:', err);
+        socket.emit('error', 'Erreur lors de la récupération des messages privés');
+    }
+});
+
+});
+
+
+io.on('connection', (socket) => {
+    console.log('Nouvelle connexion WebSocket:', socket.id);
+
     // Récupérer tous les messages au moment de la connexion
     socket.on('getForumMessages', async () => {
         try {
-            const [rows] = await db.query('SELECT * FROM forum_messages ORDER BY sent_at');
+            // Récupérer les messages et le nom d'utilisateur correspondant à sender_id
+            const [rows] = await db.query(
+                `SELECT fm.sender_id, fm.content, fm.sent_at, u.username 
+                 FROM forum_messages fm
+                 JOIN users u ON fm.sender_id = u.id
+                 ORDER BY fm.sent_at`
+            );
+            
             // Envoi des messages à l'utilisateur qui vient de se connecter
             socket.emit('receiveForumMessages', rows);
         } catch (err) {
             console.error("Erreur lors de la récupération des messages:", err);
+            socket.emit('error', 'Erreur de récupération des messages'); // Informer le client de l'erreur
         }
     });
 
@@ -75,24 +156,33 @@ io.on('connection', (socket) => {
         console.log('Message reçu du client:', data); // Pour le débogage
 
         try {
-            // Insertion du message dans la base de données
+            // Insertion du message dans la base de données avec le champ sent_at
             await db.query(
-                'INSERT INTO forum_messages (sender_id, content) VALUES (?, ?)',
-                [senderId, content]
+                'INSERT INTO forum_messages (sender_id, content, sent_at) VALUES (?, ?, ?)',
+                [senderId, content, new Date()]
             );
 
-            // Envoi du message à tous les clients connectés
+            // Récupérer le nom d'utilisateur de l'envoyeur pour envoyer avec le message
+            const [userRow] = await db.query(
+                'SELECT username FROM users WHERE id = ?',
+                [senderId]
+            );
+
+            const username = userRow[0]?.username || 'Utilisateur inconnu';
+
+            // Envoi du message à tous les clients connectés, y compris le username
             io.emit('receiveForumMessage', {
                 senderId,
                 content,
-                sentAt: new Date()
+                sentAt: new Date(),
+                username
             });
         } catch (err) {
             console.error("Erreur lors de l'insertion du message de forum:", err);
+            socket.emit('error', 'Erreur d\'insertion du message'); // Informer le client de l'erreur
         }
     });
 });
-
 
 // WebSocket pour gérer les notifications
 io.on('connection', (socket) => {
