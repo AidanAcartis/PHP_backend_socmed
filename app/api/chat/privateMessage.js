@@ -97,7 +97,7 @@ export default function Chat({ userId }) {
 
               {/* Affichage du contenu du message */}
               <div
-                className={`message mb-5 p-4 rounded-xl max-w-xl ${
+                className={`message mb-2 p-2 rounded-lg max-w-md ${
                   message.sender_id === MyId
                     ? 'bg-blue-400 text-white self-end ml-auto shadow-md'
                     : 'bg-green-100 text-gray-800 self-start mr-auto shadow-md'
