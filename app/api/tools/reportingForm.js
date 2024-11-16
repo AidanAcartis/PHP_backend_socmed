@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Card from '../../components/forPages/Cards';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:4000'); // Connect to your server
+const socket = io('http://localhost:3003'); // Connect to your server
 
 const Formulaire = ({ userId }) => {
   // Déclaration des états
@@ -15,7 +15,7 @@ const Formulaire = ({ userId }) => {
   const [signature, setSignature] = useState(null);
   const [receiverId, setReceiverId] = useState('');
   const [receiverPost, setReceiverPost] = useState(''); // Nouveau champ pour le poste du récepteur
-
+  
   // Exemple de liste de postes
   const posts = [
     { id: 1, name: 'Chef de département' },
@@ -95,6 +95,16 @@ const Formulaire = ({ userId }) => {
     }
   };
 
+  const handleLocationSearch = () => {
+    if (aboutLocation) {
+      const encodedLieu = encodeURIComponent(aboutLocation);
+      const url = `https://www.google.com/maps/search/${encodedLieu}`;
+      window.open(url, '_blank');
+    } else {
+      alert('Veuillez entrer un lieu valide.');
+    }
+  };
+
   return (
     <div>
       <Card>
@@ -138,16 +148,39 @@ const Formulaire = ({ userId }) => {
           </div>
 
           {/* Champ Lieu */}
-          <div className="mb-4">
-            <label className="font-normal text-3sm mb-2">Lieu :</label>
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="Entrez le lieu"
-              value={aboutLocation}
-              onChange={(e) => setAboutLocation(e.target.value)}
-              required
-            />
+            <div className="mb-4">
+            <div>
+              <label>Lieu :</label>
+              <input
+                type="text"
+                value={aboutLocation}
+                onChange={(e) => setAboutLocation(e.target.value)}
+                placeholder="Entrez un lieu"
+                className="border p-2"
+              />
+            </div>
+            <button type="button" onClick={handleLocationSearch} className="bg-blue-500 text-white px-4 py-2 mt-2 rounded flex">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6 mr-2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
+                </svg>
+              Check in Google Maps
+            </button>
           </div>
 
           {/* Champ Description */}
@@ -199,7 +232,7 @@ const Formulaire = ({ userId }) => {
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
             />
           </div>
-
+              
           <div className="flex justify-between mb-4">
             <button type="button" className=" text-black p-2 rounded" onClick={() => alert('Fonctionnalité vidéo non implémentée')}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -218,6 +251,7 @@ const Formulaire = ({ userId }) => {
             <button type="submit" className="bg-[#AAB396] p-2 rounded-full text-white hover:bg-[#8f9275]">Envoyer</button>
           </div>
         </form>
+        
       </Card>
     </div>
   );

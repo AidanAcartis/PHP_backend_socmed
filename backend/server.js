@@ -57,6 +57,36 @@ app.get('/', (req, res) => {
     res.send('<h1>Bienvenue sur le serveur!</h1>');
 });
 
+// Route pour trouver les postes de police à proximité
+app.get('/nearby-police', async (req, res) => {
+    const { latitude, longitude } = req.query;
+    
+    // Vérification des coordonnées reçues
+    if (!latitude || !longitude) {
+        return res.status(400).send('Latitude et longitude sont requises');
+    }
+
+    const apiKey = 'AIzaSyAnrbSjzC3195qmTINRW-yCsf6CVch-_PM'; // Remplace par ta clé API valide
+    const radius = 5000; // Rayon de recherche en mètres
+
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=police&key=${apiKey}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Afficher les données dans la console
+        console.log('Réponse API Google:', data);
+            
+        // Retourner les résultats au client
+        res.json(data);
+    } catch (error) {
+        console.error('Erreur lors de la recherche des postes de police:', error);
+        res.status(500).send('Erreur lors de la récupération des données');
+    }
+});
+
+
 io.on('connection', (socket) => {
     console.log('Nouvelle connexion WebSocket:', socket.id);
 
