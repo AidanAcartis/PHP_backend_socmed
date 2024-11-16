@@ -18,19 +18,19 @@ export default function HomePage() {
       <Banner />
       <MainMenu />
       <div className="container grid grid-cols-2 gap-4 mx-auto p-4">
-        <Link href="/home/fonctionnality">
-          <QuickAccess />
-        </Link>
-        <Link href="/home/statistics">
-          <Statistics />
-        </Link>
-        <Link href="/home/ressources">
-          <ResourceCenter />
-        </Link>
-        <Link href="/home/support">
-          <SupportSection />
-        </Link>
-      </div>
+      <Link href="/home/fonctionnality">
+        <QuickAccess />
+      </Link>
+      <Link href="/home/statistics">
+        <Statistics />
+      </Link>
+      <Link href="/home/ressources">
+        <ResourceCenter />
+      </Link>
+      <Link href="/home/support">
+        <SupportSection />
+      </Link>
+    </div>
 
     </div>
   );
