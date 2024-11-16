@@ -7,13 +7,6 @@
         "upload_date": "2024-11-02 17:10:27"
     },
     {
-        "id": "18",
-        "user_id": "1",
-        "doc_type": "pdf",
-        "doc_url": "http:\/\/localhost\/Devoi_socila_media\/public\/documents\/pdfs\/transport.pdf",
-        "upload_date": "2024-11-02 17:11:54"
-    },
-    {
         "id": "19",
         "user_id": "1",
         "doc_type": "video",

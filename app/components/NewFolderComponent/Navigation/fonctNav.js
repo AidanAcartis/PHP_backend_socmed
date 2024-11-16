@@ -53,7 +53,7 @@ export default function FonctNavigationCard() {
         {activeTab === 'report' && (
           <div>
             <p>Signaler un abus</p>
-            <Formulaire />
+            <Formulaire activeTab={activeTab}/>
           </div>
         )}
         {activeTab === 'dashboard' && (
