@@ -30,7 +30,7 @@ $userType = $data['userType'] ?? null; // Récupérer le type d'utilisateur
 if ($userType == 'utilisateur') {
     $query = "SELECT id, email, password, username FROM users WHERE email = ?";
 } elseif ($userType == 'securite' || $userType == 'sante') {
-    $query = "SELECT id, email, mot_de_passe AS password, nom_centre AS username FROM responsables WHERE email = ?";
+    $query = "SELECT id, email, password, username FROM responsables WHERE email = ?";
 } else {
     echo json_encode(['error' => 'Type d\'utilisateur inconnu']);
     exit;

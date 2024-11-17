@@ -41,13 +41,17 @@ if ($result->num_rows > 0) {
     exit;
 }
 
+// Hacher le mot de passe
+$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+
 // Insérer les données dans la table appropriée en fonction de userType
 if ($userType === 'utilisateur') {
     $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
 } elseif ($userType === 'securite') {
-    $query = "INSERT INTO responsables (nom_centre, email, mot_de_passe, role) VALUES (?, ?, ?, 'securite')";
+    $query = "INSERT INTO responsables (username, email, password, role) VALUES (?, ?, ?, 'securite')";
 } elseif ($userType === 'sante') {
-    $query = "INSERT INTO responsables (nom_centre, email, mot_de_passe, role) VALUES (?, ?, ?, 'sante')";
+    $query = "INSERT INTO responsables (username, email, password, role) VALUES (?, ?, ?, 'sante')";
 } else {
     echo json_encode(['error' => 'Type d\'utilisateur invalide.']);
     exit;
@@ -55,7 +59,8 @@ if ($userType === 'utilisateur') {
 
 // Préparer la requête d'insertion
 $stmt = $conn->prepare($query);
-$stmt->bind_param("sss", $username, $email, $password);
+$stmt->bind_param("sss", $username, $email, $hashedPassword);
+
 
 if ($stmt->execute()) {
     echo json_encode(['success' => 'Utilisateur enregistré avec succès.']);
