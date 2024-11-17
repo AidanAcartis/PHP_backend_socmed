@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 export function useAuth() {
   const router = useRouter();
 
-  const login = async (email, password) => {
+  const login = async (email, password, userType) => {
     try {
       const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/users/login.php', {
         method: 'POST',
@@ -11,7 +11,7 @@ export function useAuth() {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Inclut les cookies (notamment PHPSESSID)
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password , userType}),
       });
   
       if (response.ok) {
@@ -38,14 +38,14 @@ export function useAuth() {
   };
   
 
-  const signup = async (username, email, password) => {
+  const signup = async (username, email, password, userType) => {
     try {
       const response = await fetch('http://localhost/Devoi_socila_media/src/backend/controllers/users/signup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, userType }),
       });
 
       if (response.ok) {

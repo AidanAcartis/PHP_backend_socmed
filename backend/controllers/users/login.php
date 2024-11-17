@@ -22,11 +22,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-$email = $data['email'] ?? null; 
-$password = $data['password'] ?? null; 
+$email = $data['email'] ?? null;
+$password = $data['password'] ?? null;
+$userType = $data['userType'] ?? null; // Récupérer le type d'utilisateur
 
-// Récupérer tous les utilisateurs
-$query = "SELECT id, email, password, username FROM users";
+// Sélectionner la table en fonction du userType
+if ($userType == 'utilisateur') {
+    $query = "SELECT id, email, password, username FROM users WHERE email = ?";
+} elseif ($userType == 'securite' || $userType == 'sante') {
+    $query = "SELECT id, email, mot_de_passe AS password, nom_centre AS username FROM responsables WHERE email = ?";
+} else {
+    echo json_encode(['error' => 'Type d\'utilisateur inconnu']);
+    exit;
+}
 $result = $conn->query($query);
 
 // Vérifiez si la requête a réussi

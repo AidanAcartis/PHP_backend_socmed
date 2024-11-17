@@ -3,8 +3,8 @@ import Card from "../../forPages/Cards";
 export default function QuickAccess() {
     return (
         <Card>
-            <section className="bg-[#FFF8E8] my-8 p-6 rounded-lg shadow-lg">
-                <h3 className="text-2xl mb-4 text-gray-800 font-semibold">Accès Rapide aux Fonctionnalités</h3>
+            <section className="bg-[#FFF8E8] my-8 p-6 rounded-lg shadow-lg max-h-[263px] overflow-y-auto">
+                <h3 className="text-2xl mb-4 text-gray-800 font-semibold">Suivi Juridique</h3>
                 <div className="space-y-4">
                     {/* Soumettre un signalement */}
                     <div className="flex items-center gap-4">

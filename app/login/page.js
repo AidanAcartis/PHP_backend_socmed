@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState(''); // État pour le username
   const [error, setError] = useState(null); // État pour l'erreur
+  const [userType, setUserType] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,9 +19,10 @@ export default function LoginPage() {
 
     try {
       if (formType === 'login') {
-        await login(email, password);
+        await login(email, password, userType);
+        console.log('userType', userType);
       } else {
-        await signup(username, email, password); // Inclure le username lors du sign up
+        await signup(username, email, password, userType); // Inclure le username lors du sign up
       }
     } catch (err) {
       setError(err.message); // Définir l'erreur si une exception est levée
@@ -69,6 +71,20 @@ export default function LoginPage() {
           required
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
+        <label htmlFor="userType" className="block text-sm font-medium text-gray-700 mt-4">Type d'utilisateur:</label>
+        <select
+          id="userType"
+          name="userType"
+          value={userType}
+          onChange={(e) => setUserType(e.target.value)}
+          required
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+        >
+          <option value="">-- Sélectionnez un type --</option>
+          <option value="utilisateur">Simple utilisateur</option>
+          <option value="securite">Service de sécurité</option>
+          <option value="sante">Service de santé</option>
+        </select>
         <div className="flex justify-between mt-6">
           <button
             type="button"

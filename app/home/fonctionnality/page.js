@@ -10,8 +10,7 @@ export default function FonctionnalityPage() {
   return (
     <div>
       <Header />
-      <MainMenu />
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 items-center">
         <FonctNavigationCard />
       </div>
     </div>

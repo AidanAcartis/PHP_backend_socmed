@@ -5,6 +5,9 @@ import Card from "../../forPages/Cards";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Formulaire from "../../../api/tools/reportingForm";
+import Dashboard from "../../../api/tools/dashboardForm";
+import ProofSection from "../proof/proofSection";
+import ResourcesSection from "../resourcesSec/resourceSection";
 
 export default function FonctNavigationCard() {
   const pathname = usePathname();
@@ -59,16 +62,18 @@ export default function FonctNavigationCard() {
         {activeTab === 'dashboard' && (
           <div>
             <p>Tableau de bord</p>
+            <Dashboard />
           </div>
         )}
         {activeTab === 'proof' && (
           <div>
             <p>Prouver</p>
+            <ProofSection />
           </div>
         )}
         {activeTab === 'ressources' && (
           <div>
-            <p>Ressources</p>
+            <ResourcesSection />
           </div>
         )}
       </div>

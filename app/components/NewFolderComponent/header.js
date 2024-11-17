@@ -3,17 +3,15 @@ import Link from 'next/link';
 
 export default function Header() {
     return (
-      <header className="bg-[#674636] text-white p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Plateforme de Signalement</h1>
-        <nav className="flex gap-4">
-          <Link href="/" className="hover:underline">Accueil</Link>
-          <Link href="/dashboard" className="hover:underline">Tableau de Bord</Link>
-          <Link href="/reports" className="hover:underline">Mes Signalements</Link>
-          <Link href="/resources" className="hover:underline">Centre de Ressources</Link>
-        </nav>
+      <header className="bg-white text-black p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Tech'her</h1>
         <div className="flex items-center gap-2">
-          <input type="text" placeholder="Recherche..." className="p-2 rounded" />
-          <button className="bg-[#674636] p-2 rounded text-white">Profil</button>
+        <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Accueil</Link>
+        <Link href="/home/patientProfile" className="bg-white p-2 rounded text-black hover:text-blue-600">Profile</Link>
+        <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Aide</Link>
+        <Link href="/home/patientProfile" className="bg-white p-2 rounded text-black hover:text-blue-600">Contacts</Link>
+        <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Log in</Link>
+        <Link href="/home/patientProfile" className="bg-white p-2 rounded text-black hover:text-blue-600">Log out</Link>
         </div>
       </header>
     );

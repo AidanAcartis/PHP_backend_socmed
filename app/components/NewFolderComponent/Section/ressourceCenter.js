@@ -4,7 +4,7 @@ import Card from "../../forPages/Cards";
 export default function ResourceCenter() {
     return (
       <Card>
-            <section className="bg-[#FFF8E8] my-8 p-6 rounded-lg shadow-lg">
+            <section className="bg-[#FFF8E8] my-8 p-6 rounded-lg shadow-lg max-h-[263px] overflow-y-auto">
             <h3 className="text-2xl mb-4 text-gray-800 font-semibold">Centre de Ressources</h3>
             <ul className="list-disc pl-6">
               <li>📋 Guide pour soumettre un signalement</li>

@@ -18,12 +18,13 @@ $data = json_decode(file_get_contents('php://input'), true);
 $username = $data['username'] ?? null;
 $email = $data['email'] ?? null;
 $password = $data['password'] ?? null;
+$userType = $data['userType'] ?? null; // Ajouter le type d'utilisateur
 
 // Préparer la réponse JSON
 header('Content-Type: application/json');
 
-if (empty($username) || empty($email) || empty($password)) {
-    echo json_encode(['error' => 'Nom d\'utilisateur, email ou mot de passe manquant.']);
+if (empty($username) || empty($email) || empty($password) || empty($userType)) {
+    echo json_encode(['error' => 'Nom d\'utilisateur, email, mot de passe ou type d\'utilisateur manquant.']);
     exit;
 }
 
@@ -35,26 +36,32 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-    // Si l'utilisateur existe déjà
-    echo json_encode(['error' => 'L\'email est déjà utilisé. Veuillez vous connecter.']);
+    // Si l'utilisateur existe déjà, renvoyer une erreur
+    echo json_encode(['error' => 'Un utilisateur avec cet email existe déjà.']);
+    exit;
+}
+
+// Insérer les données dans la table appropriée en fonction de userType
+if ($userType === 'utilisateur') {
+    $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+} elseif ($userType === 'securite') {
+    $query = "INSERT INTO responsables (nom_centre, email, mot_de_passe, role) VALUES (?, ?, ?, 'securite')";
+} elseif ($userType === 'sante') {
+    $query = "INSERT INTO responsables (nom_centre, email, mot_de_passe, role) VALUES (?, ?, ?, 'sante')";
 } else {
-    // Hacher le mot de passe
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    
-    // Insérer l'utilisateur dans la base de données
-    $insert_query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-    $insert_stmt = $conn->prepare($insert_query);
-    $insert_stmt->bind_param("sss", $username, $email, $hashed_password);
+    echo json_encode(['error' => 'Type d\'utilisateur invalide.']);
+    exit;
+}
 
-    if ($insert_stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Inscription réussie.']);
-    } else {
-        echo json_encode(['error' => 'Erreur lors de l\'inscription.']);
-    }
+// Préparer la requête d'insertion
+$stmt = $conn->prepare($query);
+$stmt->bind_param("sss", $username, $email, $password);
 
-    $insert_stmt->close();
+if ($stmt->execute()) {
+    echo json_encode(['success' => 'Utilisateur enregistré avec succès.']);
+} else {
+    echo json_encode(['error' => 'Erreur lors de l\'enregistrement de l\'utilisateur.']);
 }
 
 $stmt->close();
 $conn->close();
-?>
