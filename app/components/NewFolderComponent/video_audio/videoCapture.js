@@ -47,6 +47,19 @@ const VideoCapture = () => {
     }
   };
 
+  const handleCloseVideo = () => {
+    setVideoURL(null);
+  };
+
+  const handleDownloadVideo = () => {
+    if (videoURL) {
+      const a = document.createElement('a');
+      a.href = videoURL;
+      a.download = 'recorded-video.mp4';
+      a.click();
+    }
+  };
+
   return (
     <div className="p-4 border-2 border-gray-400 rounded-lg shadow-lg bg-white">
       <div className="relative mb-4">
@@ -55,6 +68,14 @@ const VideoCapture = () => {
       {videoURL && (
         <div className="mt-4">
           <video src={videoURL} controls className="w-full h-auto border-2 border-gray-300 rounded-lg" />
+          <div className="flex gap-4 mt-2">
+            <button onClick={handleCloseVideo} className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+              Fermer la vidéo
+            </button>
+            <button onClick={handleDownloadVideo} className="p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+              Télécharger la vidéo
+            </button>
+          </div>
         </div>
       )}
       <div className="flex gap-4 mt-4">

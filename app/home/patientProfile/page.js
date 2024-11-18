@@ -17,6 +17,7 @@ import SearchComponent from '../../components/forSearch/SearchComponent.js';
 import GetAboutMeForm from '../../api/about/getAboutMe.js';
 import GetMyLocation from '../../api/location/getMyLocation.js';
 import Header from '../../components/NewFolderComponent/header.js';
+import PageLayout from '../../components/NewFolderComponent/userNavigation/newPageLayout.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -63,7 +64,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const currentPath = pathname.split('/').pop(); 
-    if (['status', 'Activités', 'suggestions', 'contacts'].includes(currentPath)) {
+    if (['status', 'Activités', 'suggestions', 'contacts', 'agenda'].includes(currentPath)) {
       setActiveTab(currentPath);
     } else {
       setActiveTab('status');
@@ -78,7 +79,7 @@ export default function ProfilePage() {
   return (
     <div>
       <Header />
-    <Layout>
+    <PageLayout>
       <Card noPadding={true}>
         <div className="relative overflow-hidden rounded-md">
           <Cover />
@@ -100,6 +101,12 @@ export default function ProfilePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                   </svg>
                   <span className="hidden sm:block">Status</span>
+                </button>
+                <button onClick={() => handleTabChange('agenda')} className={activeTab === 'agenda' ? activeTabClasses : tabClasses}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z" />
+                  </svg>
+                  <span className="hidden sm:block">Agenda</span>
                 </button>
                 <button onClick={() => handleTabChange('Activités')} className={activeTab === 'Activités' ? activeTabClasses : tabClasses}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -131,6 +138,14 @@ export default function ProfilePage() {
           <PostCard />
         </div>
       )}
+      {activeTab === 'agenda' && (
+        <div>
+          <Card>
+            <h2 className="font-bold text-3xl mb-2">Agenda</h2>
+              
+          </Card>
+        </div>
+      )}
       {activeTab === 'Activités' && (
         <div>
           <Card>
@@ -155,7 +170,7 @@ export default function ProfilePage() {
           </Card>
         </div>
       )}
-    </Layout>
+    </PageLayout>
     </div>
   );
 }

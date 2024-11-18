@@ -1,10 +1,10 @@
-'use client';
-
 import React, { useState, useRef } from 'react';
 
 const AudioCapture = () => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState(null);
+  const [wavURL, setWavURL] = useState(null);
+  const audioRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
   const startAudioRecording = async () => {
@@ -19,9 +19,16 @@ const AudioCapture = () => {
         }
       };
 
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-        setAudioURL(URL.createObjectURL(audioBlob));
+
+        // Convertir en .wav
+        const wavBlob = await convertWebMToWav(audioBlob);
+        const wavUrl = URL.createObjectURL(wavBlob);
+        setWavURL(wavUrl);
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setAudioURL(audioUrl);
         chunks = [];
       };
 
@@ -45,6 +52,82 @@ const AudioCapture = () => {
       stopAudioRecording();
     } else {
       startAudioRecording();
+    }
+  };
+
+  const stopAudioPlayback = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;  // Reset the playback to the start
+    }
+    setAudioURL(null);  // Hide the audio player by resetting audioURL
+  };
+
+  // Fonction pour convertir un audio WebM en WAV
+  const convertWebMToWav = async (blob) => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const arrayBuffer = await blob.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    const wavData = audioBufferToWav(audioBuffer);
+
+    return new Blob([wavData], { type: 'audio/wav' });
+  };
+
+  // Fonction pour convertir un AudioBuffer en WAV
+  const audioBufferToWav = (buffer) => {
+    const numOfChannels = buffer.numberOfChannels;
+    const sampleRate = buffer.sampleRate;
+    const format = 1; // Format PCM
+    const bitsPerSample = 16;
+    const byteRate = sampleRate * numOfChannels * bitsPerSample / 8;
+    const blockAlign = numOfChannels * bitsPerSample / 8;
+    const dataLength = buffer.length * numOfChannels * bitsPerSample / 8;
+    const bufferLength = 44 + dataLength;
+
+    const wavArrayBuffer = new ArrayBuffer(bufferLength);
+    const view = new DataView(wavArrayBuffer);
+
+    // Write the "RIFF" identifier
+    writeString(view, 0, 'RIFF');
+    view.setUint32(4, bufferLength - 8, true);
+    writeString(view, 8, 'WAVE');
+    
+    // Write the "fmt " chunk
+    writeString(view, 12, 'fmt ');
+    view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
+    view.setUint16(20, format, true); // Audio format (1 for PCM)
+    view.setUint16(22, numOfChannels, true); // Number of channels
+    view.setUint32(24, sampleRate, true); // Sample rate
+    view.setUint32(28, byteRate, true); // Byte rate
+    view.setUint16(32, blockAlign, true); // Block align
+    view.setUint16(34, bitsPerSample, true); // Bits per sample
+
+    // Write the "data" chunk
+    writeString(view, 36, 'data');
+    view.setUint32(40, dataLength, true);
+
+    // Write the audio data
+    const channelData = [];
+    for (let i = 0; i < numOfChannels; i++) {
+      channelData[i] = buffer.getChannelData(i);
+    }
+    let offset = 44;
+    for (let i = 0; i < buffer.length; i++) {
+      for (let channel = 0; channel < numOfChannels; channel++) {
+        const sample = Math.max(-1, Math.min(1, channelData[channel][i]));
+        view.setInt16(offset, sample * 0x7FFF, true);
+        offset += 2;
+      }
+    }
+
+    return wavArrayBuffer;
+  };
+
+  // Fonction pour écrire une chaîne de caractères dans un DataView
+  const writeString = (view, offset, str) => {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
     }
   };
 
@@ -74,9 +157,22 @@ const AudioCapture = () => {
 
       {audioURL && (
         <div className="mt-4">
-          <audio controls src={audioURL} className="w-full" />
+          <audio ref={audioRef} controls src={audioURL} className="w-full" />
+          <button 
+            onClick={stopAudioPlayback} 
+            className="mt-2 p-2 bg-gray-500 text-white rounded-lg"
+          >
+            Arrêter l'audio
+          </button>
+          {wavURL && (
+        <div className="mt-4">
+          <a href={wavURL} download="audio.wav" className="text-blue-500">Télécharger en WAV</a>
         </div>
       )}
+        </div>
+        
+      )}
+
     </div>
   );
 };
