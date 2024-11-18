@@ -92,6 +92,16 @@ const NotificationCard = () => {
                                             </>
                                         );
                                         break;
+                                    case "signalement":
+                                            message = (
+                                                <>
+                                                    a rapporté une {" "}
+                                                    <Link href={`/home/signalement?signalementId=${notification.signalement_id}`} className="text-blue-500 hover:underline">
+                                                        plainte
+                                                    </Link>.
+                                                </>
+                                            );
+                                            break;
                                     // Ajoutez d'autres cas selon les types de notifications
                                     default:
                                         message = ` a effectué une action.`;

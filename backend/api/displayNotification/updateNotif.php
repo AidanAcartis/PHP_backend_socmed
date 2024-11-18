@@ -57,6 +57,7 @@ $notifications = [];
 while ($notification = $result->fetch_assoc()) {
     $postId = null;
     $postOwner = null;
+    $signalementId = null;
 
     // Récupérer le `post_id` et le `post_owner` selon le type de notification
     switch ($notification['type']) {
@@ -109,6 +110,25 @@ while ($notification = $result->fetch_assoc()) {
             }
             $commentReactionStmt->close();
             break;
+            
+            case 'signalement':
+                // Utiliser la date de création de la notification pour trouver l'ID du signalement correspondant
+                $signalementStmt = $conn->prepare("
+                    SELECT id 
+                    FROM signalements 
+                    WHERE created_at = ? 
+                    ORDER BY created_at DESC 
+                    LIMIT 1
+                ");
+                $signalementStmt->bind_param("s", $notification['created_at']);
+                $signalementStmt->execute();
+                $signalementResult = $signalementStmt->get_result();
+                if ($signalementRow = $signalementResult->fetch_assoc()) {
+                    $signalementId = $signalementRow['id'];
+                }
+                $signalementStmt->close();
+                break;
+            
 
         default:
             $postId = null;
@@ -123,6 +143,7 @@ while ($notification = $result->fetch_assoc()) {
         'type' => $notification['type'],
         'is_read' => $notification['is_read'],
         'created_at' => $notification['created_at'],
+        'signalement_id' => $signalementId,
         'post_id' => $postId,
         'post_owner' => $postOwner
     ];
