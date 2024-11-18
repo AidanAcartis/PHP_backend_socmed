@@ -17,7 +17,6 @@ const Formulaire = ({ activeTab }) => {
   const [aboutHour, setAboutHour] = useState('');
   const [aboutLocation, setAboutLocation] = useState('');
   const [aboutDescription, setAboutDescription] = useState('');
-  const [file, setFile] = useState(null);
   const [fullName, setFullName] = useState('');
   const [signature, setSignature] = useState(null);
   const [receiverId, setReceiverId] = useState('');
@@ -25,8 +24,6 @@ const Formulaire = ({ activeTab }) => {
     const [results, setResults] = useState([]);
     const [userId, setUserId] = useState(''); // State to store the user ID
     const [noResults, setNoResults] = useState(false); // State to manage no results messag
-    const { postText, setPostText, handleShare, loading } = usePostActions();
-    const [showUpload, setShowUpload] = useState(false);
     const inputRef = useRef(null); 
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileUserId, setFileUserId] = useState(null);
@@ -116,137 +113,76 @@ const Formulaire = ({ activeTab }) => {
         }
     };
 
-  const handleFileSelected = (file) => {
-    setSelectedFile(file);
-    setFileUserId(userId); // Utiliser l'userId déjà récupéré
-    setFile(file);
-    console.log("Fichier reçu dans PostFormCard:", file);
-    console.log("userId reçu dans PostFormCard:", userId);
+const handleVideoCapture = (file) => {
+  setSelectedFile(file); // Met à jour selectedFile avec le fichier vidéo capturé
 };
 
-const handleShareClick = async () => {
-    const formData = new FormData();
-    formData.append("user_id", fileUserId || userId); // Utiliser fileUserId si disponible, sinon userId
-    formData.append("content", postText); // Ajout du texte dans formData
-    
-    console.log("user_id:", fileUserId || userId);
-    console.log("content:", postText);
-
-    if (selectedFile) {
-        formData.append("file", selectedFile);
-
-        // Log pour afficher les données ajoutées à formData
-        console.log("Contenu de formData avec fichier :");
-        console.log("file:", selectedFile.name, "| Taille:", selectedFile.size, "| Type:", selectedFile.type);
-        
-        // Déterminer le dossier en fonction du type de fichier
-        let folder;
-        if (selectedFile.type.startsWith('image/')) {
-            folder = 'photos';
-        } else if (selectedFile.type.startsWith('application/pdf')) {
-            folder = 'pdfs';
-        } else if (selectedFile.type.startsWith('video/')) {
-            folder = 'videos';
-        } else {
-            console.error('Type de fichier non supporté');
-            return;
-        }
-
-        const docUrl = `http://localhost/Devoi_socila_media/public/documents/${folder}/${selectedFile.name}`;
-    } else {
-        formData.append("file", null);
-        console.log("Aucun fichier sélectionné, envoi uniquement du texte.");
-    }
-
-    try {
-        console.log("Début du fetch vers create_post.php...");
-        const response = await fetch("http://localhost/Devoi_socila_media/src/backend/controllers/posts/createPost/create_post.php", {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        });
-        console.log("Fetch terminé, en attente de la réponse...");
-
-        const responseText = await response.text();
-        console.log("Réponse brute reçue :", responseText);
-
-        try {
-            const result = JSON.parse(responseText);
-            console.log("Réponse JSON reçue :", result);
-            alert(result.message);
-
-            if (selectedFile) {
-                const docType = selectedFile.type.startsWith('video/') ? 'video' : (selectedFile.type === 'application/pdf' ? 'pdf' : 'photo');
-                //await createPost(result.message, docUrl, docType);
-            }
-        } catch (jsonError) {
-            console.error("Erreur de parsing JSON :", jsonError);
-            alert("Erreur de format dans la réponse du serveur.");
-        }
-    } catch (error) {
-        console.error("Erreur lors de l'envoi :", error);
-        alert("Échec de l'envoi.");
-    }
-
-    setPostText(''); // Effacer le texte après un partage réussi
-     //window.location.reload();
+const handleAudioCapture = (file) => {
+  setSelectedFile(file); // Met à jour selectedFile avec le fichier audio capturé
 };
 
+const handleSignatureChange = (e) => {
+  setSignature(e.target.files[0]);
+};
 
-  const handleSignatureChange = (e) => {
-    setSignature(e.target.files[0]);
-  };
-  
+const handleFileSelected = (file) => {
+  setSelectedFile(file);
+  setFileUserId(userId); // Utiliser l'userId déjà récupéré
+  console.log("Fichier reçu dans PostFormCard:", file);
+  console.log("userId reçu dans PostFormCard:", userId);
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const bodyData = {
-        full_name: fullName,
-        date: aboutDate,
-        hour: aboutHour,
-        location: aboutLocation,
-        description: aboutDescription,
-        user_id: userId,
-        receiver_id: receiverId,
-      };
-
-      console.log("Données à envoyer :", bodyData);
-
-      // Envoyer les données via WebSocket
-      socket.emit('new_report', bodyData);
-
-      const formData = new FormData();
-      formData.append('data', JSON.stringify(bodyData));
-      if (file) formData.append('file', file);
-      if (signature) formData.append('signature', signature);
-
-      const response = await fetch('http://localhost/Devoi_socila_media/src/backend/api/formulaire_de_signalement.php', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        console.log("Soumission réussie");
-      } else {
-        console.log("Erreur lors de la soumission");
-      }
-
-      // Réinitialiser les états après soumission
-      setAboutDate('');
-      setAboutHour('');
-      setAboutLocation('');
-      setAboutDescription('');
-      setFile(null);
-      setSignature(null);
-      setFullName('');
-      setReceiverPost(''); // Réinitialiser le poste du récepteur
-      setReceiverId(''); // Réinitialiser l'ID du récepteur
-
-    } catch (error) {
-      console.error("Erreur lors de la soumission:", error);
+    
+    const formData = new FormData();
+    formData.append('full_name', fullName);
+    formData.append('date', aboutDate);
+    formData.append('hour', aboutHour);
+    formData.append('location', aboutLocation);
+    formData.append('description', aboutDescription);
+    formData.append('user_id', userId);
+    formData.append('receiver_id', receiverId);
+    
+    if (signature) {
+      formData.append("signature", signature);
+      console.log(`signature: ${signature.name} | Taille: ${signature.size} | Type: ${signature.type}`);
     }
-  };
+  if (selectedFile) {
+      formData.append("file", selectedFile);
+
+      // Log pour afficher les données ajoutées à formData
+      console.log("Contenu de formData avec fichier :");
+      console.log("file:", selectedFile.name, "| Taille:", selectedFile.size, "| Type:", selectedFile.type);
+    
+  } else {
+      formData.append("file", null);
+      console.log("Aucun fichier sélectionné, envoi uniquement du texte.");
+  }
+
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
+  
+  try {
+    console.log('Début du fetch vers set_formulaire.php...');
+    const response = await fetch('http://localhost/Devoi_socila_media/src/backend/api/report/report.php', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Erreur lors de l'envoi : ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Réponse du serveur :', data);
+} catch (error) {
+    console.error('Erreur lors de la soumission du formulaire :', error);
+}
+};
+
 
   const handleLocationSearch = () => {
     if (aboutLocation) {
@@ -402,33 +338,13 @@ const handleShareClick = async () => {
                 </ul>
             </div>
           </div>
-
-          {/* Champ Fichier */}
-          <div className="mb-4">
-            <label className="font-normal text-3sm mb-2">Ajouter un fichier (vidéo, PDF, audio) :</label>
-            <div className="flex gap-1">
+          <div className="flex gap-1">
+          <label className="font-normal text-3sm mb-2">Ajouter des pieces jointes :</label>
                 <div className="flex flex-col grow" ref={inputRef}>
-                    <textarea
-                        className="grow p-3 h-14"
-                        placeholder="Entrer le titre de votre plainte"
-                        value={postText}
-                        onChange={(e) => setPostText(e.target.value)}
-                        onClick={() => setShowUpload(true)}
-                    />
-                    {showUpload && <UploadForm onFileSelected={handleFileSelected} />}
+                  Upload
+                   <UploadForm onFileSelected={handleFileSelected} />
                 </div>
             </div>
-            <div className="flex gap-5 mt-2 items-center">
-                    <div className="grow text-right">
-                        <button
-                            className="bg-socialBlue text-white px-4 py-1 rounded-md"
-                            onClick={handleShareClick}
-                        >
-                            Confirm
-                        </button>
-                    </div>
-            </div>
-          </div>
           <div className="mb-4">
             <label className="font-normal text-3sm mb-2">Télécharger votre signature :</label>
             <input
@@ -440,8 +356,9 @@ const handleShareClick = async () => {
           </div>
               
           <div className="flex justify-between mb-4">
-              <VideoCapture />
-              <AudioCapture />
+          <VideoCapture onFileCaptured={handleVideoCapture} />
+          <AudioCapture onFileCaptured={handleAudioCapture} />
+
           </div>
           <div className="flex justify-between mb-4">
             <button type="submit" className="bg-[#AAB396] p-2 rounded-full text-white hover:bg-[#8f9275]">Envoyer</button>
