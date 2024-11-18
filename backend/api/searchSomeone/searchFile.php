@@ -40,9 +40,9 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
     // SQL query for partial match with LIKE
     $query = "
-        SELECT u.Id, u.username, u.email, u.role, u.created_at, p.photo_path
+        SELECT u.id, u.username, u.email, u.created_at, u.role, p.photo_path
         FROM users u
-        LEFT JOIN profile_photo p ON u.Id = p.user_id
+        LEFT JOIN profile_photo p ON u.id = p.user_id
         WHERE u.username LIKE '%$username_safe%'
         ORDER BY u.username
     ";

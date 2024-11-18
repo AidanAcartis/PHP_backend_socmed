@@ -294,6 +294,7 @@ const handleFileSelected = (file) => {
                     className="flex-grow px-3 py-2 border border-gray-300 rounded-md" // Utilisez flex-grow pour faire en sorte que le champ occupe tout l'espace disponible
                 />
                 <button
+                    type="button"
                     className="bg-socialBlue text-white px-6 py-1 rounded-md" 
                     onClick={handleSearch}
                 >
@@ -326,6 +327,7 @@ const handleFileSelected = (file) => {
                                         </div>
                                     </a>
                                     <button
+                                      type="button"
                                      className="bg-socialBlue text-white px-2 py-1 rounded-md"
                                      onClick={() => handleSelect(user.id)}
                                     >

@@ -108,8 +108,20 @@ $stmt->bind_param("sssssssss", $full_name, $date, $hour, $location, $description
 
 // Exécuter la requête
 if ($stmt->execute()) {
-    // Retourner une réponse JSON en cas de succès
-    echo json_encode(['status' => 'success', 'message' => 'Signalement créé avec succès']);
+     // Récupération de l'ID de l'utilisateur inséré
+     $actor_id = $user_id;
+     $cible_id = $receiver_id;
+
+     // Insertion dans la table 'notifications'
+     $sql_notification = "INSERT INTO notifications (actor_id, user_id, type) VALUES (?, ?, 'signalement')";
+     $stmt_notification = $conn->prepare($sql_notification);
+     $stmt_notification->bind_param("ii", $actor_id, $cible_id);
+ 
+     if ($stmt_notification->execute()) {
+         echo json_encode(['status' => 'success', 'message' => 'Signalement et notification ajoutés avec succès']);
+     } else {
+         echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'insertion dans la table notifications : ' . $stmt_notification->error]);
+     }
 } else {
     // Retourner une réponse JSON en cas d'échec
     echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la création du signalement']);
