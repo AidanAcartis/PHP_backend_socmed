@@ -22,5 +22,11 @@
         "user_id": "4",
         "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/cover_photos\/67239a440f352_vi_arcane___league_of_legends_by_zasinlow_deu6xc0-pre.jpg",
         "uploaded_at": "2024-10-31 17:55:00"
+    },
+    {
+        "photo_id": "5",
+        "user_id": "8",
+        "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/cover_photos\/673b787bc8912_annoyed-oreki-houtarou-d4zz62qofltldvxz.jpg",
+        "uploaded_at": "2024-11-18 20:25:16"
     }
 ]

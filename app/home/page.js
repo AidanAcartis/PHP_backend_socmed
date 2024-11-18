@@ -7,7 +7,7 @@ import QuickAccess from '../components/NewFolderComponent/Section/quickAccess';
 import SectionMental from '../components/NewFolderComponent/Section/mentalSec';
 import ResourceCenter from '../components/NewFolderComponent/Section/ressourceCenter';
 import SupportSection from '../components/NewFolderComponent/Section/supportSection';
-import PageLayout from '../components/NewFolderComponent/userNavigation/newPageLayout';
+import Layout from '../components/forPages/PageLayout';
 
 export default function HomePage() {
   const [userType, setUserType] = useState('');
@@ -30,7 +30,7 @@ export default function HomePage() {
   return (
     <div>
       <Header />
-      <PageLayout>
+      <Layout>
         <div className="container grid grid-cols-2 gap-4 mx-auto p-4">
           {(userType === 'utilisateur' || userType === 'securite') && (
             <>
@@ -53,7 +53,7 @@ export default function HomePage() {
             <SupportSection />
           </Link>
         </div>
-      </PageLayout>
+      </Layout>
     </div>
   );
 }

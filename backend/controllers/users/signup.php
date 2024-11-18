@@ -47,11 +47,11 @@ $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
 // Insérer les données dans la table appropriée en fonction de userType
 if ($userType === 'utilisateur') {
-    $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'utilisateur')";
 } elseif ($userType === 'securite') {
-    $query = "INSERT INTO responsables (username, email, password, role) VALUES (?, ?, ?, 'securite')";
+    $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'securite')";
 } elseif ($userType === 'sante') {
-    $query = "INSERT INTO responsables (username, email, password, role) VALUES (?, ?, ?, 'sante')";
+    $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'sante')";
 } else {
     echo json_encode(['error' => 'Type d\'utilisateur invalide.']);
     exit;

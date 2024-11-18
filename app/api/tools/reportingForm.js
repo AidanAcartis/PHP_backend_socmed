@@ -76,7 +76,7 @@ const Formulaire = ({ activeTab }) => {
             console.log("ID utilisateur utilisé pour la recherche :", userId);
             console.log("Requête de recherche pour le nom d'utilisateur :", searchQuery);
 
-            const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/search.php?username=${encodeURIComponent(searchQuery)}&userId=${userId}`, {
+            const response = await fetch(`http://localhost/Devoi_socila_media/src/backend/api/searchSomeone/searchFile.php?username=${encodeURIComponent(searchQuery)}&userId=${userId}`, {
                 credentials: 'include', // Allows cookies with CORS
             });
 

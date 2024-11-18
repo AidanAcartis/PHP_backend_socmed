@@ -22,5 +22,11 @@
         "user_id": "2",
         "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/profile_photos\/6726434938717_zU1SBSa2_400x400.jpg",
         "uploaded_at": "2024-11-02 18:20:41"
+    },
+    {
+        "photo_id": "5",
+        "user_id": "8",
+        "photo_path": "http:\/\/localhost\/Devoi_socila_media\/src\/backend\/uploads\/profile_photos\/673b789285f86_Oreki.jpg",
+        "uploaded_at": "2024-11-18 20:25:38"
     }
 ]

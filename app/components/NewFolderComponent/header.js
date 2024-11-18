@@ -7,7 +7,7 @@ export default function Header() {
         <h1 className="text-2xl font-bold">Tech'her</h1>
         <div className="flex items-center gap-2">
         <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Accueil</Link>
-        <Link href="/home/patientProfile" className="bg-white p-2 rounded text-black hover:text-blue-600">Profile</Link>
+        <Link href="/home/profile" className="bg-white p-2 rounded text-black hover:text-blue-600">Profile</Link>
         <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Aide</Link>
         <Link href="/home/patientProfile" className="bg-white p-2 rounded text-black hover:text-blue-600">Contacts</Link>
         <Link href="/home/PageAccueil" className="bg-white p-2 rounded text-black hover:text-blue-600">Log in</Link>

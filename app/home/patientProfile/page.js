@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Avatar from "../../components/forPages/Avatar.js";
 import Card from "../../components/forPages/Cards.js";
-import Layout from "../../components/forPages/PageLayout.js";
 import PostCard from "../../components/forPages/PostCard.js";
 import ListOfFriend from '../../components/forProfile/ListOfFriends.js';
 import Photos from '../../components/forProfile/Photos.js';
@@ -18,6 +17,7 @@ import GetAboutMeForm from '../../api/about/getAboutMe.js';
 import GetMyLocation from '../../api/location/getMyLocation.js';
 import Header from '../../components/NewFolderComponent/header.js';
 import PageLayout from '../../components/NewFolderComponent/userNavigation/newPageLayout.js';
+import Layout from '../../components/forPages/PageLayout.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -79,7 +79,7 @@ export default function ProfilePage() {
   return (
     <div>
       <Header />
-    <PageLayout>
+    <Layout>
       <Card noPadding={true}>
         <div className="relative overflow-hidden rounded-md">
           <Cover />
@@ -170,7 +170,7 @@ export default function ProfilePage() {
           </Card>
         </div>
       )}
-    </PageLayout>
+    </Layout>
     </div>
   );
 }
