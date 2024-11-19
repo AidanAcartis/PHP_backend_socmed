@@ -120,7 +120,7 @@ const Signalement = ({ signalementId: initialSignalementId }) => {
           </div>
         </div>
         <div className="p-8">
-          <SecurityComplaintForm />
+          <SecurityComplaintForm signalementId={currentSignalementId}/>
         </div>
       </div>
     </Layout>
