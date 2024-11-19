@@ -17,6 +17,8 @@ export default function SecuFonctNavigationCard() {
     const currentPath = pathname.split('/').pop(); 
     if (['manage', 'dashboard', 'proofAnalysis', 'comments', 'updateStatus', 'communication'].includes(currentPath)) {
       setActiveTab(currentPath);
+    } else {
+      setActiveTab('manage');
     } 
   }, [pathname]);
 

@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Layout from "../../components/forPages/PageLayout";
+import Header from "../../components/NewFolderComponent/header";
+import PageLayout from "../../components/NewFolderComponent/userNavigation/newPageLayout";
+import SecurityComplaintForm from "../../components/NewFolderComponent/SectionSecurity/securityForm";
 
 const Signalement = ({ signalementId: initialSignalementId }) => {
   const [signalement, setSignalement] = useState(null);
@@ -60,7 +63,9 @@ const Signalement = ({ signalementId: initialSignalementId }) => {
   }
 
   return (
-    <Layout>
+    <div>
+      <Header/>
+          <Layout>
       <div className="min-h-screen bg-white py-10 px-6">
         <div className="max-w-4xl mx-auto bg-gray-50 shadow-lg rounded-lg overflow-hidden">
           <div className="p-8">
@@ -114,8 +119,13 @@ const Signalement = ({ signalementId: initialSignalementId }) => {
             </div>
           </div>
         </div>
+        <div className="p-8">
+          <SecurityComplaintForm />
+        </div>
       </div>
     </Layout>
+    </div>
+    
   );
 };
 
