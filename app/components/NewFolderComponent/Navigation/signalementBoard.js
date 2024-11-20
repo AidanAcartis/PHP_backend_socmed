@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import SecurityComplaintForm from '../SectionSecurity/securityForm';
 
 const statuses = [
   { label: "Reçu", color: "bg-blue-500" },
@@ -22,6 +23,7 @@ export default function SignalementBoard() {
   const [currentSignalementId, setCurrentSignalementId] = useState(null);
   const [complaints, setComplaints] = useState([]);
   const [visibleSignalement, setVisibleSignalement] = useState(null);
+  const [updateSignalementId, setUpdateSignalementId] = useState(null);
 
   useEffect(() => {
     const fetchSignalement = async () => {
@@ -69,6 +71,12 @@ export default function SignalementBoard() {
     setCurrentSignalementId(newId);
   };
 
+  const toggleUpdateSignalement = (signalementId) => {
+    const newId = updateSignalementId === signalementId ? null : signalementId;
+    setUpdateSignalementId(newId);
+  };
+  
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-4xl font-bold text-center mb-6">Signalements</h1>
@@ -81,12 +89,15 @@ export default function SignalementBoard() {
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Priorité</th>
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Responsable</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mise à jour</th>
+            
           </tr>
         </thead>
         <tbody>
           {complaints.map((complaint) => {
             const status = statuses.find(status => status.label === complaint.current_status);
             const isVisible = visibleSignalement === complaint.id;
+            const isUpdating = updateSignalementId === complaint.id;
             return (
               <React.Fragment key={complaint.id}>
                 <tr className="border-b hover:bg-indigo-50 transition-colors duration-300 ease-in-out">
@@ -106,6 +117,14 @@ export default function SignalementBoard() {
                   </td>
                   <td className="py-3 px-4 text-sm">{complaint.priority}</td>
                   <td className="py-3 px-4 text-sm">{complaint.responsible_service}</td>
+                  <td className="py-3 px-4">
+                    <button
+                      onClick={() => toggleUpdateSignalement(complaint.id)}
+                      className="text-blue-500 hover:text-blue-700 focus:outline-none transition-all"
+                    >
+                      {isUpdating ? 'NonUpdate' : 'Update'}
+                    </button>
+                  </td>
                 </tr>
                 {isVisible && signalement && (
                   <tr>
@@ -166,6 +185,12 @@ export default function SignalementBoard() {
           })}
         </tbody>
       </table>
+      {/* Formulaire de mise à jour */}
+      {updateSignalementId && (
+        <div className="mt-6">
+          <SecurityComplaintForm signalementId={updateSignalementId} />
+        </div>
+      )}
     </div>
   );
 }

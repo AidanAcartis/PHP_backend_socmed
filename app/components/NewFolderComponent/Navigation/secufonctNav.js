@@ -37,7 +37,6 @@ export default function SecuFonctNavigationCard() {
                 <button onClick={() => handleTabChange('manage')} className={activeTab === 'manage' ? activeElementClasses : nonActiveElementClasses}>
                 🛡️<span className="hidden md:block">Gérer les signalements</span>
                 </button>
-
                 <button onClick={() => handleTabChange('dashboard')} className={activeTab === 'dashboard' ? activeElementClasses : nonActiveElementClasses}>
                 📊<span className="hidden md:block">Consulter le tableau de bord des cas</span>
                 </button>
@@ -71,7 +70,8 @@ export default function SecuFonctNavigationCard() {
         {activeTab === 'dashboard' && (
           <div>
             <p>Tableau de bord</p>
-            <Dashboard />
+            {/*<Dashboard />*/}
+            <SignalementBoard />
           </div>
         )}
         {activeTab === 'proofAnalysis' && (
