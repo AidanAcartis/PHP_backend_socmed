@@ -7,6 +7,7 @@ export default function SecurityComplaintForm({ signalementId }) {
   const [nextDate, setNextDate] = useState("");
   const [serviceComments, setServiceComments] = useState(""); // Nouvel état pour les commentaires
   const [responsibleService, setResponsibleService] = useState(""); // Service responsable
+  const [priority, setPriority] = useState("moyenne"); // Valeur par défaut
 
   const statuses = [
     { label: "Reçu", color: "bg-blue-500" },
@@ -34,6 +35,7 @@ export default function SecurityComplaintForm({ signalementId }) {
       next_date: nextDate,
       current_status: status,
       service_comments: serviceComments,
+      priority: priority,
     };
 
     // Envoi des données au backend PHP via une requête POST
@@ -72,6 +74,18 @@ export default function SecurityComplaintForm({ signalementId }) {
             onChange={(e) => setResponsibleService(e.target.value)}
           />
         </div>
+        <div className="mb-4">
+        <label className="block text-sm font-semibold text-gray-600">Priorité</label>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          <option value="haute">Haute</option>
+          <option value="moyenne">Moyenne</option>
+          <option value="faible">Faible</option>
+        </select>
+      </div>
 
         {/* Prochaines étapes */}
         <section className="space-y-4">

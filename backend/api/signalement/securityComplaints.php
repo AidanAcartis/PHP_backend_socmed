@@ -51,6 +51,7 @@ $next_step = $data['next_step'];
 $next_date = $data['next_date'];
 $current_status = $data['current_status'];
 $service_comments = $data['service_comments'];
+$priority = $data['priority'];
 
 // Échapper les données pour éviter les problèmes de syntaxe SQL
 $responsible_service = mysqli_real_escape_string($conn, $responsible_service);
@@ -58,6 +59,7 @@ $next_step = mysqli_real_escape_string($conn, $next_step);
 $next_date = mysqli_real_escape_string($conn, $next_date);
 $current_status = mysqli_real_escape_string($conn, $current_status);
 $service_comments = mysqli_real_escape_string($conn, $service_comments);
+$priority = mysqli_real_escape_string($conn, $priority);
 
 // Vérification si le signalement_id existe déjà
 $sql_check = "SELECT * FROM security_complaints WHERE signalement_id = '$signalement_id'";
@@ -70,7 +72,8 @@ if ($result->num_rows > 0) {
                        next_step = '$next_step',
                        next_date = '$next_date',
                        current_status = '$current_status',
-                       service_comments = '$service_comments'
+                       service_comments = '$service_comments',
+                       priority = '$priority'
                    WHERE signalement_id = '$signalement_id'";
 
     if ($conn->query($sql_update) === TRUE) {
@@ -80,8 +83,8 @@ if ($result->num_rows > 0) {
     }
 } else {
     // Si le signalement_id n'existe pas, on effectue une insertion
-    $sql_insert = "INSERT INTO security_complaints (signalement_id, responsible_service, next_step, next_date, current_status, service_comments) 
-                   VALUES ('$signalement_id', '$responsible_service', '$next_step', '$next_date', '$current_status', '$service_comments')";
+    $sql_insert = "INSERT INTO security_complaints (signalement_id, responsible_service, next_step, next_date, current_status, service_comments, priority) 
+                   VALUES ('$signalement_id', '$responsible_service', '$next_step', '$next_date', '$current_status', '$service_comments', '$priority')";
 
     if ($conn->query($sql_insert) === TRUE) {
         echo json_encode(["message" => "Données insérées avec succès"]);

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Card from "../../forPages/Cards";
 import Dashboard from "../../../api/tools/dashboardForm";
+import SignalementBoard from "./signalementBoard";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -64,7 +65,7 @@ export default function SecuFonctNavigationCard() {
         {activeTab === 'manage' && (
           <div>
             <p>Gérer les signalements</p>
-           
+            <SignalementBoard />
           </div>
         )}
         {activeTab === 'dashboard' && (

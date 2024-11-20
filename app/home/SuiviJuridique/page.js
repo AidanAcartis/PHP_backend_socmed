@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '../../components/NewFolderComponent/header';
 import Banner from '../../components/NewFolderComponent/banner';
-import MainMenu from '../../components/NewFolderComponent/mainMenu';
 import QuickAccess from '../../components/NewFolderComponent/Section/quickAccess';
 import Statistics from '../../components/NewFolderComponent/Section/statistics';
 import ResourceCenter from '../../components/NewFolderComponent/Section/ressourceCenter';
