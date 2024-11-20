@@ -23,7 +23,7 @@ const Dashboard = () => {
             {/* Filtres */}
             <Filters />
             {/* Tableau des signalements */}
-            <IncidentTable />
+            
         </Card>
         <Card>
             <div>

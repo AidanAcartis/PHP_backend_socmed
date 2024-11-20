@@ -4,8 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Card from "../../forPages/Cards";
-import Dashboard from "../../../api/tools/dashboardForm";
 import SignalementBoard from "./signalementBoard";
+import ChartSignalement from "../../../api/tools/tableauSignalement";
+import Filters from "../dashboard/filters";
+import ComplaintsBoard from "../dashboard/filtersSignalement";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -70,8 +72,9 @@ export default function SecuFonctNavigationCard() {
         {activeTab === 'dashboard' && (
           <div>
             <p>Tableau de bord</p>
-            {/*<Dashboard />*/}
-            <SignalementBoard />
+            <Filters/>
+            <ChartSignalement />
+            <ComplaintsBoard />
           </div>
         )}
         {activeTab === 'proofAnalysis' && (

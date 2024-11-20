@@ -12,12 +12,22 @@ const Filters = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Statut</label>
             <select className="mt-2 block w-full bg-gray-50 border border-gray-300 text-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300">
-              <option>🔵 Reçu</option>
-              <option>🟡 En cours de vérification</option>
-              <option>🟠 Complément demandé</option>
-              <option>🟢 En cours de traitement</option>
-              <option>🟣 Transmis aux autorités</option>
-              <option>⚫ Archivé</option>
+              {/*
+                    const statuses = [
+  { label: "Reçu", color: "bg-blue-500" },
+  { label: "En vérification", color: "bg-yellow-500" },
+  { label: "En attente de résolution", color: "bg-orange-500" },
+  { label: "Résolu", color: "bg-green-500" },
+  { label: "Rejeté", color: "bg-red-500" },
+  { label: "Assigné", color: "bg-teal-500" },
+  { label: "En cours de traitement", color: "bg-purple-500" },
+  { label: "Reporté", color: "bg-gray-500" },
+  { label: "En attente de documents", color: "bg-indigo-500" },
+  { label: "En appel", color: "bg-pink-500" },
+  { label: "Clôturé", color: "bg-green-700" },
+  { label: "Escalade", color: "bg-red-700" },
+];
+              */}
             </select>
           </div>
   
