@@ -8,6 +8,8 @@ import SignalementBoard from "./signalementBoard";
 import ChartSignalement from "../../../api/tools/tableauSignalement";
 import Filters from "../dashboard/filters";
 import ComplaintsBoard from "../dashboard/filtersSignalement";
+import Statistiques from "../../../api/stats/statistiques";
+import Dashboard from "../../../api/tools/dashboardForm";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -73,6 +75,8 @@ export default function SecuFonctNavigationCard() {
           <div>
             <p>Tableau de bord</p>
             <ComplaintsBoard />
+            <Statistiques />
+            <Dashboard />
           </div>
         )}
         {activeTab === 'proofAnalysis' && (
