@@ -122,44 +122,40 @@ const ComplaintsBoard = () => {
       <section className="mt-6">
         <h2 className="text-2xl font-semibold text-gray-900">Signalements</h2>
         <div className="mt-4 space-y-4">
-
-  {filteredComplaints.length > 0 ? (
-    filteredComplaints.map((complaint) => {
-      const status = statuses.find(
-        (status) => status.label === complaint.current_status
-      );
-      return (
-        <div
-        key={complaint.id}
-        className="p-4 bg-white rounded-lg shadow-md flex flex-col space-y-2"
-      >
-        <table className="min-w-full table-auto bg-white rounded-lg shadow-lg overflow-hidden">
-            <thead className="bg-indigo-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Statut</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Résumé</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Priorité</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Responsable</th>
-            </thead>
-            <tbody>
-                <tr>
-                  <td className="py-3 px-4 flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-2 ${status ? status.color : 'bg-gray-300'}`}></div>
-                      {complaint.current_status}
-                  </td>
-                  <td className="py-3 px-4 text-sm">{complaint.date}</td>
-                  <td className="py-3 px-4 text-sm">{complaint.description.substring(0, 30)}...</td>
-                  <td className="py-3 px-4 text-sm">{complaint.priority}</td>
-                  <td className="py-3 px-4 text-sm">{complaint.responsible_service}</td>
-                </tr>
-            </tbody>
-        </table>
-      </div>
-      );
-    })
-   ) : (
-            <p>Aucun signalement trouvé.</p>
-          )}
+        {filteredComplaints.length > 0 ? (
+  <table className="min-w-full table-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <thead className="bg-indigo-50 border-b border-gray-200">
+      <tr>
+        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Statut</th>
+        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Résumé</th>
+        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Priorité</th>
+        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Responsable</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filteredComplaints.map((complaint) => {
+        const status = statuses.find(
+          (status) => status.label === complaint.current_status
+        );
+        return (
+          <tr key={complaint.id} className="border-b">
+            <td className="py-3 px-4 flex items-center">
+              <div className={`w-3 h-3 rounded-full mr-2 ${status ? status.color : 'bg-gray-300'}`}></div>
+              {complaint.current_status}
+            </td>
+            <td className="py-3 px-4 text-sm">{complaint.date}</td>
+            <td className="py-3 px-4 text-sm">{complaint.description.substring(0, 30)}...</td>
+            <td className="py-3 px-4 text-sm">{complaint.priority}</td>
+            <td className="py-3 px-4 text-sm">{complaint.responsible_service}</td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+) : (
+  <p className="text-gray-600">Aucune plainte filtrée trouvée.</p>
+)}
         </div>
       </section>
     </div>

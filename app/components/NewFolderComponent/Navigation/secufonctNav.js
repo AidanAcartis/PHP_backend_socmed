@@ -72,8 +72,6 @@ export default function SecuFonctNavigationCard() {
         {activeTab === 'dashboard' && (
           <div>
             <p>Tableau de bord</p>
-            <Filters/>
-            <ChartSignalement />
             <ComplaintsBoard />
           </div>
         )}
