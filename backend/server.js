@@ -57,6 +57,35 @@ app.get('/', (req, res) => {
     res.send('<h1>Bienvenue sur le serveur!</h1>');
 });
 
+app.get("/api/geographic-distribution", async (req, res) => {
+    const query = "SELECT location, COUNT(*) as count FROM signalements GROUP BY location";
+    try {
+      const [results] = await db.query(query); // Attendez la résolution de la promesse
+      res.json(results); // Renvoie les résultats
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Erreur lors de la récupération des données." });
+    }
+  });
+  
+  // Endpoint : Signalements par personne
+  // Endpoint : Signalements par personne
+app.get("/api/reports-by-person", async (req, res) => {
+    const query = "SELECT full_name, COUNT(*) as count FROM signalements GROUP BY full_name";
+    
+    try {
+      // Exécutez la requête avec la version promise de MySQL
+      const [results] = await db.query(query);
+      res.json(results);
+    } catch (err) {
+      // Gérez les erreurs
+      console.error(err);
+      res.status(500).json({ error: "Une erreur est survenue lors de l'exécution de la requête." });
+    }
+  });
+  
+  
+
 // Route 1 : Nombre total de plaintes
 app.get('/api/plaintes/total', async (req, res) => {
     const query = 'SELECT COUNT(*) AS total FROM signalements';
