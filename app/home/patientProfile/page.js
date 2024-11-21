@@ -18,6 +18,7 @@ import GetMyLocation from '../../api/location/getMyLocation.js';
 import Header from '../../components/NewFolderComponent/header.js';
 import PageLayout from '../../components/NewFolderComponent/userNavigation/newPageLayout.js';
 import Layout from '../../components/forPages/PageLayout.js';
+import Status from '../../components/NewFolderComponent/dashboard/SimpleUtilisateur/signalementStatus.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -135,7 +136,7 @@ export default function ProfilePage() {
       {/* Render components conditionally based on the active tab */}
       {activeTab === 'status' && (
         <div>
-          <PostCard />
+          <Status />
         </div>
       )}
       {activeTab === 'agenda' && (
