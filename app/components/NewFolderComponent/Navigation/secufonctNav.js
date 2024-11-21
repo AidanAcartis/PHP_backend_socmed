@@ -12,6 +12,7 @@ import Statistiques from "../../../api/stats/statistiques";
 import Dashboard from "../../../api/tools/dashboardForm";
 import GeographicDistributionChart from "../SectionSecurity/secuGraph/geoGrap";
 import ReportsByPersonChart from "../SectionSecurity/secuGraph/reportGraph";
+import SignalementCharts from "../SectionSecurity/secuGraph/statusChart";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -81,6 +82,7 @@ export default function SecuFonctNavigationCard() {
             <Dashboard />
             <GeographicDistributionChart />
             <ReportsByPersonChart />
+            <SignalementCharts />
           </div>
         )}
         {activeTab === 'proofAnalysis' && (

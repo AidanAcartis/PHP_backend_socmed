@@ -57,6 +57,31 @@ app.get('/', (req, res) => {
     res.send('<h1>Bienvenue sur le serveur!</h1>');
 });
 
+// Endpoint pour la répartition des signalements par `current_status`
+app.get("/api/current-status-distribution", async (req, res) => {
+    const query = "SELECT current_status, COUNT(*) as count FROM security_complaints GROUP BY current_status";
+    try {
+      const [results] = await db.query(query); // Attendre la résolution de la requête
+      res.json(results); // Renvoie les résultats sous format JSON
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Erreur lors de la récupération des données." });
+    }
+  });
+
+  // Endpoint pour la répartition des signalements par `priority`
+app.get("/api/priority-distribution", async (req, res) => {
+    const query = "SELECT priority, COUNT(*) as count FROM security_complaints GROUP BY priority";
+    try {
+      const [results] = await db.query(query); // Attendre la résolution de la requête
+      res.json(results); // Renvoie les résultats sous format JSON
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Erreur lors de la récupération des données." });
+    }
+  });
+  
+
 app.get("/api/geographic-distribution", async (req, res) => {
     const query = "SELECT location, COUNT(*) as count FROM signalements GROUP BY location";
     try {
