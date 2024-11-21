@@ -12,17 +12,18 @@ export default function SecurityComplaintForm({ signalementId }) {
   const statuses = [
     { label: "Reçu", color: "bg-blue-500" },
     { label: "En vérification", color: "bg-yellow-500" },
-    { label: "En attente de résolution", color: "bg-orange-500" },
-    { label: "Résolu", color: "bg-green-500" },
-    { label: "Rejeté", color: "bg-red-500" },
+    { label: "En attente de documents", color: "bg-indigo-500" },
     { label: "Assigné", color: "bg-teal-500" },
     { label: "En cours de traitement", color: "bg-purple-500" },
+    { label: "En attente de résolution", color: "bg-orange-500" },
     { label: "Reporté", color: "bg-gray-500" },
-    { label: "En attente de documents", color: "bg-indigo-500" },
+    { label: "Résolu", color: "bg-green-500" },
+    { label: "Rejeté", color: "bg-red-500" },
     { label: "En appel", color: "bg-pink-500" },
-    { label: "Clôturé", color: "bg-green-700" },
     { label: "Escalade", color: "bg-red-700" },
-  ];
+    { label: "Clôturé", color: "bg-green-700" }
+  ]
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,12 +101,12 @@ export default function SecurityComplaintForm({ signalementId }) {
             >
               <option value="">Sélectionner...</option>
               <option value="enquete">Enquête en cours</option>
+              <option value="appel_a_temoin">Appel à témoins</option>
               <option value="interview">Convocation pour une interview</option>
               <option value="audience">Audience prévue au tribunal</option>
               <option value="confrontation_programmee">Confrontation programmée</option>
-              <option value="cloture_enquete">Clôture de l'enquête</option>
               <option value="transmission_dossier">Transmission du dossier au tribunal</option>
-              <option value="appel_a_temoin">Appel à témoins</option>
+              <option value="cloture_enquete">Clôture de l'enquête</option>
             </select>
           </div>
           <div className="flex flex-col space-y-2">

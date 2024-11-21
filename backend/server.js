@@ -57,6 +57,55 @@ app.get('/', (req, res) => {
     res.send('<h1>Bienvenue sur le serveur!</h1>');
 });
 
+// API pour récupérer l'historique des statuts d'un signalement
+app.get('/api/status-history/:signalement_id', async (req, res) => {
+    const signalementId = req.params.signalement_id;
+
+    const sql = `
+         SELECT sh.change_date, sh.new_status
+        FROM status_history sh
+        INNER JOIN security_complaints sc ON sh.security_complaint_id = sc.id
+        WHERE sc.id = ?
+        ORDER BY sh.change_date;
+    `;
+
+    try {
+        const [results] = await db.query(sql, [signalementId]);
+        res.json(results); // Renvoie les résultats sous format JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Erreur lors de la récupération des données' });
+    }
+});
+
+// WebSocket : communication en temps réel
+io.on('connection', (socket) => {
+    console.log('Un client s\'est connecté');
+    
+    // Événement pour envoyer des mises à jour de statut en temps réel
+    socket.on('getStatusUpdates', async (signalementId) => {
+        try {
+            const [results] = await db.query(
+                `SELECT sh.change_date, sh.new_status
+                 FROM status_history sh
+                 INNER JOIN security_complaints sc ON sh.security_complaint_id = sc.id
+                 WHERE sc.id = ?
+                 ORDER BY sh.change_date`,
+                [signalementId]
+            );
+            socket.emit('statusUpdates', results); // Envoie les résultats au client via WebSocket
+        } catch (err) {
+            console.error('Erreur de mise à jour du statut:', err);
+            socket.emit('error', { error: 'Erreur lors de la récupération des données de statut' });
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Un client s\'est déconnecté');
+    });
+});
+
+
 // Endpoint pour la répartition des signalements par `current_status`
 app.get("/api/current-status-distribution", async (req, res) => {
     const query = "SELECT current_status, COUNT(*) as count FROM security_complaints GROUP BY current_status";

@@ -13,6 +13,7 @@ import Dashboard from "../../../api/tools/dashboardForm";
 import GeographicDistributionChart from "../SectionSecurity/secuGraph/geoGrap";
 import ReportsByPersonChart from "../SectionSecurity/secuGraph/reportGraph";
 import SignalementCharts from "../SectionSecurity/secuGraph/statusChart";
+import StatutHistoryChart from "../SectionSecurity/secuGraph/evolutionChart";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -20,6 +21,7 @@ export default function SecuFonctNavigationCard() {
   const nonActiveElementClasses = 'text-sm md:text-md flex gap-1 md:gap-3 py-2 my-2 hover:bg-[#FFF8E8] hover:bg-opacity-90 md:-mx-4 md:px-4 rounded-md transition-all hover:scale-110 hover:shadow-md shadow-gray-300';
 
   const [activeTab, setActiveTab] = useState('dashboard');
+  const Id = 1;
 
   useEffect(() => {
     const currentPath = pathname.split('/').pop(); 
@@ -83,6 +85,7 @@ export default function SecuFonctNavigationCard() {
             <GeographicDistributionChart />
             <ReportsByPersonChart />
             <SignalementCharts />
+            <StatutHistoryChart signalementId={1}/>
           </div>
         )}
         {activeTab === 'proofAnalysis' && (

@@ -77,7 +77,30 @@ if ($result->num_rows > 0) {
                    WHERE signalement_id = '$signalement_id'";
 
     if ($conn->query($sql_update) === TRUE) {
-        echo json_encode(["message" => "Données mises à jour avec succès"]);
+        // Récupérer le dernier statut enregistré dans status_history
+        $sql_select_previous_status = "SELECT new_status FROM status_history 
+                                       WHERE security_complaint_id = '$signalement_id' 
+                                       ORDER BY change_date DESC LIMIT 1";
+        $result_previous_status = $conn->query($sql_select_previous_status);
+
+        if ($result_previous_status->num_rows > 0) {
+            $row_previous = $result_previous_status->fetch_assoc();
+            $previous_status = $row_previous['new_status'];
+        } else {
+            $previous_status = NULL;  // Si aucun historique trouvé, initialiser à NULL
+        }
+
+        // Récupérer l'id de l'utilisateur qui a effectué la modification
+        $changed_by = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;  // Assuming the user's ID is stored in the session
+
+        // Insérer dans status_history
+        $sql_history = "INSERT INTO status_history (security_complaint_id, previous_status, new_status, changed_by, comments) 
+                        VALUES ('$signalement_id', '$previous_status', '$current_status', '$changed_by', '$service_comments')";
+        if ($conn->query($sql_history) === TRUE) {
+            echo json_encode(["message" => "Données mises à jour avec succès"]);
+        } else {
+            echo json_encode(["error" => "Erreur lors de l'insertion dans l'historique des statuts: " . $conn->error]);
+        }
     } else {
         echo json_encode(["error" => "Erreur lors de la mise à jour des données: " . $conn->error]);
     }
@@ -87,6 +110,14 @@ if ($result->num_rows > 0) {
                    VALUES ('$signalement_id', '$responsible_service', '$next_step', '$next_date', '$current_status', '$service_comments', '$priority')";
 
     if ($conn->query($sql_insert) === TRUE) {
+        $last_id = $conn->insert_id;
+
+        // Insérer dans status_history, avec changed_by initialisé à NULL si pas d'utilisateur
+        $changed_by = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
+
+        $sql_history = "INSERT INTO status_history (security_complaint_id, previous_status, new_status, changed_by, comments) 
+                        VALUES ('$last_id', NULL, '$current_status', '$changed_by', '$service_comments')";
+        $conn->query($sql_history);
         echo json_encode(["message" => "Données insérées avec succès"]);
     } else {
         echo json_encode(["error" => "Erreur lors de l'insertion des données: " . $conn->error]);
