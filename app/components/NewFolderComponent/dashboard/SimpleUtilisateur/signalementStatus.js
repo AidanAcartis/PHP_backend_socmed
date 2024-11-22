@@ -61,12 +61,6 @@ export default function StatusForUser() {
 
   const { description, security_complaint, status_history, internal_comments } = data;
 
-  const renderStatusChart = (signalementId) => (
-    <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-      <StatusChart signalementId={signalementId} />
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <div className="max-w-5xl mx-auto py-12 px-6">
@@ -109,9 +103,10 @@ export default function StatusForUser() {
               <span role="img" aria-label="update">🔄</span>
             </p>
           </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <StatusChart signalementId={security_complaint.signalement_id} />
+          </div>
         </div>
-
-        {status_history?.length > 0 && renderStatusChart(status_history[0].signalement_id)}
 
         {/* Recents */}
         {status_history && status_history.length > 0 ? (
