@@ -20,6 +20,7 @@ import PageLayout from '../../components/NewFolderComponent/userNavigation/newPa
 import Layout from '../../components/forPages/PageLayout.js';
 import VideoCapture from '../../api/IA/VideoIa.jsx';
 import StatusForUser from '../../components/NewFolderComponent/dashboard/SimpleUtilisateur/signalementStatus.js';
+import Agenda from '../../components/NewFolderComponent/AGENDA/agenda.js';
 
 
 const tabClasses = 'flex gap-1 md:px-3 py-1 items-center border-b-4 border-b-white cursor-pointer';
@@ -146,7 +147,7 @@ export default function ProfilePage() {
         <div>
           <Card>
             <h2 className="font-bold text-3xl mb-2">Agenda</h2>
-              
+              <Agenda />
           </Card>
         </div>
       )}
