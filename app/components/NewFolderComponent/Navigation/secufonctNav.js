@@ -15,6 +15,7 @@ import ReportsByPersonChart from "../SectionSecurity/secuGraph/reportGraph";
 import SignalementCharts from "../SectionSecurity/secuGraph/statusChart";
 import StatutHistoryChart from "../SectionSecurity/secuGraph/evolutionChart";
 import PrivateChat from "../../../api/chat/chatPrivate";
+import ProofList from "../proof/secuProof";
 
 export default function SecuFonctNavigationCard() {
   const pathname = usePathname();
@@ -88,7 +89,7 @@ export default function SecuFonctNavigationCard() {
         {activeTab === 'proofAnalysis' && (
           <div>
             <p>Analyser les preuves fournies</p>
-           
+              <ProofList />
           </div>
         )}
         {activeTab === 'comments' && (

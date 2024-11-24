@@ -20,11 +20,11 @@ const statuses = [
 ];
 
 export default function SignalementBoard() {
-  const [signalement, setSignalement] = useState(null);
   const [currentSignalementId, setCurrentSignalementId] = useState(null);
   const [complaints, setComplaints] = useState([]);
   const [visibleSignalement, setVisibleSignalement] = useState(null);
   const [updateSignalementId, setUpdateSignalementId] = useState(null);
+  const [signalement, setSignalement] = useState(null);
 
   useEffect(() => {
     const fetchSignalement = async () => {
