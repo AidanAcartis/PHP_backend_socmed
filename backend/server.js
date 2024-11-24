@@ -506,6 +506,29 @@ io.on('connection', (socket) => {
     });
 });
 
+// WebSocket pour gérer les messages privés
+io.on('connection', (socket) => {
+    console.log('Nouvelle connexion WebSocket:', socket.id);
+
+    // Écouter les demandes de messages non lus
+    socket.on('getUnreadMessages', async (userId) => {
+        try {
+            // Récupérer le nombre de messages non lus pour l'utilisateur
+            const [results] = await db.query(
+                'SELECT COUNT(*) AS unread_count FROM private_messages WHERE receiver_id = ? AND is_read = 0',
+                [userId]
+            );
+            const unreadCount = results[0].unread_count;
+
+            // Émettre un événement au client spécifique
+            socket.emit('unreadMessagesCount', { unreadCount });
+        } catch (err) {
+            console.error('Erreur lors de la récupération des messages non lus:', err);
+        }
+    });
+});
+
+
 // WebSocket pour gérer les notifications
 io.on('connection', (socket) => {
     console.log('Nouvelle connexion WebSocket:', socket.id);

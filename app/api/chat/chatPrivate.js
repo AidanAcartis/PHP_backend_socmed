@@ -26,6 +26,29 @@ const PrivateChat = ({ receiverId }) => {
         }
     };
 
+    // Fonction pour marquer les messages comme lus
+    const markMessagesAsRead = async () => {
+        try {
+            const response = await fetch('http://localhost/Devoi_socila_media/src/backend/api/updateMess/updateMessage.php', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ receiverId: userId }) // Assurez-vous que l'ID de l'utilisateur est inclus
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur inconnue');
+            }
+            console.log(data.message); // Afficher le message de succès
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des messages :', error);
+        }
+    };
+
     // Charger l'ID utilisateur une seule fois au montage
     useEffect(() => {
         fetchUserId();
@@ -39,10 +62,15 @@ const PrivateChat = ({ receiverId }) => {
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
+        // Marquer les messages comme lus après réception d'un message
+        if (userId) {
+            markMessagesAsRead();
+        }
+
         return () => {
             socket.off('receivePrivateMessage');
         };
-    }, []);
+    }, [userId]); // Déclencher cet effet chaque fois que userId change
 
     const sendMessage = () => {
         if (newMessage.trim()) {
@@ -56,10 +84,9 @@ const PrivateChat = ({ receiverId }) => {
     };
 
     return (
-          <div className="max-w-4xl mx-auto">  {/* Uniformiser la largeur */}
+        <div className="max-w-4xl mx-auto">  {/* Uniformiser la largeur */}
             <ListOfChat messages={messages} />
-          </div>
-
+        </div>
     );
 };
 

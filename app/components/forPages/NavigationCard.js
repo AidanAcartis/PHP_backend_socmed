@@ -7,6 +7,7 @@ import Card from "./Cards";
 import Notifications from "../../api/notifications/notifAlert";
 import NotificationComponent from "../../api/notifications/notifAlert";
 import Forum from "../../api/chat/Forum";
+import UnreadMessagesComponent from "../../api/notifications/messageNotif";
 
 export default function NavigationCard() {
     const pathname = usePathname();
@@ -51,6 +52,12 @@ export default function NavigationCard() {
     }, [pathname]);
 
     const [isNotifClicked, setIsNotifClicked] = useState(false);
+    const [isMessClicked, setIsMessClicked] = useState(false);
+
+    const handleUpdateMess = () => {
+        // Logique pour la mise à jour des notifications
+        setIsMessClicked(true); // Met à jour l'état pour indiquer que le bouton a été cliqué
+    };
 
     const handleUpdateNotif = () => {
         // Logique pour la mise à jour des notifications
@@ -101,10 +108,10 @@ export default function NavigationCard() {
                 <Link 
                     href="/home/message" 
                     className={activeTab === 'message' ? activeElementClasses : nonActiveElementClasses}
+                    onClick={() => handleUpdateMess()}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                    </svg>
+                   {/* Affiche NotificationComponent seulement si isNotifClicked est faux */}
+                   {!isMessClicked && <UnreadMessagesComponent userId={TheId} />} 
                     <span className="hidden md:block">Messenger</span>
                 </Link>
                 <Link href="/home/parameters" className={activeTab === 'parameters' ? activeElementClasses : nonActiveElementClasses}>
