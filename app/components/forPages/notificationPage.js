@@ -102,6 +102,7 @@ const NotificationCard = () => {
                                                 </>
                                             );
                                             break;
+                                    
                                     // Ajoutez d'autres cas selon les types de notifications
                                     default:
                                         message = ` a effectué une action.`;

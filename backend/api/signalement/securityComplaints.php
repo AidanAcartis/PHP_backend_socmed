@@ -98,6 +98,47 @@ if ($result->num_rows > 0) {
 
         $sql_history = "INSERT INTO status_history (security_complaint_id, previous_status, new_status, previous_step, new_step, changed_by, comments) 
                         VALUES ('$signalement_id', '$previous_status', '$current_status', '$previous_step', '$next_step', '$changed_by', '$service_comments')";
+        
+        //Inserer dans la notification ici
+        if ($conn->query($sql_history) === TRUE) {
+            // Récupérer l'ID de l'insertion dans la table status_history
+            $last_history_id = $conn->insert_id;
+        
+            // Étape 1 : Récupérer actor_id depuis la session
+            $actor_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
+        
+            // Étape 2 : Récupérer user_id pour la notification
+            // Trouver le security_complaint_id correspondant
+            $sql_get_signalement_id = "
+                SELECT sc.signalement_id, s.user_id
+                FROM status_history sh
+                JOIN security_complaints sc ON sh.security_complaint_id = sc.id
+                JOIN signalements s ON sc.signalement_id = s.id
+                WHERE sh.id = '$last_history_id'";
+        
+            $result = $conn->query($sql_get_signalement_id);
+        
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $notification_user_id = $row['user_id'];
+        
+                // Étape 3 : Insérer la notification
+                $sql_notification = "
+                    INSERT INTO notifications (actor_id, user_id, type, is_read)
+                    VALUES ('$actor_id', '$notification_user_id', 'new_status', 0)";
+                
+                if ($conn->query($sql_notification) === TRUE) {
+                    echo json_encode(["message" => "Données mises à jour avec succès, notification créée"]);
+                } else {
+                    echo json_encode(["error" => "Erreur lors de l'insertion de la notification : " . $conn->error]);
+                }
+            } else {
+                echo json_encode(["error" => "Impossible de récupérer user_id pour la notification"]);
+            }
+        } else {
+            echo json_encode(["error" => "Erreur lors de l'insertion dans l'historique des statuts: " . $conn->error]);
+        }
+        
 
         if ($conn->query($sql_history) === TRUE) {
             echo json_encode(["message" => "Données mises à jour avec succès"]);
@@ -111,7 +152,8 @@ if ($result->num_rows > 0) {
     // Insérer un nouveau signalement
     $sql_insert = "INSERT INTO security_complaints (signalement_id, responsible_service, next_step, next_date, current_status, service_comments, priority) 
                    VALUES ('$signalement_id', '$responsible_service', '$next_step', '$next_date', '$current_status', '$service_comments', '$priority')";
-
+    
+   
     if ($conn->query($sql_insert) === TRUE) {
         $last_id = $conn->insert_id;
 
@@ -120,6 +162,48 @@ if ($result->num_rows > 0) {
 
         $sql_history = "INSERT INTO status_history (security_complaint_id, previous_status, new_status, previous_step, new_step, changed_by, comments) 
                         VALUES ('$last_id', NULL, '$current_status', NULL, '$next_step', '$changed_by', '$service_comments')";
+        
+         //Inserer dans la notification
+         if ($conn->query($sql_history) === TRUE) {
+            // Récupérer l'ID de l'insertion dans la table status_history
+            $last_history_id = $conn->insert_id;
+        
+            // Étape 1 : Récupérer actor_id depuis la session
+            $actor_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
+        
+            // Étape 2 : Récupérer user_id pour la notification
+            // Trouver le security_complaint_id correspondant
+            $sql_get_signalement_id = "
+                SELECT sc.signalement_id, s.user_id
+                FROM status_history sh
+                JOIN security_complaints sc ON sh.security_complaint_id = sc.id
+                JOIN signalements s ON sc.signalement_id = s.id
+                WHERE sh.id = '$last_history_id'";
+        
+            $result = $conn->query($sql_get_signalement_id);
+        
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $notification_user_id = $row['user_id'];
+        
+                // Étape 3 : Insérer la notification
+                $sql_notification = "
+                    INSERT INTO notifications (actor_id, user_id, type, is_read)
+                    VALUES ('$actor_id', '$notification_user_id', 'new_status', 0)";
+                
+                if ($conn->query($sql_notification) === TRUE) {
+                    echo json_encode(["message" => "Données mises à jour avec succès, notification créée"]);
+                } else {
+                    echo json_encode(["error" => "Erreur lors de l'insertion de la notification : " . $conn->error]);
+                }
+            } else {
+                echo json_encode(["error" => "Impossible de récupérer user_id pour la notification"]);
+            }
+        } else {
+            echo json_encode(["error" => "Erreur lors de l'insertion dans l'historique des statuts: " . $conn->error]);
+        }
+        
+        
         if ($conn->query($sql_history)) {
             echo json_encode(["message" => "Données insérées avec succès"]);
         } else {
