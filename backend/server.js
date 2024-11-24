@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
     res.send('<h1>Bienvenue sur le serveur!</h1>');
 });
 
+
 // Route pour récupérer les événements liés à un utilisateur
 app.get('/api/events', async (req, res) => {
     const { userId } = req.query;

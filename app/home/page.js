@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '../components/NewFolderComponent/header';
 import QuickAccess from '../components/NewFolderComponent/Section/quickAccess';
-import SectionMental from '../components/NewFolderComponent/Section/mentalSec';
 import ResourceCenter from '../components/NewFolderComponent/Section/ressourceCenter';
 import SupportSection from '../components/NewFolderComponent/Section/supportSection';
 import Layout from '../components/forPages/PageLayout';
@@ -39,17 +38,10 @@ export default function HomePage() {
                 </Link>
             </>
           )}
-          {(userType === 'utilisateur' || userType === 'sante') && (
-            <>
-              <Link href="/home/statistics">
-                <SectionMental />
-              </Link>
-            </>
-          )}
           <Link href="/home/ressources">
             <ResourceCenter />
           </Link>
-          <Link href="/home/support">
+          <Link href="/home/forum">
             <SupportSection />
           </Link>
         </div>

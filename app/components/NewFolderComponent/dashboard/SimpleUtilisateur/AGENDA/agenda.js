@@ -1,16 +1,19 @@
+'user client';
+
 import { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react'; 
 import dayGridPlugin from '@fullcalendar/daygrid'; 
 import interactionPlugin from '@fullcalendar/interaction'; 
 
-export default function Agenda() {
+export default function Agenda({ userId }) {
     const [events, setEvents] = useState([]); // Stocker les événements à afficher
 
     // Récupération des données de l'API
     useEffect(() => {
         async function fetchEvents() {
             try {
-                const response = await fetch('http://localhost:3003/api/events?userId=2'); // Modifier avec l'ID utilisateur correct
+                // Correction : utiliser des backticks pour l'interpolation de la variable userId
+                const response = await fetch(`http://localhost:3003/api/events?userId=${userId}`); // Modifier avec l'ID utilisateur correct
                 const data = await response.json();
                 const formattedEvents = data.map(event => ({
                     title: event.new_step, // Affiche 'new_step' comme titre
@@ -23,8 +26,7 @@ export default function Agenda() {
             }
         }
         fetchEvents();
-    }, []);
-
+    }, [userId]); 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
             <div className="container mx-auto py-10 px-5">

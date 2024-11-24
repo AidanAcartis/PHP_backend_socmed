@@ -8,6 +8,8 @@ import Formulaire from "../../../api/tools/reportingForm";
 import Dashboard from "../../../api/tools/dashboardForm";
 import ProofSection from "../proof/proofSection";
 import ResourcesSection from "../resourcesSec/resourceSection";
+import StatusForUser from "../dashboard/SimpleUtilisateur/signalementStatus";
+import Resources from "../Guide/ressourcesPage";
 
 export default function FonctNavigationCard() {
   const pathname = usePathname();
@@ -62,7 +64,7 @@ export default function FonctNavigationCard() {
         {activeTab === 'dashboard' && (
           <div>
             <p>Tableau de bord</p>
-            <Dashboard />
+            <StatusForUser />
           </div>
         )}
         {activeTab === 'proof' && (
@@ -73,7 +75,7 @@ export default function FonctNavigationCard() {
         )}
         {activeTab === 'ressources' && (
           <div>
-            <ResourcesSection />
+            <Resources />
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import SecurityComplaintForm from '../SectionSecurity/securityForm';
+import Evaluations from '../dashboard/Service_Security/UserEvaluation';
 
 const statuses = [
   { label: "Reçu", color: "bg-blue-500" },
@@ -35,6 +36,7 @@ export default function SignalementBoard() {
         );
         if (!res.ok) throw new Error("Erreur lors du chargement du signalement");
         const data = await res.json();
+        console.log('data of signalement:', data);
         setSignalement(data);
       } catch (err) {
         console.error(err.message);
@@ -52,6 +54,7 @@ export default function SignalementBoard() {
         );
         if (!response.ok) throw new Error('Réponse du serveur incorrecte');
         const data = await response.json();
+        
         if (data.status === 'success' && Array.isArray(data.data)) {
           setComplaints(data.data);
         } else {
@@ -64,6 +67,36 @@ export default function SignalementBoard() {
 
     fetchComplaints();
   }, []);
+
+  const deleteSignalement = async (signalementId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce signalement ?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            'http://localhost/Devoi_socila_media/src/backend/api/signalement/deleteSignalement.php',
+            {
+                method: 'POST', // Correspond à la méthode attendue par le backend
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: signalementId }), // Transmettre l'ID au backend
+            }
+        );
+
+        const result = await response.json();
+        console.log('the ID:', result);
+
+        if (result.status === 'success') {
+            setComplaints((prev) => prev.filter((complaint) => complaint.id !== signalementId));
+            alert("Signalement supprimé avec succès.");
+        } else {
+            console.error("Erreur lors de la suppression :", result.message);
+        }
+    } catch (error) {
+        console.error("Erreur réseau :", error);
+    }
+};
+
 
   const toggleWatchSignalement = (signalementId) => {
     const newId = visibleSignalement === signalementId ? null : signalementId;
@@ -90,6 +123,7 @@ export default function SignalementBoard() {
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Priorité</th>
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Responsable</th>
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mise à jour</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Supprimer</th>
             
           </tr>
         </thead>
@@ -124,6 +158,14 @@ export default function SignalementBoard() {
                     >
                       {isUpdating ? 'NonUpdate' : 'Update'}
                     </button>
+                  </td>
+                  <td>
+                      <button
+                        onClick={() => deleteSignalement(complaint.id)}
+                        className="text-red-500 hover:text-red-700 focus:outline-none transition-all"
+                      >
+                        🗑️
+                      </button>
                   </td>
                 </tr>
                 {isVisible && signalement && (
@@ -175,6 +217,7 @@ export default function SignalementBoard() {
                   />
                 </div>
               )}
+               <Evaluations signalementId={signalement.id} />
             </div>
                       </div>
                     </td>

@@ -1,8 +1,9 @@
 // pages/resources/index.js
 
-import Articles from "../../components/NewFolderComponent/Guide/articles";
-import Guide from "../../components/NewFolderComponent/Guide/guidePage";
-import Organizations from "../../components/NewFolderComponent/Guide/organisationPage";
+import Articles from "./articles";
+import Guide from "./guidePage";
+import Organizations from "./organisationPage";
+
 
 export default function Resources() {
   return (
