@@ -59,6 +59,49 @@ app.get('/', (req, res) => {
 });
 
 
+// Fonction pour récupérer les données des évaluations
+async function getEvaluationData() {
+    try {
+        const [rows] = await db.execute(
+            'SELECT id, signalement_id, user_id, clarity, effectiveness, response_time, empathy, comment, created_at FROM evaluations'
+        );
+        return rows;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des évaluations:', error);
+        return [];
+    }
+}
+
+// Route pour récupérer les évaluations
+app.get('/api/evaluations', async (req, res) => {
+    try {
+        const rows = await getEvaluationData();
+        res.json(rows); // Retourner les données des évaluations au format JSON
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur serveur lors de la récupération des évaluations.' });
+    }
+});
+
+// Gérer la connexion WebSocket
+io.on('connection', (socket) => {
+    console.log('Nouvelle connexion WebSocket');
+
+    // Fonction pour envoyer les données des évaluations via WebSocket
+    const sendEvaluationData = async () => {
+        const data = await getEvaluationData();
+        socket.emit('evaluationData', data); // Envoi des données
+    };
+
+    // Envoyer les données initiales
+    sendEvaluationData();
+
+    // Détecter la déconnexion
+    socket.on('disconnect', () => {
+        console.log('Déconnexion WebSocket');
+    });
+});
+
+
 // Route pour récupérer les événements liés à un utilisateur
 app.get('/api/events', async (req, res) => {
     const { userId } = req.query;
